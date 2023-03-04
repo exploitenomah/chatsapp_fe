@@ -31,12 +31,17 @@ module.exports = {
           default: '#202c33',
         },
         accent: {
+          darkest: '#008069',
           dark: '#00a884',
           medium: '#06cf9c',
           light: '#71eb85',
           bright: '#09d261',
         },
-        contrast: { primary: '#d1d7db', secondary: '#8696a0' },
+        contrast: {
+          primary: '#d1d7db',
+          secondary: '#8696a0',
+          heading: '#e9edefe0',
+        },
       },
     },
   },

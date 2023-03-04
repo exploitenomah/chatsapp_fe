@@ -2,8 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@layer components {
+  .btn-default {
+    padding-left: theme('spacing.8');
+    padding-right: theme('spacing.8');
+    padding-top: theme('spacing.3');
+    padding-bottom: theme('spacing.3');
+    box-shadow: theme('boxShadow.xl');
+    white-space: nowrap;
+    font-weight: 600;
+    border-radius: theme('borderRadius.lg');
+    transition-property: theme('transitionProperty.all');
+    transition-duration: theme('transitionDelay.150');
+    transition-timing-function: theme('transitionTimingFunction.out');
+  }
+  .btn-default:hover {
+    filter: brightness(theme('brightness.125'));
   }
 }

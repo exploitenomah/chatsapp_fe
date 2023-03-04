@@ -3,7 +3,19 @@
 @tailwind utilities;
 
 @layer components {
+  .body-bg {
+    background-image: url(/images/bg-chat-tile.png);
+    opacity: 0.05;
+    background-size: 412.5px 749.25px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+  }
   .btn-default {
+    cursor: pointer;
     padding-left: theme('spacing.8');
     padding-right: theme('spacing.8');
     padding-top: theme('spacing.3');

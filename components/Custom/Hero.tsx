@@ -11,14 +11,24 @@ const dancingScript = Dancing_Script({
   weight: '400',
   subsets: ['latin'],
 })
-export default function Hero() {
+
+export default function Hero({
+  showLogin,
+  showSignup,
+}: {
+  showLogin: () => void
+  showSignup: () => void
+}) {
   return (
     <div className=' flex flex-col h-screen w-screen justify-center  '>
       <header className='flex justify-between items-center w-[80vw] max-w-[1000px] mx-auto pt-8 mb-auto'>
         <h1 className={`${dancingScript.className} text-md weight-400`}>
           ChatsApp Web
         </h1>
-        <Button className='shadow-none hover:underline hover:text-accent-dark py-0 px-0 duration-300'>
+        <Button
+          className='shadow-none hover:underline hover:text-accent-dark py-0 px-0 duration-300'
+          onClick={showLogin}
+        >
           Login
         </Button>
       </header>
@@ -29,7 +39,10 @@ export default function Hero() {
           <p className='mt-4 text-sm text-contrast-secondary'>
             Send and recieve messages in your web browser.
           </p>
-          <Button className='bg-accent-darkest text-white mt-4'>
+          <Button
+            className='bg-accent-darkest text-white mt-4'
+            onClick={showSignup}
+          >
             Get Started
           </Button>
         </div>

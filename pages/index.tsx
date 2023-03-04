@@ -1,13 +1,21 @@
 import AppHead from '@components/Custom/Head'
 import Hero from '@components/Custom/Hero'
 
-export default function Home({ token }: { token: string }) {
+export default function Home({
+  token,
+  showLogin,
+  showSignup,
+}: {
+  token: string
+  showLogin: () => void
+  showSignup: () => void
+}) {
   if (token) return null
 
   return (
     <>
       <AppHead title='ChatsApp' />
-      <Hero />
+      <Hero showLogin={showLogin} showSignup={showSignup} />
     </>
   )
 }

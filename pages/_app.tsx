@@ -15,12 +15,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const [showLogin, setShowLogin] = useState(false)
   const [token, setToken] = useState<string | null>(null)
 
-  const hideSignupShowLogin = useCallback(() => {
+  const showLoginHideSignup = useCallback(() => {
     setShowSignup(false)
     setShowLogin(true)
   }, [])
 
-  const hideLoginShowSignup = useCallback(() => {
+  const ShowSignupHideLogin = useCallback(() => {
     setShowSignup(true)
     setShowLogin(false)
   }, [])
@@ -41,16 +41,21 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <div>
-      <Component {...pageProps} token={token} />
+      <Component
+        {...pageProps}
+        token={token}
+        showLogin={showLoginHideSignup}
+        showSignup={ShowSignupHideLogin}
+      />
       <Signup
         show={showSignup}
         hide={hideSignupAndLogin}
-        switchToLogin={hideSignupShowLogin}
+        switchToLogin={showLoginHideSignup}
       />
       <Login
         show={showLogin}
         hide={hideSignupAndLogin}
-        switchToLogin={hideLoginShowSignup}
+        switchToLogin={ShowSignupHideLogin}
       />
     </div>
   )

@@ -10,12 +10,25 @@ module.exports = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        'fade-in': 'fade-in 600ms ease',
+      },
       colors: {
-        bg: {
+        primary: {
           default: '#111b21',
           darkest: '#0b141a',
           dark: '#0a1014',
           medium: '#182229',
+        },
+        secondary: {
+          darkest: '#2a3942',
+          default: '#202c33',
         },
         accent: {
           dark: '#00a884',
@@ -23,9 +36,9 @@ module.exports = {
           light: '#71eb85',
           bright: '#09d261',
         },
-        text: { primary: '#e9edef', secondary: '#8696a0' },
+        contrast: { primary: '#d1d7db', secondary: '#8696a0' },
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 }

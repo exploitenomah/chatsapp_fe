@@ -7,6 +7,7 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: { '2xl': '1440px' },
       keyframes: {
         'fade-in': {
           '0%': { opacity: '0' },
@@ -38,6 +39,7 @@ module.exports = {
           primary: '#d1d7db',
           secondary: '#8696a0',
           heading: '#e9edefe0',
+          light: '#222e35',
         },
       },
     },

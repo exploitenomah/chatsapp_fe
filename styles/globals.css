@@ -14,6 +14,20 @@
     width: 100vw;
     z-index: -1;
   }
+  .input-default {
+    display: inline-block;
+    width: 100%;
+    background-color: theme('backgroundColor.secondary.default');
+    color: theme('textColor.contrast.secondary');
+    padding: theme('spacing.3') theme('space.4');
+    border-radius: theme('borderRadius.lg');
+  }
+  .input-default:focus {
+    outline: none;
+  }
+  .input-default::placeholder {
+    color: theme('textColor.contrast.secondary');
+  }
   .btn-default {
     cursor: pointer;
     padding-left: theme('spacing.8');
@@ -31,4 +45,18 @@
   .btn-default:hover {
     filter: brightness(theme('brightness.125'));
   }
+  .app-left-body {
+    height: calc(100% - 60px);
+  }
+}
+::-webkit-scrollbar-track,
+html[dir] .light ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.005);
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
 }

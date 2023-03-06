@@ -1,5 +1,4 @@
-import DarkIntroLogo from '@/assets/DarkIntroLogo'
-import Button from '@components/HTML/Button'
+import DarkIntroLogo from '@assets/DarkIntroLogo'
 
 export default function AppIntro() {
   return (

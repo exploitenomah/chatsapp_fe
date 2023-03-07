@@ -1,4 +1,3 @@
-import DarkIntroLogo from '@/assets/DarkIntroLogo'
 import Button from '@components/HTML/Button'
 import { Roboto, Dancing_Script } from 'next/font/google'
 import AppIntro from './AppIntro'

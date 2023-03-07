@@ -1,5 +1,5 @@
 import Button from '@components/HTML/Button'
-import LoadingLogo from '@/assets/LoadingLogo'
+import LoadingLogo from '@assets/LoadingLogo'
 import Modal from '../Modal'
 import { FormEventHandler, ReactNode } from 'react'
 

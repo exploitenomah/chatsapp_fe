@@ -22,7 +22,7 @@
       "@components/*": [
         "./components/*"
       ],
-      "@/assets/*": [
+      "@assets/*": [
         "./assets/*"
       ]
     }

@@ -1,7 +1,4 @@
-import Button from '@components/HTML/Button'
 import Input from '@components/HTML/Input'
-import LoadingLogo from '../../../assets/LoadingLogo'
-import Modal from '../Modal'
 import FormContainer from './FormContainer'
 
 export default function Signup({

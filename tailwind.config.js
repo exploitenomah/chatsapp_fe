@@ -29,6 +29,7 @@ module.exports = {
           default: '#202c33',
         },
         accent: {
+          default: '#005c4b',
           darkest: '#008069',
           dark: '#00a884',
           medium: '#06cf9c',

@@ -1,5 +1,5 @@
-import LeftArrow from '@/assets/LeftArrow'
-import SearchIcon from '@/assets/SearchIcon'
+import LeftArrow from '@assets/LeftArrow'
+import SearchIcon from '@assets/SearchIcon'
 import Input from '@components/HTML/Input'
 import { useState } from 'react'
 

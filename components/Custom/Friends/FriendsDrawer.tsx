@@ -24,52 +24,55 @@ export default function FriendsDrawer() {
           <SearchBar inputProps={{ placeholder: 'Search friends' }} />
         </div>
 
-        <div className='pr-[4px] h-[82.3%] absolute bottom-0 w-full top-[160px] overflow-auto'>
-          <div>
-            <Button
-              className={`p-0 h-[72px] shadow-none text-contrast-strong/80 rounded-none w-full flex items-center bg-primary-default hover:bg-secondary-default cursor-pointer`}
-            >
-              <span className='inline-block px-4'>
-                <span className='bg-accent-dark rounded-full h-12 w-12 flex justify-center items-center'>
-                  <FriendsSuggestionsIcon className='text-contrast-tetiary' />
-                </span>
-              </span>
-              <span className='border-y border-y-contrast-secondary/20 h-full flex items-center grow font-normal'>
-                Suggestions
-              </span>
-            </Button>
-          </div>
-          <div className='uppercase text-accent-darkest font-normal pt-7 pb-4 pl-8'>
-            Friends on ChatsApp
-          </div>
+        <div className='pr-[4px]  absolute bottom-0 w-full top-[160px] overflow-auto'>
           <div>
             <div>
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem /> <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem /> <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem /> <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem /> <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
-              <ChatItem />
+              <Button
+                className={`p-0 h-[72px] shadow-none text-contrast-strong/80 rounded-none w-full flex items-center bg-primary-default hover:bg-secondary-default cursor-pointer`}
+              >
+                <span className='inline-block px-4'>
+                  <span className='bg-accent-dark rounded-full h-12 w-12 flex justify-center items-center'>
+                    <FriendsSuggestionsIcon className='text-contrast-tetiary' />
+                  </span>
+                </span>
+                <span className='border-y border-y-contrast-secondary/20 h-full flex items-center grow font-normal'>
+                  Suggestions
+                </span>
+              </Button>
+            </div>
+            <div className='uppercase text-accent-darkest font-normal pt-7 pb-4 pl-8'>
+              Friends on ChatsApp
+            </div>
+            <div>
+              <div>
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem /> <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem /> <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem /> <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem /> <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                <ChatItem />
+                hjhjhj
+              </div>
             </div>
           </div>
         </div>

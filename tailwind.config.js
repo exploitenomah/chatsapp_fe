@@ -39,6 +39,7 @@ module.exports = {
         contrast: {
           primary: '#d1d7db',
           secondary: '#8696a0',
+          tetiary: '#d9dee0',
           strong: '#e9edef',
           light: '#222e35',
         },

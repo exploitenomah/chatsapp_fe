@@ -1,5 +1,4 @@
 import FriendsIcon from '@assets/FriendsIcon'
-import MsgBubbleIcon from '@assets/MsgBubbleIcon'
 import OptionsIcon from '@assets/OptionsIcon'
 import Button from '@components/HTML/Button'
 import { ReactNode } from 'react'
@@ -28,9 +27,6 @@ export default function AppHeader() {
           <ul className='flex items-center'>
             <NavItem>
               <FriendsIcon />
-            </NavItem>
-            <NavItem>
-              <MsgBubbleIcon />
             </NavItem>
             <NavItem>
               <OptionsIcon />

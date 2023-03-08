@@ -3,7 +3,7 @@ import SearchIcon from '@assets/SearchIcon'
 import Input from '@components/HTML/Input'
 import { useState } from 'react'
 
-export default function SearchBar() {
+export default function SearchBar({ placeholder }: { placeholder: string }) {
   const [isFocused, setIsFocused] = useState(false)
 
   return (
@@ -26,7 +26,7 @@ export default function SearchBar() {
       </div>
       <Input
         className='text-sm whitespace-nowrap text-contrast-primary px-0 py-0 placeholder:text-sm placeholde placeholder:font-normal'
-        placeholder='Search or start a new chat'
+        placeholder={placeholder}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />

@@ -1,10 +1,15 @@
 import LeftArrow from '@assets/LeftArrow'
 import SearchIcon from '@assets/SearchIcon'
 import Input from '@components/HTML/Input'
-import { useState } from 'react'
+import { HTMLAttributes, useState } from 'react'
 
-export default function SearchBar({ placeholder }: { placeholder: string }) {
+export default function SearchBar({
+  inputProps,
+}: {
+  inputProps: HTMLAttributes<HTMLInputElement>
+}) {
   const [isFocused, setIsFocused] = useState(false)
+  const { onBlur, onFocus, className, ...otherInputProps } = inputProps
 
   return (
     <div className='input-default flex items-center py-2 px-4 gap-2'>
@@ -26,9 +31,15 @@ export default function SearchBar({ placeholder }: { placeholder: string }) {
       </div>
       <Input
         className='text-sm whitespace-nowrap text-contrast-primary px-0 py-0 placeholder:text-sm placeholde placeholder:font-normal'
-        placeholder={placeholder}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        {...otherInputProps}
+        onFocus={(e) => {
+          setIsFocused(true)
+          onFocus && onFocus(e)
+        }}
+        onBlur={(e) => {
+          setIsFocused(false)
+          onBlur && onBlur(e)
+        }}
       />
     </div>
   )

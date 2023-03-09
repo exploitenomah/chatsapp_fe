@@ -1,25 +1,35 @@
 import Button from '@components/HTML/Button'
 import LoadingLogo from '@assets/LoadingLogo'
 import Modal from '../Modal'
-import { FormEventHandler, ReactNode } from 'react'
+import { FormEventHandler, ReactNode, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { UI } from '@store/ui/initialState'
+import { Store } from '@store/index'
+import { toggleShowLogin, toggleShowSignup } from '@store/ui/slice'
 
 export default function FormContainer({
   show,
-  hide,
-  toggle,
   children,
   mode,
   title,
-  onSubmit,
 }: {
   show: boolean
-  hide: () => void
-  toggle: () => void
   children: ReactNode | ReactNode[]
   mode: 'sign up' | 'login'
   title: string
-  onSubmit: FormEventHandler<HTMLFormElement>
 }) {
+  const dispatch = useDispatch()
+
+  const toggleMode = useCallback(() => {
+    if (mode === 'login') dispatch(toggleShowSignup())
+    else dispatch(toggleShowLogin())
+  }, [dispatch, mode])
+
+  const hide = useCallback(() => {
+    if (mode === 'login') dispatch(toggleShowLogin())
+    else dispatch(toggleShowSignup())
+  }, [dispatch, mode])
+
   return (
     <>
       <Modal show={show} keepMounted={false} hide={hide} animate={true}>
@@ -32,19 +42,9 @@ export default function FormContainer({
             {title}
           </h1>
 
-          <form
-            onSubmit={onSubmit}
-            className='flex flex-col gap-5 stretch w-[90%] mx-auto mt-3'
-          >
-            {children}
-            <Button
-              type='submit'
-              name='signup'
-              className='bg-accent-dark/60 mt-2 capitalize text-lg'
-            >
-              {mode}
-            </Button>
-          </form>
+          <div className='w-[90%] mx-auto mt-3'>
+            <>{children}</>
+          </div>
 
           <div className='mx-auto mt-4 text-sm text-contrast-primary/60 '>
             <span>
@@ -53,7 +53,7 @@ export default function FormContainer({
             </span>
             &nbsp;&nbsp;
             <Button
-              onClick={toggle}
+              onClick={toggleMode}
               type='button'
               name='signup'
               className='hover:scale-100 hover:underline hover:text-accent-dark/60 transition-all duration-150 px-0 py-0 capitalize'

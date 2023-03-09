@@ -1,5 +1,7 @@
 import Button from '@components/HTML/Button'
+import { toggleShowLogin, toggleShowSignup } from '@store/ui/slice'
 import { Roboto, Dancing_Script } from 'next/font/google'
+import { useDispatch } from 'react-redux'
 import AppIntro from './AppIntro'
 
 const roboto = Roboto({
@@ -12,13 +14,9 @@ const dancingScript = Dancing_Script({
   subsets: ['latin'],
 })
 
-export default function Hero({
-  showLogin,
-  showSignup,
-}: {
-  showLogin: () => void
-  showSignup: () => void
-}) {
+export default function Hero() {
+  const dispatch = useDispatch()
+
   return (
     <div className=' flex flex-col h-screen w-screen justify-center border-x-accent-darkest border-x-4'>
       <header className='flex justify-between items-center w-[80vw] max-w-[1000px] mx-auto pt-8 mb-auto'>
@@ -27,7 +25,7 @@ export default function Hero({
         </h1>
         <Button
           className='shadow-none hover:underline hover:text-accent-dark py-0 px-0 duration-300'
-          onClick={showLogin}
+          onClick={() => dispatch(toggleShowLogin())}
         >
           Login
         </Button>
@@ -37,7 +35,7 @@ export default function Hero({
           <AppIntro />
           <Button
             className='bg-accent-darkest text-white mt-4'
-            onClick={showSignup}
+            onClick={() => dispatch(toggleShowSignup())}
           >
             Get Started
           </Button>

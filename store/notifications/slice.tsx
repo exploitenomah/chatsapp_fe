@@ -7,11 +7,18 @@ const notificationsSlice = createSlice({
   initialState,
   reducers: {
     addAppAlert: (state, action: PayloadAction<Alert>) => {
+      if (state.appAlerts.find((el) => el.message === action.payload.message))
+        return
       state.appAlerts = [action.payload, ...state.appAlerts]
+    },
+    removeAppAlert: (state, action: PayloadAction<number>) => {
+      state.appAlerts = state.appAlerts.filter(
+        (appAlert) => appAlert.id !== action.payload,
+      )
     },
   },
 })
 
-export const { addAppAlert } = notificationsSlice.actions
+export const { addAppAlert, removeAppAlert } = notificationsSlice.actions
 
 export default notificationsSlice.reducer

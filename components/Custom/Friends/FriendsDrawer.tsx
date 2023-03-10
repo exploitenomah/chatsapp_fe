@@ -23,7 +23,7 @@ const FriendsSuggestionButton = () => {
       >
         <span className='inline-block px-4'>
           <span className='bg-accent-dark rounded-full h-12 w-12 flex justify-center items-center'>
-            <FriendsSuggestionsIcon className='text-contrast-tetiary' />
+            <FriendsSuggestionsIcon className='text-contrast-tertiary' />
           </span>
         </span>
         <span className='border-y border-y-contrast-secondary/20 h-full flex items-center grow font-normal'>
@@ -38,7 +38,7 @@ const Header = () => {
   const dispatch = useDispatch()
   return (
     <>
-      <header className='h-[108px] flex flex-col justify-end text-contrast-tetiary/80 bg-secondary-default px-6'>
+      <header className='h-[108px] flex flex-col justify-end text-contrast-tertiary/80 bg-secondary-default px-6'>
         <div className='h-[59px] flex items-center'>
           <Button
             className='p-0 w-12'

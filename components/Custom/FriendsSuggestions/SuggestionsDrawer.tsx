@@ -13,7 +13,7 @@ const Header = () => {
   const dispatch = useDispatch()
   return (
     <>
-      <header className='h-[108px] flex flex-col justify-end text-contrast-tetiary/80 bg-secondary-default px-6'>
+      <header className='h-[108px] flex flex-col justify-end text-contrast-tertiary/80 bg-secondary-default px-6'>
         <div className='h-[59px] flex items-center'>
           <Button
             className='p-0 w-12'

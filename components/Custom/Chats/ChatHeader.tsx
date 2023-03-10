@@ -1,6 +1,6 @@
 import OptionsIcon from '@assets/OptionsIcon'
 import SearchIcon from '@assets/SearchIcon'
-import { headerClasses, NavItem } from '../AppHeader'
+import { headerClasses, NavItem } from '../App/AppHeader'
 import Avatar from '../Avatar'
 
 export default function ChatHeader() {
@@ -10,10 +10,10 @@ export default function ChatHeader() {
         <Avatar />
       </div>
       <ul className='flex items-center'>
-        <NavItem>
+        <NavItem buttonProps={{}}>
           <SearchIcon />
         </NavItem>
-        <NavItem>
+        <NavItem buttonProps={{}}>
           <OptionsIcon />
         </NavItem>
       </ul>

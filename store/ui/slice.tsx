@@ -1,10 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import initialState from './initialState'
 
 export const uiSlice = createSlice({
-  name: 'counter',
+  name: 'ui',
   initialState,
   reducers: {
+    toggleAppLoading: (state, action: PayloadAction<boolean>) => {
+      state.appLoading = action.payload
+    },
     toggleShowFriendsDrawer: (state) => {
       state.showFriendsDrawer = !state.showFriendsDrawer
     },
@@ -23,6 +26,9 @@ export const uiSlice = createSlice({
       state.showSignup = false
       state.showLogin = false
     },
+    updateLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload
+    },
   },
 })
 
@@ -32,6 +38,8 @@ export const {
   hideSignupAndLogin,
   toggleShowLogin,
   toggleShowSignup,
+  toggleAppLoading,
+  updateLoading,
 } = uiSlice.actions
 
 export default uiSlice.reducer

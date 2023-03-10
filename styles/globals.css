@@ -42,6 +42,21 @@
   .app-left-body {
     height: calc(100% - 60px);
   }
+  .primary {
+    background-color: theme('colors.primary.light');
+    color: theme('colors.contrast.strong');
+  }
+  .error {
+    background-color: theme('backgroundColor.red.500');
+    color: theme('colors.contrast.strong');
+  }
+  .warning {
+    background-color: theme('backgroundColor.orange.400');
+    color: theme('colors.black/80');
+  }
+  .success {
+    background-color: theme('colors.accent.medium');
+  }
 }
 ::-webkit-scrollbar-track,
 html[dir] .light ::-webkit-scrollbar-track {

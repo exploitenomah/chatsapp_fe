@@ -1,4 +1,5 @@
 import { authenticate } from '@store/auth/slice'
+import { addAppAlert } from '@store/notifications/slice'
 import { toggleAppLoading, updateLoading } from '@store/ui/slice'
 import { useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
@@ -27,13 +28,16 @@ export default function useRoot({
       dispatch(toggleAppLoading(false))
     }
 
-    rootSocket.onAny(() => {
+    rootSocket.onAny((x) => {
+      console.log('x', x)
       dispatch(updateLoading(false))
     })
+
     rootSocket.on('signup', (data) => {
       localStorage.clear()
       localStorage.setItem('chatsapp_token', data.token)
       dispatch(authenticate(data.token))
+      dispatch(updateLoading(false))
       //store user
     })
 
@@ -41,6 +45,7 @@ export default function useRoot({
       localStorage.clear()
       localStorage.setItem('chatsapp_token', data.token)
       dispatch(authenticate(data.token))
+      dispatch(updateLoading(false))
       //store user
     })
 
@@ -65,6 +70,7 @@ export default function useRoot({
     })
 
     rootSocket.io.on('error', (err) => {
+      console.log(err)
       if (onError) onError(err.message)
     })
 
@@ -77,8 +83,16 @@ export default function useRoot({
       console.log('root socket disconnected', reason)
       if (onDisconnect) onDisconnect()
     })
-    rootSocket.on('error', (err) => {
-      if (onError) onError(err)
+    rootSocket.on('error', (msg) => {
+      dispatch(
+        addAppAlert({
+          message: msg,
+          id: Math.random(),
+          variant: 'error',
+        }),
+      )
+      dispatch(updateLoading(false))
+      if (onError) onError(msg)
     })
 
     return () => {

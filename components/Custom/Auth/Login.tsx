@@ -1,31 +1,30 @@
 import Input from '@components/HTML/Input'
 import FormContainer from './FormContainer'
-import { useState, useCallback, ChangeEvent, FormEvent } from 'react'
+import { useState, useCallback, ChangeEvent, FormEvent, useEffect } from 'react'
 import Button from '@components/HTML/Button'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Socket } from 'socket.io-client'
+import AuthLoader from './AuthLoader'
+import { updateLoading } from '@store/ui/slice'
 
 const initialLoginDetails = {
   nickNameOrEmail: '',
   password: '',
 }
 
-type LoginDetails = typeof initialLoginDetails
-
-const Form = ({
-  handleSubmit,
-}: {
-  handleSubmit: (loginDetails: LoginDetails) => void
-}) => {
+const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   const [loginDetails, setLoginDetails] = useState(initialLoginDetails)
-
+  const dispatch = useDispatch()
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = changeEvent.target
       setLoginDetails((prev) => ({
         ...prev,
-        [changeEvent.target.name]: changeEvent.target.value,
+        [name]: value,
       }))
+      localStorage.setItem(name, value)
     },
     [],
   )
@@ -33,10 +32,26 @@ const Form = ({
   const onSubmit = useCallback(
     (submitEvent: FormEvent) => {
       submitEvent.preventDefault()
-      handleSubmit(loginDetails)
+      dispatch(updateLoading(true))
+      rootSocket.emit('login', {
+        $or: [
+          { email: loginDetails.nickNameOrEmail.trim() },
+          { nickName: loginDetails.nickNameOrEmail.trim() },
+        ],
+        password: loginDetails.password,
+      })
     },
-    [handleSubmit, loginDetails],
+    [dispatch, loginDetails.nickNameOrEmail, loginDetails.password, rootSocket],
   )
+
+  useEffect(() => {
+    const nickNameOrEmail = localStorage.getItem('nickNameOrEmail') || ''
+    const password = localStorage.getItem('password') || ''
+    setLoginDetails(() => ({
+      nickNameOrEmail,
+      password,
+    }))
+  }, [])
 
   return (
     <form className='flex flex-col gap-5' onSubmit={onSubmit}>
@@ -67,15 +82,13 @@ const Form = ({
   )
 }
 
-export default function Login() {
-  const { showLogin } = useSelector<Store, UI>((store) => store.ui)
-  const handleSubmit = useCallback((loginDetails: LoginDetails) => {
-    console.log(loginDetails)
-  }, [])
+export default function Login({ rootSocket }: { rootSocket: Socket }) {
+  const { showLogin, loading } = useSelector<Store, UI>((store) => store.ui)
 
   return (
     <FormContainer show={showLogin} mode='login' title='Welcome Back!'>
-      <Form handleSubmit={handleSubmit} />
+      {loading && <AuthLoader />}
+      <Form rootSocket={rootSocket} />
     </FormContainer>
   )
 }

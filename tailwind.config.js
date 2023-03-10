@@ -23,6 +23,7 @@ module.exports = {
           darkest: '#0b141a',
           dark: '#0a1014',
           medium: '#182229',
+          light: '#222e35',
         },
         secondary: {
           darkest: '#2a3942',
@@ -39,9 +40,8 @@ module.exports = {
         contrast: {
           primary: '#d1d7db',
           secondary: '#8696a0',
-          tetiary: '#d9dee0',
+          tertiary: '#d9dee0',
           strong: '#e9edef',
-          light: '#222e35',
         },
       },
     },

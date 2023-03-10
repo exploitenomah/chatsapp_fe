@@ -1,10 +1,8 @@
 import Button from '@components/HTML/Button'
 import LoadingLogo from '@assets/LoadingLogo'
 import Modal from '../Modal'
-import { FormEventHandler, ReactNode, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { UI } from '@store/ui/initialState'
-import { Store } from '@store/index'
+import { ReactNode, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 import { toggleShowLogin, toggleShowSignup } from '@store/ui/slice'
 
 export default function FormContainer({
@@ -21,11 +19,13 @@ export default function FormContainer({
   const dispatch = useDispatch()
 
   const toggleMode = useCallback(() => {
+    localStorage.clear()
     if (mode === 'login') dispatch(toggleShowSignup())
     else dispatch(toggleShowLogin())
   }, [dispatch, mode])
 
   const hide = useCallback(() => {
+    localStorage.clear()
     if (mode === 'login') dispatch(toggleShowLogin())
     else dispatch(toggleShowSignup())
   }, [dispatch, mode])
@@ -33,7 +33,7 @@ export default function FormContainer({
   return (
     <>
       <Modal show={show} keepMounted={false} hide={hide} animate={true}>
-        <div className='bg-primary-darkest pt-8 pb-12 px-4 flex flex-col w-[90vw] max-w-md rounded-lg animate-fade-in'>
+        <div className='bg-primary-darkest pt-8 pb-12 px-4 flex flex-col w-[90vw] max-w-md rounded-lg animate-fade-in relative'>
           <div className='w-[60px] overflow-hidden text-contrast-secondary mx-auto mb-5 animate-pulse'>
             <LoadingLogo />
           </div>

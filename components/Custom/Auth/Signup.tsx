@@ -52,7 +52,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
     const lastName = localStorage.getItem('lastName') || ''
     const nickName = localStorage.getItem('nickName') || ''
     const email = localStorage.getItem('email') || ''
-    const password = localStorage.getItem('firstName') || ''
+    const password = localStorage.getItem('password') || ''
     setSignupDetails((prev) => ({
       ...prev,
       firstName,

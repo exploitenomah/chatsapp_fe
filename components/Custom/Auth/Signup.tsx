@@ -2,8 +2,11 @@ import Button from '@components/HTML/Button'
 import Input from '@components/HTML/Input'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
-import { useState, useCallback, ChangeEvent, FormEvent } from 'react'
-import { useSelector } from 'react-redux'
+import { updateLoading } from '@store/ui/slice'
+import { useState, useCallback, ChangeEvent, FormEvent, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Socket } from 'socket.io-client'
+import AuthLoader from './AuthLoader'
 import FormContainer from './FormContainer'
 
 const initialSignupDetails = {
@@ -17,19 +20,17 @@ const initialSignupDetails = {
 
 type SignupDetails = typeof initialSignupDetails
 
-const Form = ({
-  handleSubmit,
-}: {
-  handleSubmit: (signupDetails: SignupDetails) => void
-}) => {
+const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   const [signupDetails, setSignupDetails] = useState(initialSignupDetails)
-
+  const dispatch = useDispatch()
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = changeEvent.target
       setSignupDetails((prev) => ({
         ...prev,
-        [changeEvent.target.name]: changeEvent.target.value,
+        [name]: value,
       }))
+      localStorage.setItem(name, value)
     },
     [],
   )
@@ -37,10 +38,30 @@ const Form = ({
   const onSubmit = useCallback(
     (submitEvent: FormEvent) => {
       submitEvent.preventDefault()
-      handleSubmit(signupDetails)
+      if (signupDetails.password !== signupDetails.confirmPassword) return
+      dispatch(updateLoading(true))
+      const data = { ...signupDetails } as Partial<SignupDetails>
+      delete data.confirmPassword
+      rootSocket.emit('signup', data)
     },
-    [handleSubmit, signupDetails],
+    [dispatch, rootSocket, signupDetails],
   )
+
+  useEffect(() => {
+    const firstName = localStorage.getItem('firstName') || ''
+    const lastName = localStorage.getItem('lastName') || ''
+    const nickName = localStorage.getItem('nickName') || ''
+    const email = localStorage.getItem('email') || ''
+    const password = localStorage.getItem('firstName') || ''
+    setSignupDetails((prev) => ({
+      ...prev,
+      firstName,
+      lastName,
+      nickName,
+      email,
+      password,
+    }))
+  }, [])
 
   return (
     <form className='flex flex-col gap-5' onSubmit={onSubmit}>
@@ -105,18 +126,17 @@ const Form = ({
   )
 }
 
-export default function Signup() {
-  const { showSignup } = useSelector<Store, UI>((store) => store.ui)
-  const handleSubmit = useCallback((signupDetails: SignupDetails) => {
-    console.log(signupDetails)
-  }, [])
+export default function Signup({ rootSocket }: { rootSocket: Socket }) {
+  const { showSignup, loading } = useSelector<Store, UI>((store) => store.ui)
+
   return (
     <FormContainer
       show={showSignup}
       mode='sign up'
       title='Get Started With ChatsApp'
     >
-      <Form handleSubmit={handleSubmit} />
+      {loading && <AuthLoader />}
+      <Form rootSocket={rootSocket} />
     </FormContainer>
   )
 }

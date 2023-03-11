@@ -24,7 +24,6 @@ const AppNotifications = () => {
   const { appAlerts } = useSelector<Store, Notifications>(
     (store) => store.notification,
   )
-  console.log(appAlerts)
   return (
     <div className='absolute top-0 right-0 w-[25%]'>
       {appAlerts.map((appAlert) => (

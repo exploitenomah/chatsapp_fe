@@ -3,11 +3,20 @@ import Input from '@components/HTML/Input'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { updateLoading } from '@store/ui/slice'
-import { useState, useCallback, ChangeEvent, FormEvent, useEffect } from 'react'
+import {
+  SetStateAction,
+  useState,
+  useCallback,
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  Dispatch,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
 import AuthLoader from './AuthLoader'
 import FormContainer from './FormContainer'
+import useDebounce from '@hooks/useDebounce'
 
 const initialSignupDetails = {
   nickName: '',
@@ -20,9 +29,81 @@ const initialSignupDetails = {
 
 type SignupDetails = typeof initialSignupDetails
 
+const InputNotification = ({
+  show,
+  displayText,
+}: {
+  show: boolean
+  displayText: string
+}) => {
+  return (
+    <>
+      {show ? (
+        <span className='block mb-1 ml-1 text-red-400 text-xs'>
+          {displayText}
+        </span>
+      ) : null}
+    </>
+  )
+}
+
+const inputValidationClasses = (isValid: boolean, isInvalid: boolean) => {
+  return `${isValid ? 'border-transparent' : isInvalid ? 'border-red-400' : ''}`
+}
+
 const Form = ({ rootSocket }: { rootSocket: Socket }) => {
-  const [signupDetails, setSignupDetails] = useState(initialSignupDetails)
   const dispatch = useDispatch()
+  const [signupDetails, setSignupDetails] = useState(initialSignupDetails)
+  const [isNickNameTaken, setIsNickNameTaken] = useState(false)
+  const [isEmailInUse, setIsEmailInUse] = useState(false)
+  const [isNickNameInvalid, setIsNickNameInvalid] = useState(false)
+
+  const handleIsTakenCheck = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target
+      const emitIsTaken = () => {
+        rootSocket.emit('isTaken', {
+          key: name,
+          value: value.trim(),
+        })
+      }
+      switch (name) {
+        case 'email':
+          if (signupDetails.email.trim() === value.trim() && isEmailInUse)
+            return
+          else return emitIsTaken()
+        case 'nickName':
+          if (value.trim().length === 0) return
+          const doesNotContainOnlyNumsRegex = /(?!^\d+$)^.+$/
+          const isValidNickNameRegex = /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/
+          if (
+            !(
+              isValidNickNameRegex.test(value.trim()) &&
+              doesNotContainOnlyNumsRegex.test(value.trim())
+            )
+          )
+            return setIsNickNameInvalid(true)
+          else if (
+            signupDetails.nickName.trim() === value.trim() &&
+            isNickNameTaken
+          )
+            return
+          else return emitIsTaken()
+        default:
+          return
+      }
+    },
+    [
+      isEmailInUse,
+      isNickNameTaken,
+      rootSocket,
+      signupDetails.email,
+      signupDetails.nickName,
+    ],
+  )
+
+  const checkIfNN = useDebounce(handleIsTakenCheck, 500)
+  const checkfem = useDebounce(handleIsTakenCheck, 500)
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = changeEvent.target
@@ -38,14 +119,33 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   const onSubmit = useCallback(
     (submitEvent: FormEvent) => {
       submitEvent.preventDefault()
+      if (isNickNameTaken || isEmailInUse) return
       if (signupDetails.password !== signupDetails.confirmPassword) return
       dispatch(updateLoading(true))
       const data = { ...signupDetails } as Partial<SignupDetails>
       delete data.confirmPassword
       rootSocket.emit('signup', data)
     },
-    [dispatch, rootSocket, signupDetails],
+    [dispatch, isEmailInUse, isNickNameTaken, rootSocket, signupDetails],
   )
+
+  useEffect(() => {
+    rootSocket.on('isTaken', (data) => {
+      switch (data.path) {
+        case 'email':
+          setIsEmailInUse(data.isTaken)
+          return
+        case 'nickName':
+          setIsNickNameTaken(data.isTaken)
+          return
+        default:
+          return
+      }
+    })
+    return () => {
+      rootSocket.off('isTaken', () => {})
+    }
+  }, [rootSocket])
 
   useEffect(() => {
     const firstName = localStorage.getItem('firstName') || ''
@@ -82,22 +182,54 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           value={signupDetails.lastName}
         />
       </div>
-      <Input
-        placeholder='Nick name*'
-        required
-        type='text'
-        name='nickName'
-        onChange={handleFormChange}
-        value={signupDetails.nickName}
-      />
-      <Input
-        placeholder='Email*'
-        required
-        type='email'
-        name='email'
-        onChange={handleFormChange}
-        value={signupDetails.email}
-      />
+      <div>
+        <InputNotification
+          show={isNickNameTaken}
+          displayText={`${signupDetails.nickName} is already taken`}
+        />
+        <InputNotification
+          show={isNickNameInvalid}
+          displayText={`${signupDetails.nickName} is not a valid nickname`}
+        />
+        <Input
+          className={`border border-solid ${inputValidationClasses(
+            signupDetails.nickName.trim().length > 0 &&
+              (!isNickNameTaken || !isNickNameInvalid),
+            isNickNameTaken || isNickNameInvalid,
+          )}`}
+          placeholder='Nick name*'
+          required
+          type='text'
+          name='nickName'
+          onChange={(e) => {
+            setIsNickNameInvalid(false)
+            handleFormChange(e)
+            checkIfNN(e)
+          }}
+          value={signupDetails.nickName}
+        />
+      </div>
+      <div>
+        <InputNotification
+          show={isEmailInUse}
+          displayText={`${signupDetails.email} is already in use`}
+        />
+        <Input
+          className={`border border-solid ${inputValidationClasses(
+            signupDetails.email.trim().length > 0 && !isEmailInUse,
+            isEmailInUse,
+          )}`}
+          placeholder='Email*'
+          required
+          type='email'
+          name='email'
+          onChange={(e) => {
+            handleFormChange(e)
+            checkfem(e)
+          }}
+          value={signupDetails.email}
+        />
+      </div>
       <Input
         placeholder='Password*'
         required
@@ -114,7 +246,6 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         onChange={handleFormChange}
         value={signupDetails.confirmPassword}
       />
-
       <Button
         type='submit'
         name='login'

@@ -15,6 +15,7 @@
     color: theme('textColor.contrast.secondary');
     padding: theme('spacing.3') theme('space.4');
     border-radius: theme('borderRadius.lg');
+    border-color: transparent;
   }
   .input-default:focus {
     outline: none;

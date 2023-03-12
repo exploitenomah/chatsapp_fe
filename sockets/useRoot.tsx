@@ -1,6 +1,7 @@
 import { authenticate } from '@store/auth/slice'
 import { addAppAlert } from '@store/notifications/slice'
 import { toggleAppLoading, updateLoading } from '@store/ui/slice'
+import { removeLocalStorageFormValues } from '@utils/auth'
 import { useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { io, Socket } from 'socket.io-client'
@@ -34,7 +35,8 @@ export default function useRoot({
     })
 
     rootSocket.on('signup', (data) => {
-      localStorage.clear()
+      removeLocalStorageFormValues()
+      console.log(data)
       localStorage.setItem('chatsapp_token', data.token)
       dispatch(authenticate(data.token))
       dispatch(updateLoading(false))
@@ -42,7 +44,7 @@ export default function useRoot({
     })
 
     rootSocket.on('login', (data) => {
-      localStorage.clear()
+      removeLocalStorageFormValues()
       localStorage.setItem('chatsapp_token', data.token)
       dispatch(authenticate(data.token))
       dispatch(updateLoading(false))

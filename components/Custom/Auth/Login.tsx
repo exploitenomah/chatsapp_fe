@@ -1,6 +1,13 @@
 import Input from '@components/HTML/Input'
 import FormContainer from './FormContainer'
-import { useState, useCallback, ChangeEvent, FormEvent, useEffect } from 'react'
+import {
+  useState,
+  useCallback,
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useMemo,
+} from 'react'
 import Button from '@components/HTML/Button'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
@@ -15,8 +22,12 @@ const initialLoginDetails = {
 }
 
 const Form = ({ rootSocket }: { rootSocket: Socket }) => {
-  const [loginDetails, setLoginDetails] = useState(initialLoginDetails)
   const dispatch = useDispatch()
+  const [loginDetails, setLoginDetails] = useState(initialLoginDetails)
+  const formHasEmptyFields = useMemo(
+    () => Object.values(loginDetails).some((val) => val.trim().length === 0),
+    [loginDetails],
+  )
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = changeEvent.target
@@ -72,9 +83,11 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         onChange={handleFormChange}
       />
       <Button
+        disabled={formHasEmptyFields}
         type='submit'
         name='login'
-        className='bg-accent-dark/60 mt-2 capitalize text-lg'
+        className='bg-accent-dark/60 mt-2 capitalize text-lg transition-all duration-400 \n
+        disabled:opacity-50 disabled:hover:brightness-100 disabled:hover:cursor-not-allowed'
       >
         Login
       </Button>

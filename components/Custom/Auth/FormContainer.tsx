@@ -56,7 +56,7 @@ export default function FormContainer({
               onClick={toggleMode}
               type='button'
               name='signup'
-              className='hover:scale-100 hover:underline hover:text-accent-dark/60 transition-all duration-150 px-0 py-0 capitalize'
+              className='hover:scale-100 hover:underline hover:text-accent-medium transition-all duration-150 px-0 py-0 capitalize'
             >
               {mode === 'sign up' ? 'login' : 'sign up'}
             </Button>

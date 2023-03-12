@@ -270,7 +270,8 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         }
         type='submit'
         name='login'
-        className='bg-accent-dark/60 mt-2 capitalize text-lg transition-all duration-400 disabled:opacity-50 disabled:hover:brightness-100 disabled:hover:cursor-not-allowed'
+        className='bg-accent-dark/60 mt-2 capitalize text-lg transition-all duration-400 \n
+        disabled:opacity-50 disabled:hover:brightness-100 disabled:hover:cursor-not-allowed'
       >
         signup
       </Button>

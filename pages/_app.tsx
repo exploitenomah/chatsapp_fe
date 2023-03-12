@@ -3,26 +3,15 @@ import type { AppProps } from 'next/app'
 import { useState, useEffect } from 'react'
 import store from '@store/index'
 import { Provider } from 'react-redux'
-
-const variablesToDeleteFromLocalStorage = [
-  'firstName',
-  'lastName',
-  'email',
-  'password',
-  'nickName',
-  'confirmPassword',
-  'nickNameOrEmail',
-]
+import { removeLocalStorageFormValues } from '@utils/auth'
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    window.addEventListener('beforeunload', (ev) => {
-      variablesToDeleteFromLocalStorage.forEach((el) =>
-        localStorage.removeItem(el),
-      )
+    window.addEventListener('beforeunload', () => {
+      removeLocalStorageFormValues()
     })
     return () => {
-      window.removeEventListener('beforeunload', (ev) => {})
+      window.removeEventListener('beforeunload', () => {})
     }
   }, [])
   return (

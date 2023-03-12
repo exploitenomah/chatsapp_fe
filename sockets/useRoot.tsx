@@ -1,6 +1,8 @@
 import { authenticate } from '@store/auth/slice'
 import { addAppAlert } from '@store/notifications/slice'
 import { toggleAppLoading, updateLoading } from '@store/ui/slice'
+import { User } from '@store/user/initialState'
+import { setUser } from '@store/user/slice'
 import { removeLocalStorageFormValues } from '@utils/auth'
 import { useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
@@ -34,21 +36,22 @@ export default function useRoot({
       dispatch(updateLoading(false))
     })
 
-    rootSocket.on('signup', (data) => {
+    rootSocket.on('signup', (data: User & { token: string }) => {
       removeLocalStorageFormValues()
-      console.log(data)
       localStorage.setItem('chatsapp_token', data.token)
       dispatch(authenticate(data.token))
       dispatch(updateLoading(false))
-      //store user
+      const userData = { ...data } as Partial<typeof data>
+      delete userData.token
+      dispatch(setUser({ ...(userData as User) }))
     })
 
-    rootSocket.on('login', (data) => {
+    rootSocket.on('login', (data: { token: string; user: User }) => {
       removeLocalStorageFormValues()
       localStorage.setItem('chatsapp_token', data.token)
       dispatch(authenticate(data.token))
       dispatch(updateLoading(false))
-      //store user
+      dispatch(setUser(data.user))
     })
 
     rootSocket.io.on('reconnect', (attempt) => {

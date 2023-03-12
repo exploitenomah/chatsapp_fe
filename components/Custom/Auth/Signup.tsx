@@ -13,7 +13,7 @@ import {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
-import AuthLoader from './AuthLoader'
+import AuthLoader, { AuthInputWithShowPasswordToggle } from './AuthComponents'
 import FormContainer from './FormContainer'
 import useDebounce from '@hooks/useDebounce'
 
@@ -243,16 +243,16 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           show={passwordsNotMatched}
           displayText='Passwords not matched'
         />
-        <Input
+        <AuthInputWithShowPasswordToggle
           placeholder='Password*'
           required
           type='password'
           name='password'
-          className='mb-6'
           onChange={handleFormChange}
           value={signupDetails.password}
         />
-        <Input
+        <span className='block h-6'></span>
+        <AuthInputWithShowPasswordToggle
           placeholder='Confirm password*'
           required
           type='password'

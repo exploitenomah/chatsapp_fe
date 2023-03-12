@@ -4,13 +4,12 @@ import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { updateLoading } from '@store/ui/slice'
 import {
-  SetStateAction,
   useState,
   useCallback,
   ChangeEvent,
   FormEvent,
   useEffect,
-  Dispatch,
+  useMemo,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
@@ -51,6 +50,14 @@ const inputValidationClasses = (isValid: boolean, isInvalid: boolean) => {
   return `${isValid ? 'border-transparent' : isInvalid ? 'border-red-400' : ''}`
 }
 
+// const doesNotContainOnlyNumsRegex = /(?!^\d+$)^.+$/
+// const isValidNickNameRegex = /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/
+// const IsNickNameInvalid = useMemo(() => {
+//   return !(
+//     isValidNickNameRegex.test(signupDetails.nickName.trim()) &&
+//     doesNotContainOnlyNumsRegex.test(signupDetails.nickName.trim())
+//   )
+// }, [signupDetails.nickName])
 const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   const dispatch = useDispatch()
   const [signupDetails, setSignupDetails] = useState(initialSignupDetails)
@@ -58,6 +65,13 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   const [isEmailInUse, setIsEmailInUse] = useState(false)
   const [isNickNameInvalid, setIsNickNameInvalid] = useState(false)
 
+  const passwordsNotMatched = useMemo(
+    () =>
+      signupDetails.password.length > 0 &&
+      signupDetails.confirmPassword.length > 0 &&
+      signupDetails.password !== signupDetails.confirmPassword,
+    [signupDetails.confirmPassword, signupDetails.password],
+  )
   const handleIsTakenCheck = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target
@@ -230,22 +244,29 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           value={signupDetails.email}
         />
       </div>
-      <Input
-        placeholder='Password*'
-        required
-        type='password'
-        name='password'
-        onChange={handleFormChange}
-        value={signupDetails.password}
-      />
-      <Input
-        placeholder='Confirm password*'
-        required
-        type='password'
-        name='confirmPassword'
-        onChange={handleFormChange}
-        value={signupDetails.confirmPassword}
-      />
+      <div>
+        <InputNotification
+          show={passwordsNotMatched}
+          displayText='Passwords not matched'
+        />
+        <Input
+          placeholder='Password*'
+          required
+          type='password'
+          name='password'
+          className='mb-6'
+          onChange={handleFormChange}
+          value={signupDetails.password}
+        />
+        <Input
+          placeholder='Confirm password*'
+          required
+          type='password'
+          name='confirmPassword'
+          onChange={handleFormChange}
+          value={signupDetails.confirmPassword}
+        />
+      </div>
       <Button
         type='submit'
         name='login'

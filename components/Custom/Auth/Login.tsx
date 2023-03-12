@@ -13,7 +13,7 @@ import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
-import AuthLoader from './AuthLoader'
+import AuthLoader, { AuthInputWithShowPasswordToggle } from './AuthComponents'
 import { updateLoading } from '@store/ui/slice'
 
 const initialLoginDetails = {
@@ -74,7 +74,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         value={loginDetails.nickNameOrEmail}
         onChange={handleFormChange}
       />
-      <Input
+      <AuthInputWithShowPasswordToggle
         placeholder='Password*'
         required
         type='password'

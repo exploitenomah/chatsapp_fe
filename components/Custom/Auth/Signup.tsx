@@ -50,27 +50,33 @@ const inputValidationClasses = (isValid: boolean, isInvalid: boolean) => {
   return `${isValid ? 'border-transparent' : isInvalid ? 'border-red-400' : ''}`
 }
 
-// const doesNotContainOnlyNumsRegex = /(?!^\d+$)^.+$/
-// const isValidNickNameRegex = /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/
-// const IsNickNameInvalid = useMemo(() => {
-//   return !(
-//     isValidNickNameRegex.test(signupDetails.nickName.trim()) &&
-//     doesNotContainOnlyNumsRegex.test(signupDetails.nickName.trim())
-//   )
-// }, [signupDetails.nickName])
+const doesNotContainOnlyNumsRegex = /(?!^\d+$)^.+$/
+const isValidNickNameRegex = /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/
+
 const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   const dispatch = useDispatch()
   const [signupDetails, setSignupDetails] = useState(initialSignupDetails)
   const [isNickNameTaken, setIsNickNameTaken] = useState(false)
   const [isEmailInUse, setIsEmailInUse] = useState(false)
-  const [isNickNameInvalid, setIsNickNameInvalid] = useState(false)
-
+  const isNickNameInvalid = useMemo(() => {
+    return (
+      signupDetails.nickName.length > 0 &&
+      !(
+        isValidNickNameRegex.test(signupDetails.nickName.trim()) &&
+        doesNotContainOnlyNumsRegex.test(signupDetails.nickName.trim())
+      )
+    )
+  }, [signupDetails.nickName])
   const passwordsNotMatched = useMemo(
     () =>
       signupDetails.password.length > 0 &&
       signupDetails.confirmPassword.length > 0 &&
       signupDetails.password !== signupDetails.confirmPassword,
     [signupDetails.confirmPassword, signupDetails.password],
+  )
+  const formHasEmptyFields = useMemo(
+    () => Object.values(signupDetails).some((val) => val.trim().length === 0),
+    [signupDetails],
   )
   const handleIsTakenCheck = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -87,16 +93,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
             return
           else return emitIsTaken()
         case 'nickName':
-          if (value.trim().length === 0) return
-          const doesNotContainOnlyNumsRegex = /(?!^\d+$)^.+$/
-          const isValidNickNameRegex = /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/
-          if (
-            !(
-              isValidNickNameRegex.test(value.trim()) &&
-              doesNotContainOnlyNumsRegex.test(value.trim())
-            )
-          )
-            return setIsNickNameInvalid(true)
+          if (value.trim().length < 3) return
           else if (
             signupDetails.nickName.trim() === value.trim() &&
             isNickNameTaken
@@ -116,8 +113,8 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
     ],
   )
 
-  const checkIfNN = useDebounce(handleIsTakenCheck, 500)
-  const checkfem = useDebounce(handleIsTakenCheck, 500)
+  const checkIfValIsTaken = useDebounce(handleIsTakenCheck, 500)
+
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = changeEvent.target
@@ -133,14 +130,12 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   const onSubmit = useCallback(
     (submitEvent: FormEvent) => {
       submitEvent.preventDefault()
-      if (isNickNameTaken || isEmailInUse) return
-      if (signupDetails.password !== signupDetails.confirmPassword) return
       dispatch(updateLoading(true))
       const data = { ...signupDetails } as Partial<SignupDetails>
       delete data.confirmPassword
       rootSocket.emit('signup', data)
     },
-    [dispatch, isEmailInUse, isNickNameTaken, rootSocket, signupDetails],
+    [dispatch, rootSocket, signupDetails],
   )
 
   useEffect(() => {
@@ -198,7 +193,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       </div>
       <div>
         <InputNotification
-          show={isNickNameTaken}
+          show={isNickNameTaken && signupDetails.nickName.length >= 3}
           displayText={`${signupDetails.nickName} is already taken`}
         />
         <InputNotification
@@ -216,9 +211,8 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           type='text'
           name='nickName'
           onChange={(e) => {
-            setIsNickNameInvalid(false)
             handleFormChange(e)
-            checkIfNN(e)
+            checkIfValIsTaken(e)
           }}
           value={signupDetails.nickName}
         />
@@ -239,7 +233,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           name='email'
           onChange={(e) => {
             handleFormChange(e)
-            checkfem(e)
+            checkIfValIsTaken(e)
           }}
           value={signupDetails.email}
         />
@@ -268,9 +262,15 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         />
       </div>
       <Button
+        disabled={
+          isNickNameTaken ||
+          isEmailInUse ||
+          passwordsNotMatched ||
+          formHasEmptyFields
+        }
         type='submit'
         name='login'
-        className='bg-accent-dark/60 mt-2 capitalize text-lg'
+        className='bg-accent-dark/60 mt-2 capitalize text-lg transition-all duration-400 disabled:opacity-50 disabled:hover:brightness-100 disabled:hover:cursor-not-allowed'
       >
         signup
       </Button>

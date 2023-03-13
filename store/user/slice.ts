@@ -6,20 +6,24 @@ export const uiSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
-      const { firstName, lastName, nickName, email, _id } = action.payload
+      const { firstName, lastName, nickName, email, _id, friendsCount } =
+        action.payload
       state.firstName = firstName
       state.lastName = lastName
       state.nickName = nickName
       state.email = email
       state._id = _id
+      state.friendsCount = friendsCount
     },
     clearUser: (state) => {
-      const { firstName, lastName, nickName, email, _id } = initialState
+      const { firstName, lastName, nickName, email, _id, friendsCount } =
+        initialState
       state.firstName = firstName
       state.lastName = lastName
       state.nickName = nickName
       state.email = email
       state._id = _id
+      state.friendsCount = friendsCount
     },
   },
 })

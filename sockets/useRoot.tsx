@@ -4,7 +4,7 @@ import { toggleAppLoading, updateLoading } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
 import { setUser } from '@store/user/slice'
 import { removeLocalStorageFormValues } from '@utils/auth'
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { io, Socket } from 'socket.io-client'
 
@@ -24,6 +24,18 @@ export default function useRoot({
 
   const dispatch = useDispatch()
 
+  const handleAuth = useCallback(
+    (data: User & { token: string }) => {
+      console.log(data)
+      removeLocalStorageFormValues()
+      localStorage.setItem('chatsapp_token', data.token)
+      dispatch(authenticate(data.token))
+      dispatch(updateLoading(false))
+      dispatch(setUser(data))
+    },
+    [dispatch],
+  )
+
   useEffect(() => {
     const tokenInLs = localStorage.getItem('chatsapp_token')
     if (tokenInLs !== null) {
@@ -31,27 +43,17 @@ export default function useRoot({
       dispatch(toggleAppLoading(false))
     }
 
-    rootSocket.onAny((x) => {
-      console.log('x', x)
+    rootSocket.onAny((event) => {
+      console.log('event', event)
       dispatch(updateLoading(false))
     })
 
     rootSocket.on('signup', (data: User & { token: string }) => {
-      removeLocalStorageFormValues()
-      localStorage.setItem('chatsapp_token', data.token)
-      dispatch(authenticate(data.token))
-      dispatch(updateLoading(false))
-      const userData = { ...data } as Partial<typeof data>
-      delete userData.token
-      dispatch(setUser({ ...(userData as User) }))
+      handleAuth(data)
     })
 
-    rootSocket.on('login', (data: { token: string; user: User }) => {
-      removeLocalStorageFormValues()
-      localStorage.setItem('chatsapp_token', data.token)
-      dispatch(authenticate(data.token))
-      dispatch(updateLoading(false))
-      dispatch(setUser(data.user))
+    rootSocket.on('login', (data: User & { token: string }) => {
+      handleAuth(data)
     })
 
     rootSocket.io.on('reconnect', (attempt) => {
@@ -113,7 +115,7 @@ export default function useRoot({
       rootSocket.io.off('reconnect_failed', () => console.log(`$ off`))
       rootSocket.io.off('reconnect_error', (data) => console.log(`${data} off`))
     }
-  }, [dispatch, onConnect, onDisconnect, onError, rootSocket])
+  }, [dispatch, handleAuth, onConnect, onDisconnect, onError, rootSocket])
 
   return rootSocket
 }

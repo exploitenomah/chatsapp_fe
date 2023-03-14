@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import initialState, { User } from './initialState'
 
-export const uiSlice = createSlice({
+export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<User>) => {
+    getMe: (state, action: PayloadAction<User>) => {
       const { firstName, lastName, nickName, email, _id, friendsCount } =
         action.payload
       state.firstName = firstName
@@ -28,6 +28,7 @@ export const uiSlice = createSlice({
   },
 })
 
-export const { setUser, clearUser } = uiSlice.actions
+export const { getMe, clearUser } = userSlice.actions
 
-export default uiSlice.reducer
+export const userActions = userSlice.actions
+export default userSlice.reducer

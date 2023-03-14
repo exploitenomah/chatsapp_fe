@@ -2,8 +2,22 @@ import FriendsDrawer from '../Friends/FriendsDrawer'
 import FriendsSuggestionDrawer from '../FriendsSuggestions/SuggestionsDrawer'
 import LeftPanel from './LeftPanel'
 import RightPanel from './RightPanel'
+import useConversations from '@sockets/useConversations'
+import { useEffect } from 'react'
+import useEmitter from '@hooks/useEmitters'
+import { conversationEvents } from '@store/conversations/initialState'
 
 export default function App() {
+  const conversationsSocket = useConversations()
+  const conversationsSocketEmitters = useEmitter(
+    conversationsSocket,
+    conversationEvents,
+  )
+
+  useEffect(() => {
+    conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
+  }, [conversationsSocketEmitters])
+
   return (
     <div className='w-screen h-screeen bg-primary-default'>
       <div className='flex max-w-[1600px] mx-auto h-screen 2xl:py-[19px]'>

@@ -8,15 +8,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 import { io, Socket } from 'socket.io-client'
 
-export default function useRoot({
-  onConnect,
-  onDisconnect,
-  onError,
-}: {
-  onConnect?: (socket: Socket) => void
-  onDisconnect?: () => void
-  onError?: (msg: string) => void
-}) {
+export default function useRoot() {
   const rootSocket = useMemo(
     () => io(`${process.env.NEXT_PUBLIC_SERVER_URL}`),
     [],
@@ -58,7 +50,7 @@ export default function useRoot({
 
     rootSocket.io.on('reconnect', (attempt) => {
       console.error(`${attempt} ==> at root socket`)
-      // if (onError) onError(attempt)
+      // ...
     })
 
     rootSocket.io.on('reconnect_attempt', (attempt) => {
@@ -78,17 +70,14 @@ export default function useRoot({
 
     rootSocket.io.on('error', (err) => {
       console.log(err)
-      if (onError) onError(err.message)
     })
 
     rootSocket.on('connect', () => {
       console.log('root socket connected')
-      if (onConnect) onConnect(rootSocket)
     })
 
     rootSocket.on('disconnect', (reason) => {
       console.log('root socket disconnected', reason)
-      if (onDisconnect) onDisconnect()
     })
     rootSocket.on('error', (msg) => {
       dispatch(
@@ -99,7 +88,6 @@ export default function useRoot({
         }),
       )
       dispatch(updateLoading(false))
-      if (onError) onError(msg)
     })
 
     return () => {
@@ -115,7 +103,7 @@ export default function useRoot({
       rootSocket.io.off('reconnect_failed', () => console.log(`$ off`))
       rootSocket.io.off('reconnect_error', (data) => console.log(`${data} off`))
     }
-  }, [dispatch, handleAuth, onConnect, onDisconnect, onError, rootSocket])
+  }, [dispatch, handleAuth, rootSocket])
 
   return rootSocket
 }

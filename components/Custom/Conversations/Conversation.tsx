@@ -1,4 +1,4 @@
-import ChatroomHeader from '@components/Custom/Chats/ChatHeader'
+import ChatroomHeader from '@components/Custom/Conversations/ConversationHeader'
 import MessageInput from '../MessageInput'
 import MessagesList from '../Messages/MessagesList'
 

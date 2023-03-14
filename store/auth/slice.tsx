@@ -13,9 +13,15 @@ export const authSlice = createSlice({
       state.token = ''
       state.isLoggedIn = false
     },
+    goOffline: (state) => {
+      state.isOffline = true
+    },
+    goOnline: (state) => {
+      state.isOffline = false
+    },
   },
 })
 
-export const { authenticate, logout } = authSlice.actions
+export const { authenticate, logout, goOffline, goOnline } = authSlice.actions
 
 export default authSlice.reducer

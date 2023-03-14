@@ -1,4 +1,4 @@
-import AppIntro from './AppIntro'
+import AppIntro from '../AppIntro'
 
 export default function InactiveRightPanel() {
   return (

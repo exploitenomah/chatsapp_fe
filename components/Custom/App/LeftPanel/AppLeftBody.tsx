@@ -1,4 +1,4 @@
-import SearchBar from '../SearchBar'
+import SearchBar from '../../SearchBar'
 import { useSelector } from 'react-redux'
 import { Store } from '@store/index'
 import { ConversationsState } from '@store/conversations/initialState'

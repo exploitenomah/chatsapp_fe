@@ -14,11 +14,20 @@ export default function useHandlers(
   >,
 ) {
   const dispatch = useDispatch()
+
   useEffect(() => {
     events.map((event) => {
       return socket.on(event, (data) => {
         dispatch(actions[event](data))
       })
     })
+
+    return () => {
+      events.map((event) => {
+        return socket.off(event, (data) => {
+          dispatch(actions[event](data))
+        })
+      })
+    }
   }, [actions, dispatch, events, socket])
 }

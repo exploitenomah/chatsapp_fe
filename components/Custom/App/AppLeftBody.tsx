@@ -1,19 +1,32 @@
 import SearchBar from '../SearchBar'
+import { useSelector } from 'react-redux'
+import { Store } from '@store/index'
+import { ConversationsState } from '@store/conversations/initialState'
+import { useMemo } from 'react'
+import InactiveLeftPanel from './InactiveLeftPanel'
+import ActiveLeftPanel from './ActiveLeftPanel'
+
+const AppLeftBodyContent = () => {
+  const { hasFetchedConversations, conversations } = useSelector<
+    Store,
+    ConversationsState
+  >((store) => store.conversations)
+
+  const hasConversations = useMemo(
+    () => hasFetchedConversations === true && conversations.length > 0,
+    [hasFetchedConversations, conversations.length],
+  )
+
+  if (!hasConversations) return <InactiveLeftPanel />
+
+  return <ActiveLeftPanel />
+}
 
 export default function AppLeftBody() {
   return (
     <>
       <div className='relative app-left-body'>
-        <div className='sticky top-0 w-full z-10'>
-          <div className='w-11/12 mx-auto py-2'>
-            <SearchBar
-              inputProps={{ placeholder: 'Search or start a new chat' }}
-            />
-          </div>
-        </div>
-        <div className='absolute bottom-0 w-full top-[52px] overflow-auto'>
-          <div></div>
-        </div>
+        <AppLeftBodyContent />
       </div>
     </>
   )

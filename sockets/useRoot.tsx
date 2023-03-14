@@ -2,7 +2,7 @@ import { authenticate } from '@store/auth/slice'
 import { addAppAlert } from '@store/notifications/slice'
 import { toggleAppLoading, updateLoading } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
-import { setUser } from '@store/user/slice'
+import { getMe } from '@store/user/slice'
 import { removeLocalStorageFormValues } from '@utils/auth'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
@@ -18,12 +18,11 @@ export default function useRoot() {
 
   const handleAuth = useCallback(
     (data: User & { token: string }) => {
-      console.log(data)
       removeLocalStorageFormValues()
       localStorage.setItem('chatsapp_token', data.token)
       dispatch(authenticate(data.token))
       dispatch(updateLoading(false))
-      dispatch(setUser(data))
+      dispatch(getMe(data))
     },
     [dispatch],
   )

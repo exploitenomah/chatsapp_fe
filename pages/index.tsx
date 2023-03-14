@@ -3,7 +3,7 @@ import Hero from '@components/Custom/App/Hero'
 import App from '@components/Custom/App/App'
 import useRoot from '@sockets/useRoot'
 import { Socket } from 'socket.io-client'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { Store } from '@store/index'
@@ -37,23 +37,7 @@ export default function Home() {
   const { token } = useSelector<Store, Auth>((store) => store.auth)
   const { appLoading } = useSelector<Store, UI>((store) => store.ui)
 
-  const onRootSocketConnect = useCallback((socket: Socket) => {
-    console.log('onRootSocketConnect', socket)
-  }, [])
-
-  const onRootSocketDisconnect = useCallback(() => {
-    console.log('onRootSocketDisconnect')
-  }, [])
-
-  const onRootSocketError = useCallback(() => {
-    console.log('err')
-  }, [])
-
-  const rootSocket = useRoot({
-    onConnect: onRootSocketConnect,
-    onDisconnect: onRootSocketDisconnect,
-    onError: onRootSocketError,
-  })
+  const rootSocket = useRoot()
 
   if (appLoading) return <AppLoadingScreen />
   if (token)

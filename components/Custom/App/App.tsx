@@ -3,9 +3,11 @@ import FriendsSuggestionDrawer from '../FriendsSuggestions/SuggestionsDrawer'
 import LeftPanel from './LeftPanel/LeftPanel'
 import RightPanel from './RightPanel/RightPanel'
 import useConversations from '@sockets/useConversations'
+import useUser from '@sockets/useUser'
 import { useEffect } from 'react'
 import useEmitter from '@hooks/useEmitters'
 import { conversationEvents } from '@store/conversations/initialState'
+import { userEvents } from '@store/user/initialState'
 
 export default function App() {
   const conversationsSocket = useConversations()
@@ -13,10 +15,13 @@ export default function App() {
     conversationsSocket,
     conversationEvents,
   )
+  const userSocket = useUser()
+  const userSocketEmitters = useEmitter(userSocket, userEvents)
 
   useEffect(() => {
     conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
-  }, [conversationsSocketEmitters])
+    userSocketEmitters.getMe()
+  }, [conversationsSocketEmitters, userSocketEmitters])
 
   return (
     <div className='w-screen h-screeen bg-primary-default'>

@@ -2,8 +2,7 @@ import AppHead from '@components/Custom/Head'
 import Hero from '@components/Custom/App/Hero'
 import App from '@components/Custom/App/App'
 import useRoot from '@sockets/useRoot'
-import { Socket } from 'socket.io-client'
-import { useCallback, useEffect } from 'react'
+import { ReactNode } from 'react'
 import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { Store } from '@store/index'
@@ -12,6 +11,8 @@ import { UI } from '@store/ui/initialState'
 import AppLoadingScreen from '@components/Custom/App/LoadingScreen'
 import { Notifications } from '@store/notifications/initialState'
 import NotificationComponent from '@components/Custom/Notification'
+import Offline from '@components/Custom/Offline/Offline'
+import useOffline from '@hooks/useOffline'
 
 const Login = dynamic(() => import('@components/Custom/Auth/Login'), {
   ssr: false,
@@ -33,28 +34,55 @@ const AppNotifications = () => {
   )
 }
 
-export default function Home() {
-  const { token } = useSelector<Store, Auth>((store) => store.auth)
-  const { appLoading } = useSelector<Store, UI>((store) => store.ui)
+const Render = ({
+  title,
+  children,
+  favicon,
+}: {
+  title?: string
+  favicon?: string
+  children: ReactNode | ReactNode[]
+}) => {
+  return (
+    <>
+      <AppHead title={title} favicon={favicon} />
+      {children}
+      <AppNotifications />
+    </>
+  )
+}
 
+export default function ChatsApp() {
+  const { token, isOffline } = useSelector<Store, Auth>((store) => store.auth)
+  const { appLoading } = useSelector<Store, UI>((store) => store.ui)
   const rootSocket = useRoot()
 
-  if (appLoading) return <AppLoadingScreen />
+  useOffline()
+
+  if (isOffline)
+    return (
+      <Render favicon='/images/favicon-error.png'>
+        <Offline />
+      </Render>
+    )
+  if (appLoading)
+    return (
+      <Render>
+        <AppLoadingScreen />
+      </Render>
+    )
   if (token)
     return (
-      <>
-        <AppNotifications />
+      <Render>
         <App />
-      </>
+      </Render>
     )
 
   return (
-    <>
-      <AppHead title='ChatsApp' />
+    <Render>
       <Hero />
       <Signup rootSocket={rootSocket} />
       <Login rootSocket={rootSocket} />
-      <AppNotifications />
-    </>
+    </Render>
   )
 }

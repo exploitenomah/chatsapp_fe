@@ -6,11 +6,11 @@ export default function useEmitter(socket: Socket, events: string[]) {
     return events.reduce((acc, event) => {
       return {
         ...acc,
-        [event]: (data: any) => {
+        [event]: (data?: any) => {
           socket.emit(event, data)
         },
       }
     }, {})
   }, [events, socket])
-  return emitters as {[x: string]: (data: any) => void}
+  return emitters as { [x: string]: (data?: any) => void }
 }

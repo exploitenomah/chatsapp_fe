@@ -1,9 +1,11 @@
-import FriendsSuggestionsIcon from '@assets/FriendsSuggestionsIcon'
 import LeftArrow from '@assets/LeftArrow'
 import Button from '@components/HTML/Button'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
-import { toggleShowSuggestionsDrawer } from '@store/ui/slice'
+import {
+  removeUserInPreview,
+  toggleShowSuggestionsDrawer,
+} from '@store/ui/slice'
 import { useDispatch, useSelector } from 'react-redux'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
@@ -17,7 +19,10 @@ const Header = () => {
         <div className='h-[59px] flex items-center'>
           <Button
             className='p-0 w-12'
-            onClick={() => dispatch(toggleShowSuggestionsDrawer())}
+            onClick={() => {
+              dispatch(toggleShowSuggestionsDrawer())
+              dispatch(removeUserInPreview())
+            }}
           >
             <LeftArrow />
           </Button>

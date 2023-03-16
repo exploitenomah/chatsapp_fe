@@ -94,9 +94,8 @@ const NoFriendsYetBody = () => {
   return (
     <>
       <FriendsSuggestionButton />
-      <div className='h-4/5 flex justify-center flex-col items-center text-contrast-primary'>
-        <h2 className='prose-2xl'>You have no friends yet</h2>
-        <p className='mt-3 mb-2'>Let&apos;s make some friends!</p>
+      <div className='h-3/5 flex justify-center flex-col items-center text-contrast-primary'>
+        <h2 className='prose-2xl mb-5'>You have no friends yet</h2>
         <Button
           onClick={() => {
             handleFetchSuggestions()

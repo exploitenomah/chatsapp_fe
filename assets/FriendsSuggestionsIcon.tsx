@@ -1,8 +1,8 @@
+import { HTMLAttributes } from 'react'
+
 export default function FriendsSuggestionsIcon({
   className,
-}: {
-  className: string
-}) {
+}: HTMLAttributes<SVGElement>) {
   return (
     <>
       <svg

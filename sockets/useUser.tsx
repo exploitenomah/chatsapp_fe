@@ -57,7 +57,7 @@ export default function useUser() {
     })
 
     userSocket.on('connect', () => {
-      console.log('root socket connected')
+      console.log('user socket connected')
     })
 
     userSocket.on('disconnect', (reason) => {

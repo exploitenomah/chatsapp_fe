@@ -1,13 +1,15 @@
 import { User } from '@store/user/initialState'
-import { useState } from 'react'
 import Avatar from '../Avatar'
 
-export default function FriendItem({ user }: { user: User }) {
-  const [active, setActive] = useState(false)
-
+export default function FriendItem({
+  user,
+  active,
+}: {
+  user: User
+  active: boolean
+}) {
   return (
     <div
-      onClick={() => setActive((prev) => !prev)}
       className={`w-full h-[72px] flex items-center ${
         active
           ? 'bg-secondary-darkest'

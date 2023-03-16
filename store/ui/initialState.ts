@@ -1,3 +1,5 @@
+import { User } from '@store/user/initialState'
+
 const initialState = {
   showFriendsDrawer: false,
   showFriendsSuggestionDrawer: false,
@@ -7,6 +9,8 @@ const initialState = {
   loading: false,
 }
 
-export type UI = typeof initialState
+export type UI = typeof initialState & {
+  userInPreview: null | (User & { isFriend?: boolean })
+}
 
 export default initialState

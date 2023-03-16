@@ -5,9 +5,9 @@ import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { toggleShowSuggestionsDrawer } from '@store/ui/slice'
 import { useDispatch, useSelector } from 'react-redux'
-import FriendsList from '../Friends/FriendsList'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
+import SuggestionsList from './SuggestionsList'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -42,7 +42,7 @@ export default function FriendsSuggestionDrawer() {
             <div className='uppercase text-accent-darkest font-normal pt-7 pb-4 pl-8'>
               People you may like
             </div>
-            <FriendsList />
+            <SuggestionsList />
           </div>
         </div>
       </div>

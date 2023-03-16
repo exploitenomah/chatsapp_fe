@@ -9,6 +9,8 @@ import useEmitter from '@hooks/useEmitters'
 import { conversationEvents } from '@store/conversations/initialState'
 import { userEvents } from '@store/user/initialState'
 
+import UserPreview from '../User/UserPreview'
+
 export default function App() {
   const conversationsSocket = useConversations()
   const conversationsSocketEmitters = useEmitter(
@@ -31,8 +33,11 @@ export default function App() {
           <FriendsSuggestionDrawer />
           <LeftPanel />
         </div>
-        <div className='grow border-l border-l-contrast-secondary/20'>
-          <RightPanel />
+        <div className='grow flex border-l border-l-contrast-secondary/20'>
+          <div className='grow'>
+            <RightPanel />
+          </div>
+          <UserPreview />
         </div>
       </div>
     </div>

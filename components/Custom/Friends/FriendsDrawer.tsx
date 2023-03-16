@@ -7,18 +7,25 @@ import {
   toggleShowFriendsDrawer,
   toggleShowSuggestionsDrawer,
 } from '@store/ui/slice'
+import { User } from '@store/user/initialState'
+import { ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
 import FriendsList from './FriendsList'
+import useFetchFriendsSuggestions from '@hooks/useFetchFriendsSuggestions'
 
 const FriendsSuggestionButton = () => {
+  const handleFetchSuggestions = useFetchFriendsSuggestions()
   const dispatch = useDispatch()
 
   return (
     <div>
       <Button
-        onClick={() => dispatch(toggleShowSuggestionsDrawer())}
+        onClick={() => {
+          handleFetchSuggestions()
+          dispatch(toggleShowSuggestionsDrawer())
+        }}
         className={`p-0 h-[72px] shadow-none text-contrast-strong/80 rounded-none w-full flex items-center bg-primary-default hover:bg-secondary-default cursor-pointer`}
       >
         <span className='inline-block px-4'>
@@ -62,27 +69,72 @@ const FriendsSearchBar = () => {
     </>
   )
 }
+const FriendsDrawerContainer = ({
+  children,
+}: {
+  children: ReactNode | ReactNode[]
+}) => {
+  const { showFriendsDrawer } = useSelector<Store, UI>((store) => store.ui)
+  return (
+    <>
+      <LeftDrawer zIndex={'z-[100]'} show={showFriendsDrawer}>
+        <div className='relative h-full'>
+          <Header />
+          {children}
+        </div>
+      </LeftDrawer>
+    </>
+  )
+}
 
-export default function FriendsDrawer() {
-  const { showFriendsDrawer } = useSelector<Store, UI>((state) => state.ui)
+const NoFriendsYetBody = () => {
+  const handleFetchSuggestions = useFetchFriendsSuggestions()
+  const dispatch = useDispatch()
 
   return (
-    <LeftDrawer zIndex={'z-[100]'} show={showFriendsDrawer}>
-      <div className='relative h-full'>
-        <Header />
-        <FriendsSearchBar />
-        <div className='pr-[4px]  absolute bottom-0 w-full top-[160px] overflow-auto'>
+    <>
+      <FriendsSuggestionButton />
+      <div className='h-4/5 flex justify-center flex-col items-center text-contrast-primary'>
+        <h2 className='prose-2xl'>You have no friends yet</h2>
+        <p className='mt-3 mb-2'>Let&apos;s make some friends!</p>
+        <Button
+          onClick={() => {
+            handleFetchSuggestions()
+            dispatch(toggleShowSuggestionsDrawer())
+          }}
+          className='bg-accent-darkest text-contrast-strong'
+        >
+          See Suggestions
+        </Button>
+      </div>
+    </>
+  )
+}
+
+export default function FriendsDrawer() {
+  const { friendsCount } = useSelector<Store, User>((store) => store.user)
+
+  if (friendsCount === 0)
+    return (
+      <FriendsDrawerContainer>
+        <NoFriendsYetBody />
+      </FriendsDrawerContainer>
+    )
+
+  return (
+    <FriendsDrawerContainer>
+      <FriendsSearchBar />
+      <div className='pr-[4px]  absolute bottom-0 w-full top-[160px] overflow-auto'>
+        <div>
+          <FriendsSuggestionButton />
+          <div className='uppercase text-accent-darkest font-normal pt-7 pb-4 pl-8'>
+            Friends on ChatsApp
+          </div>
           <div>
-            <FriendsSuggestionButton />
-            <div className='uppercase text-accent-darkest font-normal pt-7 pb-4 pl-8'>
-              Friends on ChatsApp
-            </div>
-            <div>
-              <FriendsList />
-            </div>
+            <FriendsList />
           </div>
         </div>
       </div>
-    </LeftDrawer>
+    </FriendsDrawerContainer>
   )
 }

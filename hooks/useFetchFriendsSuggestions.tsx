@@ -1,14 +1,13 @@
 import { Store } from '@store/index'
 import useFriends from '@sockets/useFriends'
-import { FriendsState } from '@store/friends/initialState'
-import { toggleShowSuggestionsDrawer } from '@store/ui/slice'
+import { friendsEvents, FriendsState } from '@store/friends/initialState'
 import { useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import useEmitter from './useEmitters'
 
 export default function useFetchFriendsSuggestions() {
   const friendsSocket = useFriends()
-  const friendsSocketEmitters = useEmitter(friendsSocket, ['getSuggestions'])
+  const friendsSocketEmitters = useEmitter(friendsSocket, friendsEvents)
   const { suggestionsPage, limit, hasFetchedAllSuggestions } = useSelector<
     Store,
     FriendsState

@@ -30,7 +30,10 @@ export const uiSlice = createSlice({
     updateLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload
     },
-    updateUserInPreview: (state, action: PayloadAction<User>) => {
+    updateUserInPreview: (
+      state,
+      action: PayloadAction<User & { isPending?: boolean; isFriend?: boolean }>,
+    ) => {
       state.userInPreview = action.payload
     },
     removeUserInPreview: (state) => {

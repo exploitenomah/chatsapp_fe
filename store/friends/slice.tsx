@@ -11,7 +11,7 @@ const friendsSlice = createSlice({
       const allFriends = makeUniqueArrOfObjectsWithIdKey([
         ...state.friends,
         ...action.payload,
-      ]) as Friend[]
+      ])
       state.friends = allFriends
       if (state.hasFetchedFriends === false) state.hasFetchedFriends = true
     },
@@ -22,6 +22,14 @@ const friendsSlice = createSlice({
       ])
       state.suggestionsPage = state.suggestionsPage + 1
       state.hasFetchedAllSuggestions = action.payload.length < state.limit
+    },
+    request: (state, action: PayloadAction<Friend>) => {
+      if(!action.payload.is_valid){
+        state.pendingFriends = makeUniqueArrOfObjectsWithIdKey([
+        ...state.pendingFriends,
+        action.payload,
+      ])
+      }
     },
   },
 })

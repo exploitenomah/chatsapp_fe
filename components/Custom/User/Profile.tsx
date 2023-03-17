@@ -1,24 +1,49 @@
 import AddFriendIcon from '@assets/AddFriendIcon'
 import BlockedIcon from '@assets/BlockedIcon'
+import CancelRequestIcon from '@assets/CancelRequestIcon'
 import Button from '@components/HTML/Button'
+import useSendFriendRequest from '@hooks/useSendFriendRequest'
 import { User } from '@store/user/initialState'
 import Avatar from '../Avatar'
 
-const AddFriendButton = ({ show }: { show: boolean }) => {
+const AddFriendButton = ({
+  show,
+  recipient,
+}: {
+  show: boolean
+  recipient: string
+}) => {
+  const sendFriendRequest = useSendFriendRequest()
   if (!show) return null
   return (
     <>
-      <Button className='p-0 flex gap-x-3 items-center text-accent-dark mt-4'>
-        <AddFriendIcon className='' />
+      <Button
+        onClick={() => sendFriendRequest(recipient)}
+        className='p-0 flex gap-x-3 items-center text-accent-dark mt-4'
+      >
+        <AddFriendIcon />
         Add friend
       </Button>
     </>
   )
 }
+
+const CancelRequestButton = ({ show }: { show: boolean }) => {
+  if (!show) return null
+  return (
+    <>
+      <Button className='p-0 flex gap-x-3 items-center text-accent-dark mt-4'>
+        <CancelRequestIcon />
+        Cancel Request
+      </Button>
+    </>
+  )
+}
+
 export default function Profile({
   user,
 }: {
-  user: User & { isFriend?: boolean }
+  user: User & { isFriend?: boolean; isPending?: boolean }
 }) {
   return (
     <>
@@ -32,7 +57,11 @@ export default function Profile({
             <p className='text-base text-contrast-primary/75 mx-auto'>{`${user.firstName} ${user.lastName}`}</p>
           </div>
           <div className='flex justify-center items-c'>
-            <AddFriendButton show={!user.isFriend} />
+            <AddFriendButton
+              recipient={user._id}
+              show={!user.isPending && !user.isFriend}
+            />
+            <CancelRequestButton show={user.isPending ? true : false} />
           </div>
         </div>
         <div className='bg-primary-default py-8 px-5'>

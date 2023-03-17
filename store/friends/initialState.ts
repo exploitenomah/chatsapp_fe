@@ -1,21 +1,11 @@
 import { User } from '@store/user/initialState'
 
-export const friendsEvents = ['getSuggestions']
+export const friendsEvents = ['getSuggestions', 'request']
 
 export type Friend = {
-  requester: User
+  requester: string
   is_valid: boolean
-  recipient: User
-}
-
-export type FriendsState = {
-  hasFetchedFriends: boolean
-  friends: Friend[]
-  friendsCount: number
-  suggestionsPage: number
-  suggestions: User[]
-  hasFetchedAllSuggestions: boolean
-  limit: number
+  recipient: string
 }
 
 const initialState: FriendsState = {
@@ -26,6 +16,18 @@ const initialState: FriendsState = {
   suggestionsPage: 1,
   limit: 5,
   hasFetchedAllSuggestions: false,
+  pendingFriends: [],
+}
+
+export type FriendsState = {
+  hasFetchedFriends: boolean
+  friends: Friend[]
+  friendsCount: number
+  suggestionsPage: number
+  suggestions: User[]
+  hasFetchedAllSuggestions: boolean
+  limit: number
+  pendingFriends: Friend[]
 }
 
 export default initialState

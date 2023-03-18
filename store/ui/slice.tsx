@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { User } from '@store/user/initialState'
-import initialState, { UI } from './initialState'
+import initialState, { UI, UserInPreview } from './initialState'
 
 export const uiSlice = createSlice({
   name: 'ui',
@@ -30,10 +30,7 @@ export const uiSlice = createSlice({
     updateLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload
     },
-    updateUserInPreview: (
-      state,
-      action: PayloadAction<User & { isPending?: boolean; isFriend?: boolean }>,
-    ) => {
+    updateUserInPreview: (state, action: PayloadAction<UserInPreview>) => {
       state.userInPreview = action.payload
     },
     removeUserInPreview: (state) => {

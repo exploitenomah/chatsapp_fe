@@ -1,5 +1,10 @@
 import { User } from '@store/user/initialState'
 
+export type UserInPreview = User & {
+  isPending?: boolean
+  isFriend?: boolean
+  hasSentRequest?: boolean
+}
 const initialState: UI = {
   showFriendsDrawer: false,
   showFriendsSuggestionDrawer: false,
@@ -17,13 +22,7 @@ export type UI = {
   showSignup: boolean
   appLoading: boolean
   loading: boolean
-  userInPreview:
-    | null
-    | (User & {
-        isFriend?: boolean
-        isPending?: boolean
-        hasSentRequest?: boolean
-      })
+  userInPreview: null | UserInPreview
 }
 
 export default initialState

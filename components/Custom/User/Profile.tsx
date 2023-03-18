@@ -4,13 +4,10 @@ import CancelRequestIcon from '@assets/CancelRequestIcon'
 import AcceptRequestIcon from '@assets/AcceptRequestIcon'
 import Button from '@components/HTML/Button'
 import useSendFriendRequest from '@hooks/friends/useSendFriendRequest'
-import { User } from '@store/user/initialState'
+import { UserInPreview } from '@store/ui/initialState'
 import Avatar from '../Avatar'
 import useRemoveFriend from '@hooks/friends/useRemoveFriend'
-import { Store } from '@store/index'
-import { Friend, FriendsState } from '@store/friends/initialState'
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { Friend } from '@store/friends/initialState'
 
 const AddFriendButton = ({
   show,
@@ -79,11 +76,7 @@ export default function Profile({
   user,
   friendship,
 }: {
-  user: User & {
-    isFriend?: boolean
-    isPending?: boolean
-    hasSentRequest?: boolean
-  }
+  user: UserInPreview
   friendship?: Friend
 }) {
   return (

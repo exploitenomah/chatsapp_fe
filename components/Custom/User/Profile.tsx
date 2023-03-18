@@ -1,10 +1,16 @@
 import AddFriendIcon from '@assets/AddFriendIcon'
 import BlockedIcon from '@assets/BlockedIcon'
 import CancelRequestIcon from '@assets/CancelRequestIcon'
+import AcceptRequestIcon from '@assets/AcceptRequestIcon'
 import Button from '@components/HTML/Button'
-import useSendFriendRequest from '@hooks/useSendFriendRequest'
+import useSendFriendRequest from '@hooks/friends/useSendFriendRequest'
 import { User } from '@store/user/initialState'
 import Avatar from '../Avatar'
+import useRemoveFriend from '@hooks/friends/useRemoveFriend'
+import { Store } from '@store/index'
+import { Friend, FriendsState } from '@store/friends/initialState'
+import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
 
 const AddFriendButton = ({
   show,
@@ -28,11 +34,22 @@ const AddFriendButton = ({
   )
 }
 
-const CancelRequestButton = ({ show }: { show: boolean }) => {
-  if (!show) return null
+const CancelRequestButton = ({
+  show,
+  friendshipId,
+}: {
+  show: boolean
+  friendshipId?: string
+}) => {
+  const cancelRequest = useRemoveFriend()
+
+  if (!show || !friendshipId) return null
   return (
     <>
-      <Button className='p-0 flex gap-x-3 items-center text-accent-dark mt-4'>
+      <Button
+        onClick={() => cancelRequest(friendshipId)}
+        className='p-0 flex gap-x-3 items-center text-accent-dark mt-4'
+      >
         <CancelRequestIcon />
         Cancel Request
       </Button>
@@ -40,10 +57,34 @@ const CancelRequestButton = ({ show }: { show: boolean }) => {
   )
 }
 
+const AcceptRequestButton = ({
+  show,
+  friendshipId,
+}: {
+  show: boolean
+  friendshipId?: string
+}) => {
+  if (!show || !friendshipId) return null
+  return (
+    <>
+      <Button className='p-0 flex gap-x-2 items-center text-accent-dark mt-4'>
+        <AcceptRequestIcon />
+        Confirm
+      </Button>
+    </>
+  )
+}
+
 export default function Profile({
   user,
+  friendship,
 }: {
-  user: User & { isFriend?: boolean; isPending?: boolean }
+  user: User & {
+    isFriend?: boolean
+    isPending?: boolean
+    hasSentRequest?: boolean
+  }
+  friendship?: Friend
 }) {
   return (
     <>
@@ -56,12 +97,19 @@ export default function Profile({
             <h3 className='text-2xl'>{`${user.nickName}`}</h3>
             <p className='text-base text-contrast-primary/75 mx-auto'>{`${user.firstName} ${user.lastName}`}</p>
           </div>
-          <div className='flex justify-center items-c'>
+          <div className='flex justify-center items-center'>
             <AddFriendButton
               recipient={user._id}
-              show={!user.isPending && !user.isFriend}
+              show={(!user.isPending && !user.hasSentRequest) || !friendship}
             />
-            <CancelRequestButton show={user.isPending ? true : false} />
+            <CancelRequestButton
+              friendshipId={friendship?._id}
+              show={user.isPending ? true : false}
+            />
+            <AcceptRequestButton
+              friendshipId={friendship?._id}
+              show={user.hasSentRequest ? true : false}
+            />
           </div>
         </div>
         <div className='bg-primary-default py-8 px-5'>

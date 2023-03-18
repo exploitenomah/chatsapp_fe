@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { makeUniqueArrOfObjectsWithIdKey } from '@utils/index'
+import { makeUniqueArrOfObjectsWith_IdKey } from '@utils/index'
 import initialState, { Conversation } from './initialState'
 
 const conversationsSlice = createSlice({
@@ -7,7 +7,7 @@ const conversationsSlice = createSlice({
   initialState,
   reducers: {
     getMany: (state, action: PayloadAction<Conversation[]>) => {
-      state.conversations = makeUniqueArrOfObjectsWithIdKey(action.payload)
+      state.conversations = makeUniqueArrOfObjectsWith_IdKey(action.payload)
       if (state.hasFetchedConversations === false)
         state.hasFetchedConversations = true
     },

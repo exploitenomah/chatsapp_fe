@@ -45,10 +45,8 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       submitEvent.preventDefault()
       dispatch(updateLoading(true))
       rootSocket.emit('login', {
-        $or: [
-          { email: loginDetails.nickNameOrEmail.trim() },
-          { nickName: loginDetails.nickNameOrEmail.trim() },
-        ],
+        email: loginDetails.nickNameOrEmail.trim(),
+        nickName: loginDetails.nickNameOrEmail.trim(),
         password: loginDetails.password,
       })
     },

@@ -1,33 +1,50 @@
 import { User } from '@store/user/initialState'
 
-export const friendsEvents = ['getSuggestions', 'request']
+export const friendsEvents = [
+  'getSuggestions',
+  'request',
+  'getMany',
+  'remove',
+  'accept',
+]
 
 export type Friend = {
   requester: string
-  is_valid: boolean
+  isValid: boolean
   recipient: string
+  _id: string
+  createdAt: string
+  updatedAt: string
 }
 
 const initialState: FriendsState = {
-  hasFetchedFriends: false,
+  user: null,
+  suggestionsPage: 1,
+  hasFetchedAllSuggestions: false,
+  hasFetchedAllFriends: false,
+  hasFetchedInitialSuggestions: false,
+  friendsPage: 1,
   friendsCount: 0,
   friends: [],
   suggestions: [],
-  suggestionsPage: 1,
   limit: 5,
-  hasFetchedAllSuggestions: false,
   pendingFriends: [],
+  friendRequests: [],
 }
 
 export type FriendsState = {
-  hasFetchedFriends: boolean
+  limit: number
+  suggestionsPage: number
+  friendsPage: number
   friends: Friend[]
   friendsCount: number
-  suggestionsPage: number
   suggestions: User[]
   hasFetchedAllSuggestions: boolean
-  limit: number
   pendingFriends: Friend[]
+  user: null | User
+  friendRequests: Friend[]
+  hasFetchedAllFriends: boolean,
+  hasFetchedInitialSuggestions: boolean
 }
 
 export default initialState

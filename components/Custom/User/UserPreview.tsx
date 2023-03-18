@@ -1,6 +1,6 @@
 import CloseIcon from '@assets/CloseIcon'
 import Button from '@components/HTML/Button'
-import { FriendsState } from '@store/friends/initialState'
+import { Friend, FriendsState } from '@store/friends/initialState'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { removeUserInPreview, updateUserInPreview } from '@store/ui/slice'
@@ -11,23 +11,8 @@ import { headerClasses } from '../App/AppHeader'
 import SecondaryPanel from '../App/RightPanel/SecondaryPanel'
 import Profile from './Profile'
 
-export default function UserPreview() {
-  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+const useUpdateUserInPreviewEffect = (friendship?: Friend) => {
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
-  const { pendingFriends, friendRequests, friends } = useSelector<
-    Store,
-    FriendsState
-  >((store) => store.friends)
-
-  const friendship = useMemo(
-    () =>
-      [...pendingFriends, ...friendRequests, ...friends].find(
-        (item) =>
-          item.requester === userInPreview?._id ||
-          item.recipient === userInPreview?._id,
-      ),
-    [friendRequests, friends, pendingFriends, userInPreview?._id],
-  )
 
   const dispatch = useDispatch()
 
@@ -66,6 +51,44 @@ export default function UserPreview() {
       )
     }
   }, [dispatch, friendship, userInPreview])
+
+  useEffect(() => {
+    if (
+      userInPreview &&
+      !friendship &&
+      (userInPreview.hasSentRequest || userInPreview.isPending)
+    ) {
+      dispatch(
+        updateUserInPreview({
+          ...userInPreview,
+          hasSentRequest: false,
+          isPending: false,
+        }),
+      )
+    }
+  }, [dispatch, friendship, userInPreview])
+}
+
+export default function UserPreview() {
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+  const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
+  const { pendingFriends, friendRequests, friends } = useSelector<
+    Store,
+    FriendsState
+  >((store) => store.friends)
+
+  const friendship = useMemo(
+    () =>
+      [...pendingFriends, ...friendRequests, ...friends].find(
+        (item) =>
+          item.requester === userInPreview?._id ||
+          item.recipient === userInPreview?._id,
+      ),
+    [friendRequests, friends, pendingFriends, userInPreview?._id],
+  )
+
+  const dispatch = useDispatch()
+  useUpdateUserInPreviewEffect(friendship)
 
   if (userInPreview?._id === authenticatedUser._id) return null
   return (

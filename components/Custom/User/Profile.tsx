@@ -8,6 +8,7 @@ import { UserInPreview } from '@store/ui/initialState'
 import Avatar from '../Avatar'
 import useRemoveFriend from '@hooks/friends/useRemoveFriend'
 import { Friend } from '@store/friends/initialState'
+import CloseIcon from '@assets/CloseIcon'
 
 const AddFriendButton = ({
   show,
@@ -22,7 +23,7 @@ const AddFriendButton = ({
     <>
       <Button
         onClick={() => sendFriendRequest(recipient)}
-        className='p-0 flex gap-x-3 items-center text-accent-dark mt-4'
+        className='p-0 flex gap-x-3 items-center text-accent-dark'
       >
         <AddFriendIcon />
         Add friend
@@ -45,10 +46,33 @@ const CancelRequestButton = ({
     <>
       <Button
         onClick={() => cancelRequest(friendshipId)}
-        className='p-0 flex gap-x-3 items-center text-accent-dark mt-4'
+        className='p-0 flex gap-x-3 items-center text-accent-danger'
       >
         <CancelRequestIcon />
         Cancel Request
+      </Button>
+    </>
+  )
+}
+
+const DeclineRequestButton = ({
+  show,
+  friendshipId,
+}: {
+  show: boolean
+  friendshipId?: string
+}) => {
+  const cancelRequest = useRemoveFriend()
+
+  if (!show || !friendshipId) return null
+  return (
+    <>
+      <Button
+        onClick={() => cancelRequest(friendshipId)}
+        className='p-0 flex gap-x-2 items-center text-accent-danger'
+      >
+        <CloseIcon />
+        Decline
       </Button>
     </>
   )
@@ -64,7 +88,7 @@ const AcceptRequestButton = ({
   if (!show || !friendshipId) return null
   return (
     <>
-      <Button className='p-0 flex gap-x-2 items-center text-accent-dark mt-4'>
+      <Button className='p-0 flex gap-x-2 items-center text-accent-dark'>
         <AcceptRequestIcon />
         Confirm
       </Button>
@@ -90,7 +114,7 @@ export default function Profile({
             <h3 className='text-2xl'>{`${user.nickName}`}</h3>
             <p className='text-base text-contrast-primary/75 mx-auto'>{`${user.firstName} ${user.lastName}`}</p>
           </div>
-          <div className='flex justify-center items-center'>
+          <div className='flex justify-around items-center gap-x-1 mt-4 mx-auto w-4/5'>
             <AddFriendButton
               recipient={user._id}
               show={(!user.isPending && !user.hasSentRequest) || !friendship}
@@ -99,7 +123,12 @@ export default function Profile({
               friendshipId={friendship?._id}
               show={user.isPending ? true : false}
             />
+
             <AcceptRequestButton
+              friendshipId={friendship?._id}
+              show={user.hasSentRequest ? true : false}
+            />
+            <DeclineRequestButton
               friendshipId={friendship?._id}
               show={user.hasSentRequest ? true : false}
             />

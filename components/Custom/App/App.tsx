@@ -10,6 +10,7 @@ import { conversationEvents } from '@store/conversations/initialState'
 import { userEvents } from '@store/user/initialState'
 
 import UserPreview from '../User/UserPreview'
+import useGetManyFriends from '@hooks/friends/useGetManyFriends'
 
 export default function App() {
   const conversationsSocket = useConversations()
@@ -19,11 +20,17 @@ export default function App() {
   )
   const userSocket = useUser()
   const userSocketEmitters = useEmitter(userSocket, userEvents)
+  const handleGetFriends = useGetManyFriends()
 
   useEffect(() => {
     conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
     userSocketEmitters.getMe()
   }, [conversationsSocketEmitters, userSocketEmitters])
+
+  useEffect(() => {
+    handleGetFriends()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className='w-screen h-screeen bg-primary-default'>

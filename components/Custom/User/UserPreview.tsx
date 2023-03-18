@@ -4,31 +4,70 @@ import { FriendsState } from '@store/friends/initialState'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { removeUserInPreview, updateUserInPreview } from '@store/ui/slice'
-import { useEffect } from 'react'
+import { User } from '@store/user/initialState'
+import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { headerClasses } from '../App/AppHeader'
 import SecondaryPanel from '../App/RightPanel/SecondaryPanel'
 import Profile from './Profile'
 
 export default function UserPreview() {
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
-  const { pendingFriends } = useSelector<Store, FriendsState>(
-    (store) => store.friends,
+  const { pendingFriends, friendRequests, friends } = useSelector<
+    Store,
+    FriendsState
+  >((store) => store.friends)
+
+  const friendship = useMemo(
+    () =>
+      [...pendingFriends, ...friendRequests, ...friends].find(
+        (item) =>
+          item.requester === userInPreview?._id ||
+          item.recipient === userInPreview?._id,
+      ),
+    [friendRequests, friends, pendingFriends, userInPreview?._id],
   )
+
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (
       userInPreview &&
-      pendingFriends.find(
-        (pendingFriend) => userInPreview._id === pendingFriend.recipient,
-      ) &&
+      friendship &&
+      !friendship.isValid &&
+      friendship.requester === userInPreview._id &&
+      !userInPreview.hasSentRequest
+    ) {
+      dispatch(
+        updateUserInPreview({
+          ...userInPreview,
+          hasSentRequest: true,
+          isPending: false,
+        }),
+      )
+    }
+  }, [dispatch, friendship, userInPreview])
+
+  useEffect(() => {
+    if (
+      userInPreview &&
+      friendship &&
+      !friendship.isValid &&
+      friendship.recipient === userInPreview._id &&
       !userInPreview.isPending
     ) {
-      dispatch(updateUserInPreview({ ...userInPreview, isPending: true }))
+      dispatch(
+        updateUserInPreview({
+          ...userInPreview,
+          isPending: true,
+          hasSentRequest: false,
+        }),
+      )
     }
-  }, [dispatch, pendingFriends, userInPreview])
+  }, [dispatch, friendship, userInPreview])
 
+  if (userInPreview?._id === authenticatedUser._id) return null
   return (
     <SecondaryPanel show={Boolean(userInPreview)}>
       <div className='border-l-contrast-secondary/20 border-l h-full'>
@@ -43,7 +82,9 @@ export default function UserPreview() {
             </Button>
           </header>
         </div>
-        {userInPreview && <Profile user={userInPreview} />}
+        {userInPreview && (
+          <Profile friendship={friendship} user={userInPreview} />
+        )}
       </div>
     </SecondaryPanel>
   )

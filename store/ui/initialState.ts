@@ -17,7 +17,13 @@ export type UI = {
   showSignup: boolean
   appLoading: boolean
   loading: boolean
-  userInPreview: null | (User & { isFriend?: boolean; isPending?: boolean })
+  userInPreview:
+    | null
+    | (User & {
+        isFriend?: boolean
+        isPending?: boolean
+        hasSentRequest?: boolean
+      })
 }
 
 export default initialState

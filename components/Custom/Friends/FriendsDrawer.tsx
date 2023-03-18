@@ -8,22 +8,36 @@ import {
   toggleShowSuggestionsDrawer,
 } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
 import FriendsList from './FriendsList'
-import useFetchFriendsSuggestions from '@hooks/useFetchFriendsSuggestions'
+import useFetchFriendsSuggestions from '@hooks/friends/useFetchFriendsSuggestions'
+import { FriendsState } from '@store/friends/initialState'
+
+const useFetchInitialSuggestions = () => {
+  const { hasFetchedInitialSuggestions } = useSelector<Store, FriendsState>(
+    (store) => store.friends,
+  )
+  const handleFetchSuggestions = useFetchFriendsSuggestions()
+
+  const fetchInitialSuggestions = useCallback(() => {
+    hasFetchedInitialSuggestions === false && handleFetchSuggestions()
+  }, [handleFetchSuggestions, hasFetchedInitialSuggestions])
+
+  return fetchInitialSuggestions
+}
 
 const FriendsSuggestionButton = () => {
-  const handleFetchSuggestions = useFetchFriendsSuggestions()
+  const fetchInitialSuggestions = useFetchInitialSuggestions()
   const dispatch = useDispatch()
 
   return (
     <div>
       <Button
         onClick={() => {
-          handleFetchSuggestions()
+          fetchInitialSuggestions()
           dispatch(toggleShowSuggestionsDrawer())
         }}
         className={`p-0 h-[72px] shadow-none text-contrast-strong/80 rounded-none w-full flex items-center bg-primary-default hover:bg-secondary-default cursor-pointer`}
@@ -88,7 +102,7 @@ const FriendsDrawerContainer = ({
 }
 
 const NoFriendsYetBody = () => {
-  const handleFetchSuggestions = useFetchFriendsSuggestions()
+  const fetchInitialSuggestions = useFetchInitialSuggestions()
   const dispatch = useDispatch()
 
   return (
@@ -98,7 +112,7 @@ const NoFriendsYetBody = () => {
         <h2 className='prose-2xl mb-5'>You have no friends yet</h2>
         <Button
           onClick={() => {
-            handleFetchSuggestions()
+            fetchInitialSuggestions()
             dispatch(toggleShowSuggestionsDrawer())
           }}
           className='bg-accent-darkest text-contrast-strong'

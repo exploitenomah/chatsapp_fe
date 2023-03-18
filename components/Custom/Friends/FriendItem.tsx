@@ -1,4 +1,6 @@
+import { Store } from '@store/index'
 import { User } from '@store/user/initialState'
+import { useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 
 export default function FriendItem({
@@ -8,6 +10,10 @@ export default function FriendItem({
   user: User
   active: boolean
 }) {
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+
+  if (authenticatedUser._id === user._id) return null
+
   return (
     <div
       className={`w-full h-[72px] flex items-center ${

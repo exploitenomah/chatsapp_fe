@@ -27,8 +27,8 @@ export default function useFriends() {
   useHandlers(friendsSocket, friendsEvents, friendsActions as {})
 
   useEffect(() => {
-    friendsSocket.onAny((event, xyz) => {
-      console.log('event', event, xyz, 'done')
+    friendsSocket.onAny((event) => {
+      console.log(event, 'done')
     })
 
     friendsSocket.io.on('reconnect', (attempt) => {

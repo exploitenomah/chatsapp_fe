@@ -9,10 +9,12 @@ import { io } from 'socket.io-client'
 import useHandlers from '@hooks/useHandlers'
 import { userEvents } from '@store/user/initialState'
 import { userActions } from '@store/user/slice'
+import { updateUser } from '@store/friends/slice'
+import useLogout from '@hooks/user/useLogout'
 
 export default function useUser() {
   const { token } = useSelector<Store, Auth>((store) => store.auth)
-
+  const logUserOut = useLogout()
   const userSocket = useMemo(
     () =>
       io(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
@@ -28,8 +30,10 @@ export default function useUser() {
   useHandlers(userSocket, userEvents, userActions as {})
 
   useEffect(() => {
-    userSocket.onAny((event) => {
-      console.log('event', event)
+    userSocket.onAny((event, data) => {
+      if (event === 'getMe') {
+        dispatch(updateUser(data))
+      }
     })
 
     userSocket.io.on('reconnect', (attempt) => {
@@ -52,8 +56,12 @@ export default function useUser() {
       console.log('reconnect failed')
     })
 
+    userSocket.on('connect_error', (err) => {
+      if ((err.message = 'Unauthorized!!!')) logUserOut()
+      else userSocket.connect()
+    })
     userSocket.io.on('error', (err) => {
-      console.log(err)
+      console.log(err.message)
     })
 
     userSocket.on('connect', () => {
@@ -72,6 +80,7 @@ export default function useUser() {
         }),
       )
       dispatch(updateLoading(false))
+      console.log(msg)
     })
 
     return () => {
@@ -87,7 +96,7 @@ export default function useUser() {
       userSocket.io.off('reconnect_failed', () => console.log(`$ off`))
       userSocket.io.off('reconnect_error', (data) => console.log(`${data} off`))
     }
-  }, [dispatch, userSocket])
+  }, [dispatch, logUserOut, userSocket])
 
   return userSocket
 }

@@ -33,7 +33,22 @@ const useUpdateUserInPreviewEffect = (friendship?: Friend) => {
       )
     }
   }, [dispatch, friendship, userInPreview])
-
+  useEffect(() => {
+    if (
+      userInPreview &&
+      friendship &&
+      friendship.isValid &&
+      (userInPreview.hasSentRequest || userInPreview.isPending)
+    ) {
+      dispatch(
+        updateUserInPreview({
+          ...userInPreview,
+          hasSentRequest: false,
+          isPending: false,
+        }),
+      )
+    }
+  }, [dispatch, friendship, userInPreview])
   useEffect(() => {
     if (
       userInPreview &&

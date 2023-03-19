@@ -43,12 +43,22 @@ const friendsSlice = createSlice({
         }
       }
     },
-    remove: (state, action: PayloadAction<Friend>) => {
+    remove: (state, action: PayloadAction<Friend | null>) => {
+      const payload = action.payload
+      const filterOutPayload = (req: Friend) => req._id !== payload?._id
+      state.friendRequests = state.friendRequests.filter(filterOutPayload)
+      state.pendingFriends = state.pendingFriends.filter(filterOutPayload)
+      state.friends = state.friends.filter(filterOutPayload)
+    },
+    accept: (state, action: PayloadAction<Friend>) => {
       const payload = action.payload
       const filterOutPayload = (req: Friend) => req._id !== payload._id
       state.friendRequests = state.friendRequests.filter(filterOutPayload)
       state.pendingFriends = state.pendingFriends.filter(filterOutPayload)
-      state.friends = state.friends.filter(filterOutPayload)
+      state.friends = makeUniqueArrOfObjectsWith_IdKey([
+        ...state.friends,
+        payload,
+      ])
     },
     getMany: (state, action: PayloadAction<Friend[]>) => {
       const payload = action.payload

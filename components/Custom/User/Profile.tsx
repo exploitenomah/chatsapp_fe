@@ -7,8 +7,10 @@ import useSendFriendRequest from '@hooks/friends/useSendFriendRequest'
 import { UserInPreview } from '@store/ui/initialState'
 import Avatar from '../Avatar'
 import useRemoveFriend from '@hooks/friends/useRemoveFriend'
+import useAcceptFriend from '@hooks/friends/useAcceptFriend'
 import { Friend } from '@store/friends/initialState'
 import CloseIcon from '@assets/CloseIcon'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 const AddFriendButton = ({
   show,
@@ -32,47 +34,49 @@ const AddFriendButton = ({
   )
 }
 
-const CancelRequestButton = ({
+const RemoveFriendButton = ({
   show,
   friendshipId,
+  children,
+  useConfirmation,
+  clickConfirmed,
+  onClick,
+  done,
+  className,
 }: {
   show: boolean
   friendshipId?: string
+  children: ReactNode | ReactNode[]
+  useConfirmation?: boolean
+  clickConfirmed?: boolean
+  onClick?: () => void
+  done?: () => void
+  className?: string
 }) => {
   const cancelRequest = useRemoveFriend()
+
+  useEffect(() => {
+    if (
+      useConfirmation === true &&
+      clickConfirmed === true &&
+      friendshipId !== undefined
+    ) {
+      cancelRequest(friendshipId)
+      done && done()
+    }
+  }, [cancelRequest, clickConfirmed, done, friendshipId, useConfirmation])
 
   if (!show || !friendshipId) return null
   return (
     <>
       <Button
-        onClick={() => cancelRequest(friendshipId)}
-        className='p-0 flex gap-x-3 items-center text-accent-danger'
+        onClick={() => {
+          onClick && onClick()
+          !useConfirmation && cancelRequest(friendshipId)
+        }}
+        className={`${className} p-0 text-accent-danger`}
       >
-        <CancelRequestIcon />
-        Cancel Request
-      </Button>
-    </>
-  )
-}
-
-const DeclineRequestButton = ({
-  show,
-  friendshipId,
-}: {
-  show: boolean
-  friendshipId?: string
-}) => {
-  const cancelRequest = useRemoveFriend()
-
-  if (!show || !friendshipId) return null
-  return (
-    <>
-      <Button
-        onClick={() => cancelRequest(friendshipId)}
-        className='p-0 flex gap-x-2 items-center text-accent-danger'
-      >
-        <CloseIcon />
-        Decline
+        {children}
       </Button>
     </>
   )
@@ -85,12 +89,87 @@ const AcceptRequestButton = ({
   show: boolean
   friendshipId?: string
 }) => {
+  const acceptRequest = useAcceptFriend()
   if (!show || !friendshipId) return null
   return (
     <>
-      <Button className='p-0 flex gap-x-2 items-center text-accent-dark'>
+      <Button
+        onClick={() => acceptRequest(friendshipId)}
+        className='p-0 flex gap-x-2 items-center text-accent-dark'
+      >
         <AcceptRequestIcon />
         Confirm
+      </Button>
+    </>
+  )
+}
+
+const ProfileFooter = ({
+  user,
+  friendship,
+}: {
+  user: UserInPreview
+  friendship?: Friend
+}) => {
+  const [removeFriendConfirmed, setRemoveFriendConfirmed] = useState(false)
+  const [showConfirmRemoveFriend, setShowConfirmRemoveFriend] = useState(false)
+  const onRemoveFriendClick = useCallback(() => {
+    setShowConfirmRemoveFriend(true)
+  }, [])
+
+  const confirmRemoveFriend = useCallback(() => {
+    setShowConfirmRemoveFriend(false)
+    setRemoveFriendConfirmed(true)
+  }, [])
+
+  const cancelRemoveFriend = useCallback(() => {
+    setShowConfirmRemoveFriend(false)
+    setRemoveFriendConfirmed(false)
+  }, [])
+
+  return (
+    <>
+      <div className='relative'>
+        {friendship?.isValid && showConfirmRemoveFriend && (
+          <div className='absolute bottom-[0%] z-10 bg-primary-dark w-5/6 px-4 py-6 rounded-lg flex flex-col justify-center items-center text-center'>
+            <span>
+              Are you sure you want to remove
+              <span className='text-accent-dark'> {user.nickName} </span> from
+              your friends?
+            </span>
+            <div className='flex gap-x-2 items-center justify-center shadow-none'>
+              <Button
+                className='text-accent-danger'
+                onClick={() => confirmRemoveFriend()}
+              >
+                Remove
+              </Button>
+              <Button
+                className='shadow-none'
+                onClick={() => cancelRemoveFriend()}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+        <RemoveFriendButton
+          useConfirmation={true}
+          clickConfirmed={removeFriendConfirmed}
+          friendshipId={friendship?._id}
+          show={friendship?.isValid ? true : false}
+          onClick={onRemoveFriendClick}
+          done={() => setRemoveFriendConfirmed(false)}
+          className='shadow-none'
+        >
+          <span className='p-0 flex gap-x-[22px] items-center text-base'>
+            <CancelRequestIcon className='w-[24px] h-[24px] ml-1 mt-1' />
+            Remove Friend
+          </span>
+        </RemoveFriendButton>
+      </div>
+      <Button className='p-0 flex gap-x-6 items-center text-accent-danger text-base shadow-none'>
+        <BlockedIcon /> <span>Block {user.nickName}</span>
       </Button>
     </>
   )
@@ -117,31 +196,50 @@ export default function Profile({
           <div className='flex justify-around items-center gap-x-1 mt-4 mx-auto w-4/5'>
             <AddFriendButton
               recipient={user._id}
-              show={(!user.isPending && !user.hasSentRequest) || !friendship}
+              show={
+                !friendship ||
+                (!friendship?.isValid &&
+                  !user.isPending &&
+                  !user.hasSentRequest)
+              }
             />
-            <CancelRequestButton
+            <RemoveFriendButton
               friendshipId={friendship?._id}
               show={user.isPending ? true : false}
-            />
-
+            >
+              <span className='p-0 flex gap-x-3 items-center'>
+                <CancelRequestIcon />
+                Cancel Request
+              </span>
+            </RemoveFriendButton>
             <AcceptRequestButton
               friendshipId={friendship?._id}
-              show={user.hasSentRequest ? true : false}
+              show={!friendship?.isValid && user.hasSentRequest ? true : false}
             />
-            <DeclineRequestButton
+            <RemoveFriendButton
               friendshipId={friendship?._id}
-              show={user.hasSentRequest ? true : false}
-            />
+              show={!friendship?.isValid && user.hasSentRequest ? true : false}
+            >
+              <span className='p-0 flex gap-x-3 items-center'>
+                <CloseIcon />
+                Decline
+              </span>
+            </RemoveFriendButton>
+            <span
+              className={`${
+                friendship?.isValid ? 'flex' : 'hidden'
+              } p-0 gap-x-6 items-center text-blue-400 text-base`}
+            >
+              Friends
+            </span>
           </div>
         </div>
         <div className='bg-primary-default py-8 px-5'>
           <h4 className='text-contrast-primary/75 text-[15px]'>About</h4>
           <p className='text-base'>{`About user`}</p>
         </div>
-        <div className='bg-primary-default py-8 px-5'>
-          <Button className='p-0 flex gap-x-6 items-center text-accent-danger text-base'>
-            <BlockedIcon /> <span>Block {user.nickName}</span>
-          </Button>
+        <div className='bg-primary-default py-8 px-5 flex flex-col gap-y-4'>
+          <ProfileFooter user={user} friendship={friendship} />
         </div>
       </div>
     </>

@@ -6,31 +6,19 @@ import Button from '@components/HTML/Button'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import {
+  toggleShowFriendRequestsDrawer,
   toggleShowFriendsDrawer,
   toggleShowSuggestionsDrawer,
 } from '@store/ui/slice'
-import { ReactNode, useCallback, HTMLAttributes } from 'react'
+import { ReactNode, HTMLAttributes } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
 import FriendsList from './FriendsList'
-import useFetchFriendsSuggestions from '@hooks/friends/useFetchFriendsSuggestions'
+import useFetchInitialSuggestions from '@hooks/friends/useFetchInitialSuggestions'
 import { FriendsState } from '@store/friends/initialState'
 import RightChevron from '@assets/RightChevron'
 import { FriendRequestsCountBadge } from './FriendsNotificationBadges'
-
-const useFetchInitialSuggestions = () => {
-  const { hasFetchedInitialSuggestions } = useSelector<Store, FriendsState>(
-    (store) => store.friends,
-  )
-  const handleFetchSuggestions = useFetchFriendsSuggestions()
-
-  const fetchInitialSuggestions = useCallback(() => {
-    hasFetchedInitialSuggestions === false && handleFetchSuggestions()
-  }, [handleFetchSuggestions, hasFetchedInitialSuggestions])
-
-  return fetchInitialSuggestions
-}
 
 const DefaultButton = ({
   onClick,
@@ -73,9 +61,10 @@ const FriendsSuggestionButton = () => {
 }
 
 const FriendRequestsButton = () => {
+  const dispatch = useDispatch()
   return (
     <div>
-      <DefaultButton>
+      <DefaultButton onClick={() => dispatch(toggleShowFriendRequestsDrawer())}>
         <span className='flex items-center justify-center gap-x-4'>
           <AcceptRequestIcon />
           <span>Friend Requests </span>
@@ -177,7 +166,7 @@ const NoFriendsYetBody = () => {
   )
 }
 
-export default function FriendsDrawer() {
+export default function FriendRequestsDrawer() {
   return (
     <>
       <FriendsDrawerContainer>

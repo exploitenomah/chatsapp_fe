@@ -16,9 +16,10 @@ export default function useGetManyFriends() {
   const handleGetFriends = useCallback(() => {
     if (hasFetchedAllFriends) return
     friendsSocketEmitters.getMany({
-      page: friendsPage,
+      page: friendsPage + 1,
       limit,
       or: [{ requester: user?._id }, { recipient: user?._id }],
+      isValid: true,
     })
   }, [
     hasFetchedAllFriends,

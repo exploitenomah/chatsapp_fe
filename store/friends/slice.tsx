@@ -84,10 +84,31 @@ const friendsSlice = createSlice({
       state.friendsPage = state.friendsPage + 1
       state.hasFetchedAllFriends = payload.length < state.limit
     },
+    updateTotalNotificationsCount: (state, action: PayloadAction<number>) => {
+      state.totalNotificationsCount = action.payload
+    },
+    updateFriendRequestsNotificationCount: (
+      state,
+      action: PayloadAction<number>,
+    ) => {
+      state.friendRequestsNotificationCount = action.payload
+    },
+    updatePendingFriendsNotificationCount: (
+      state,
+      action: PayloadAction<number>,
+    ) => {
+      state.pendingFriendsNotificationCount = action.payload
+    },
   },
 })
 
-export const { updateFriends, updateUser } = friendsSlice.actions
+export const {
+  updateFriends,
+  updateUser,
+  updateTotalNotificationsCount,
+  updateFriendRequestsNotificationCount,
+  updatePendingFriendsNotificationCount,
+} = friendsSlice.actions
 
 export const friendsActions = friendsSlice.actions
 

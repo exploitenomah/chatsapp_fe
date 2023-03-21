@@ -15,6 +15,7 @@ export type Friend = {
   _id: string
   createdAt: string
   updatedAt: string
+  seen: boolean
 }
 
 const initialState: FriendsState = {
@@ -30,6 +31,9 @@ const initialState: FriendsState = {
   limit: 5,
   pendingFriends: [],
   friendRequests: [],
+  totalNotificationsCount: 0,
+  pendingFriendsNotificationCount: 0,
+  friendRequestsNotificationCount: 0,
 }
 
 export type FriendsState = {
@@ -43,8 +47,11 @@ export type FriendsState = {
   pendingFriends: Friend[]
   user: null | User
   friendRequests: Friend[]
-  hasFetchedAllFriends: boolean,
+  hasFetchedAllFriends: boolean
   hasFetchedInitialSuggestions: boolean
+  totalNotificationsCount: number
+  pendingFriendsNotificationCount: number
+  friendRequestsNotificationCount: number
 }
 
 export default initialState

@@ -15,6 +15,9 @@ export const uiSlice = createSlice({
     toggleShowSuggestionsDrawer: (state) => {
       state.showFriendsSuggestionDrawer = !state.showFriendsSuggestionDrawer
     },
+    toggleShowFriendRequestsDrawer: (state) => {
+      state.showFriendRequestsDrawer = !state.showFriendRequestsDrawer
+    },
     toggleShowSignup: (state) => {
       state.showSignup = !state.showSignup
       state.showLogin = false
@@ -42,6 +45,7 @@ export const uiSlice = createSlice({
 export const {
   toggleShowFriendsDrawer,
   toggleShowSuggestionsDrawer,
+  toggleShowFriendRequestsDrawer,
   hideSignupAndLogin,
   toggleShowLogin,
   toggleShowSignup,

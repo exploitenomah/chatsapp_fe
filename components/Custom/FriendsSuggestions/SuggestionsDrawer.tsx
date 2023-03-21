@@ -57,7 +57,7 @@ export default function FriendsSuggestionDrawer() {
   )
 
   return (
-    <LeftDrawer zIndex={'z-[200]'} show={showFriendsSuggestionDrawer}>
+    <LeftDrawer zIndex={'z-[300]'} show={showFriendsSuggestionDrawer}>
       <div className='relative h-full'>
         <Header />
         <div className='pr-[4px]  absolute bottom-0 w-full top-[110px] overflow-auto'>

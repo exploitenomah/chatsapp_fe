@@ -5,6 +5,7 @@ import { toggleShowFriendsDrawer } from '@store/ui/slice'
 import { HTMLAttributes, ReactNode } from 'react'
 import { useDispatch } from 'react-redux'
 import Avatar from '../Avatar'
+import { FriendRequestsCountBadge } from '@components/Custom/Friends/FriendsNotificationBadges'
 
 export const NavItem = ({
   children,
@@ -17,7 +18,7 @@ export const NavItem = ({
     <li>
       <Button
         {...buttonProps}
-        className='p-2 max-w-[40px] max-h-[40px] shadow-none flex justify-center items-center ml-2.5'
+        className={`${buttonProps.className} p-2 max-w-[40px] max-h-[40px] shadow-none flex justify-center items-center ml-2.5`}
       >
         {children}
       </Button>
@@ -40,9 +41,13 @@ export default function AppHeader() {
           <ul className='flex items-center'>
             <NavItem
               buttonProps={{
+                className: 'relative',
                 onClick: () => dispatch(toggleShowFriendsDrawer()),
               }}
             >
+              <div className='absolute bottom-[50%] scale-x-75 scale-y-75 right-[-3px] scale-1'>
+                <FriendRequestsCountBadge />
+              </div>
               <FriendsIcon />
             </NavItem>
             <NavItem buttonProps={{}}>

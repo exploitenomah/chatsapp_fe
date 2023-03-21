@@ -1,5 +1,7 @@
-export const makeUniqueArrOfObjectsWith_IdKey = (arr: { [x: string]: any }[]) =>
-  Object.values(
+export const makeUniqueArrOfObjectsWith_IdKey = (
+  arr: { [x: string]: any }[],
+) => {
+  return Object.values(
     arr.reduce(
       (acc, obj: { [x: string]: any }) => ({
         ...acc,
@@ -8,3 +10,4 @@ export const makeUniqueArrOfObjectsWith_IdKey = (arr: { [x: string]: any }[]) =>
       {},
     ),
   )
+}

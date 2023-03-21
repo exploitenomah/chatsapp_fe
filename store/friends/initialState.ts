@@ -6,12 +6,13 @@ export const friendsEvents = [
   'getMany',
   'remove',
   'accept',
+  'seen',
 ]
 
 export type Friend = {
-  requester: string
+  requester: User
   isValid: boolean
-  recipient: string
+  recipient: User
   _id: string
   createdAt: string
   updatedAt: string
@@ -34,6 +35,10 @@ const initialState: FriendsState = {
   totalNotificationsCount: 0,
   pendingFriendsNotificationCount: 0,
   friendRequestsNotificationCount: 0,
+  friendRequestsPage: 1,
+  pendingFriendsPage: 1,
+  hasFetchedAllFriendRequests: false,
+  hasFetchedAllPendingFriends: false,
 }
 
 export type FriendsState = {
@@ -52,6 +57,10 @@ export type FriendsState = {
   totalNotificationsCount: number
   pendingFriendsNotificationCount: number
   friendRequestsNotificationCount: number
+  friendRequestsPage: number
+  pendingFriendsPage: number
+  hasFetchedAllFriendRequests: boolean
+  hasFetchedAllPendingFriends: boolean
 }
 
 export default initialState

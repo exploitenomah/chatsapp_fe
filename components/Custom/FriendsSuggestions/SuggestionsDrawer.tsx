@@ -1,3 +1,4 @@
+import FriendsIcon from '@assets/FriendsIcon'
 import LeftArrow from '@assets/LeftArrow'
 import Button from '@components/HTML/Button'
 import { Store } from '@store/index'
@@ -7,15 +8,17 @@ import {
   toggleShowSuggestionsDrawer,
 } from '@store/ui/slice'
 import { useDispatch, useSelector } from 'react-redux'
+import { FriendRequestsCountBadge } from '../Friends/FriendsNotificationBadges'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
 import SuggestionsList from './SuggestionsList'
 
 const Header = () => {
   const dispatch = useDispatch()
+
   return (
     <>
-      <header className='h-[108px] flex flex-col justify-end text-contrast-tertiary/80 bg-secondary-default px-6'>
+      <header className='h-[108px] flex justify-between items-center text-contrast-tertiary/80 bg-secondary-default px-6'>
         <div className='h-[59px] flex items-center'>
           <Button
             className='p-0 w-12'
@@ -26,7 +29,22 @@ const Header = () => {
           >
             <LeftArrow />
           </Button>
-          <span className='text-lg font-medium'>Suggestions</span>
+          <span className='text-lg font-medium '>Suggestions</span>
+        </div>
+        <div className='flex items-center relative'>
+          <div className='block absolute bottom-[50%] right-[-6px]'>
+            <FriendRequestsCountBadge />
+          </div>
+          <Button
+            title='friend requests'
+            className='p-0 gap-x-4 shadow-none flex items-center text-lg'
+            onClick={() => {
+              dispatch(toggleShowSuggestionsDrawer())
+              dispatch(removeUserInPreview())
+            }}
+          >
+            <FriendsIcon />
+          </Button>
         </div>
       </header>
     </>

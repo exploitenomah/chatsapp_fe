@@ -7,11 +7,12 @@ import { useDispatch } from 'react-redux'
 export default function useLogout() {
   const dispatch = useDispatch()
   const logUserOut = useCallback(() => {
-    dispatch(updateUser(null))
-    dispatch(logout())
-    dispatch(clearUser())
-    localStorage.removeItem('chatsapp_token')
-  }, [dispatch])
+    // dispatch(updateUser(null))
+    // dispatch(logout())
+    // dispatch(clearUser())
+    // localStorage.removeItem('chatsapp_token')
+    // }, [dispatch])
+  }, [])
 
   return logUserOut
 }

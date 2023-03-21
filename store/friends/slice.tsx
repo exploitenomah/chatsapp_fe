@@ -1,7 +1,71 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, Draft, PayloadAction } from '@reduxjs/toolkit'
 import { User } from '@store/user/initialState'
 import { makeUniqueArrOfObjectsWith_IdKey } from '@utils/index'
-import initialState, { Friend } from './initialState'
+import initialState, { Friend, FriendsState } from './initialState'
+
+const handleFriendsPayload = (
+  state: Draft<FriendsState>,
+  payload: Friend[],
+) => {
+  const usersFriends = payload.filter((item) => item.isValid === true)
+  state.friends = makeUniqueArrOfObjectsWith_IdKey([
+    ...state.friends,
+    ...usersFriends,
+  ])
+
+  const payloadIsFriendsOfUser = payload.every((item) => item.isValid === true)
+  if (payloadIsFriendsOfUser) {
+    state.friendsPage =
+      makeUniqueArrOfObjectsWith_IdKey([...state.friends, ...payload]).length /
+      state.limit
+    state.hasFetchedAllFriends = payload.length < state.limit
+  }
+}
+
+const handleFriendRequestsPayload = (
+  state: Draft<FriendsState>,
+  payload: Friend[],
+) => {
+  const friendRequests = payload.filter(
+    (item) => item.isValid === false && item.recipient._id === state.user?._id,
+  )
+  state.friendRequests = makeUniqueArrOfObjectsWith_IdKey([
+    ...state.friendRequests,
+    ...friendRequests,
+  ])
+  const payloadIsFriendRequests = payload.every(
+    (item) => item.recipient._id === state.user?._id,
+  )
+  if (payloadIsFriendRequests) {
+    state.friendRequestsPage =
+      makeUniqueArrOfObjectsWith_IdKey([...state.friendRequests, ...payload])
+        .length / state.limit
+    state.hasFetchedAllFriendRequests = payload.length < state.limit
+  }
+}
+
+const handlePendingFriendsPayload = (
+  state: Draft<FriendsState>,
+  payload: Friend[],
+) => {
+  const pendingFriends = payload.filter(
+    (item) => item.isValid === false && item.requester._id === state.user?._id,
+  )
+
+  state.pendingFriends = makeUniqueArrOfObjectsWith_IdKey([
+    ...state.pendingFriends,
+    ...pendingFriends,
+  ])
+  const payloadIsPendingFriends = payload.every(
+    (item) => item.requester._id === state.user?._id,
+  )
+  if (payloadIsPendingFriends) {
+    state.pendingFriendsPage =
+      makeUniqueArrOfObjectsWith_IdKey([...state.pendingFriends, ...payload])
+        .length / state.limit
+    state.hasFetchedAllPendingFriends = payload.length < state.limit
+  }
+}
 
 const friendsSlice = createSlice({
   name: 'friends',
@@ -30,12 +94,12 @@ const friendsSlice = createSlice({
     request: (state, action: PayloadAction<Friend>) => {
       const payload = action.payload
       if (!payload.isValid) {
-        if (payload.requester === state.user?._id) {
+        if (payload.requester._id === state.user?._id) {
           state.pendingFriends = makeUniqueArrOfObjectsWith_IdKey([
             ...state.pendingFriends,
             payload,
           ])
-        } else if (payload.recipient === state.user?._id) {
+        } else if (payload.recipient._id === state.user?._id) {
           state.friendRequests = makeUniqueArrOfObjectsWith_IdKey([
             ...state.friendRequests,
             payload,
@@ -50,39 +114,31 @@ const friendsSlice = createSlice({
       state.pendingFriends = state.pendingFriends.filter(filterOutPayload)
       state.friends = state.friends.filter(filterOutPayload)
     },
-    accept: (state, action: PayloadAction<Friend>) => {
+    accept: (state, action: PayloadAction<Friend | null>) => {
       const payload = action.payload
-      const filterOutPayload = (req: Friend) => req._id !== payload._id
+      const filterOutPayload = (req: Friend) => req._id !== payload?._id
       state.friendRequests = state.friendRequests.filter(filterOutPayload)
       state.pendingFriends = state.pendingFriends.filter(filterOutPayload)
-      state.friends = makeUniqueArrOfObjectsWith_IdKey([
-        ...state.friends,
-        payload,
-      ])
+      if (payload) {
+        state.friends = makeUniqueArrOfObjectsWith_IdKey([
+          ...state.friends,
+          payload,
+        ])
+      }
+    },
+    seen: (state, action: PayloadAction<Friend | null>) => {
+      const payload = action.payload
+      const updatePayload = (item: Friend) =>
+        item._id === payload?._id ? payload : item
+      state.friendRequests = state.friendRequests.map(updatePayload)
+      state.pendingFriends = state.pendingFriends.map(updatePayload)
+      state.friends = state.friends.map(updatePayload)
     },
     getMany: (state, action: PayloadAction<Friend[]>) => {
       const payload = action.payload
-      const usersFriends = payload.filter((item) => item.isValid === true)
-      state.friends = makeUniqueArrOfObjectsWith_IdKey([
-        ...state.friends,
-        ...usersFriends,
-      ])
-      const friendRequests = payload.filter(
-        (item) => item.isValid === false && item.recipient === state.user?._id,
-      )
-      state.friendRequests = makeUniqueArrOfObjectsWith_IdKey([
-        ...state.friendRequests,
-        ...friendRequests,
-      ])
-      const pendingFriends = payload.filter(
-        (item) => item.isValid === false && item.requester === state.user?._id,
-      )
-      state.pendingFriends = makeUniqueArrOfObjectsWith_IdKey([
-        ...state.pendingFriends,
-        ...pendingFriends,
-      ])
-      state.friendsPage = state.friendsPage + 1
-      state.hasFetchedAllFriends = payload.length < state.limit
+      handleFriendsPayload(state, payload)
+      handleFriendRequestsPayload(state, payload)
+      handlePendingFriendsPayload(state, payload)
     },
     updateTotalNotificationsCount: (state, action: PayloadAction<number>) => {
       state.totalNotificationsCount = action.payload

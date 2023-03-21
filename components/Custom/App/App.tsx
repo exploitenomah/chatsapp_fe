@@ -1,5 +1,6 @@
 import FriendsDrawer from '../Friends/FriendsDrawer'
 import FriendsSuggestionDrawer from '../FriendsSuggestions/SuggestionsDrawer'
+import FriendRequestsDrawer from '../FriendRequests/FriendRequestsDrawer'
 import LeftPanel from './LeftPanel/LeftPanel'
 import RightPanel from './RightPanel/RightPanel'
 import useConversations from '@sockets/useConversations'
@@ -40,6 +41,7 @@ export default function App() {
         <div className='basis-[30%] max-w-[30%] relative overflow-x-hidden'>
           <FriendsDrawer />
           <FriendsSuggestionDrawer />
+          <FriendRequestsDrawer />
           <LeftPanel />
         </div>
         <div className='grow flex border-l border-l-contrast-secondary/20'>

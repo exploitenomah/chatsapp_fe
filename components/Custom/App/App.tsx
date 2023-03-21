@@ -8,9 +8,9 @@ import { useEffect } from 'react'
 import useEmitter from '@hooks/useEmitters'
 import { conversationEvents } from '@store/conversations/initialState'
 import { userEvents } from '@store/user/initialState'
-
 import UserPreview from '../User/UserPreview'
 import useGetManyFriends from '@hooks/friends/useGetManyFriends'
+import useUpdateFriendsNotifications from '@hooks/friends/useUpdateFriendsNotifications'
 
 export default function App() {
   const conversationsSocket = useConversations()
@@ -26,6 +26,8 @@ export default function App() {
     conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
     userSocketEmitters.getMe()
   }, [conversationsSocketEmitters, userSocketEmitters])
+
+  useUpdateFriendsNotifications()
 
   useEffect(() => {
     handleGetFriends()

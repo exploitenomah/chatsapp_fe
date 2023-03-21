@@ -18,11 +18,12 @@ export default function useUpdateFriendsNotifications() {
   useEffect(() => {
     const friendRequestsNotificationCount = friendRequests.filter(
       (friendReq) =>
-        friendReq.seen === false && friendReq.requester !== user?._id,
+        friendReq.seen === false && friendReq.requester._id !== user?._id,
     ).length
     const pendingFriendsNotificationCount = pendingFriends.filter(
       (pendingFriend) =>
-        pendingFriend.seen === false && pendingFriend.recipient !== user?._id,
+        pendingFriend.seen === false &&
+        pendingFriend.recipient._id !== user?._id,
     ).length
     dispatch(
       updateFriendRequestsNotificationCount(friendRequestsNotificationCount),

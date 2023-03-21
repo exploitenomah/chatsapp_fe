@@ -21,7 +21,7 @@ const useUpdateUserInPreviewEffect = (friendship?: Friend) => {
       userInPreview &&
       friendship &&
       !friendship.isValid &&
-      friendship.requester === userInPreview._id &&
+      friendship.requester._id === userInPreview._id &&
       !userInPreview.hasSentRequest
     ) {
       dispatch(
@@ -54,7 +54,7 @@ const useUpdateUserInPreviewEffect = (friendship?: Friend) => {
       userInPreview &&
       friendship &&
       !friendship.isValid &&
-      friendship.recipient === userInPreview._id &&
+      friendship.recipient._id === userInPreview._id &&
       !userInPreview.isPending
     ) {
       dispatch(
@@ -96,8 +96,8 @@ export default function UserPreview() {
     () =>
       [...pendingFriends, ...friendRequests, ...friends].find(
         (item) =>
-          item.requester === userInPreview?._id ||
-          item.recipient === userInPreview?._id,
+          item.requester._id === userInPreview?._id ||
+          item.recipient._id === userInPreview?._id,
       ),
     [friendRequests, friends, pendingFriends, userInPreview?._id],
   )

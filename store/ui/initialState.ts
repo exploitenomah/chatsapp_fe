@@ -8,6 +8,8 @@ export type UserInPreview = User & {
 const initialState: UI = {
   showFriendsDrawer: false,
   showFriendsSuggestionDrawer: false,
+  showFriendRequestsDrawer: false,
+  showPendingFriendsDrawer: false,
   showLogin: false,
   showSignup: false,
   appLoading: true,
@@ -18,6 +20,8 @@ const initialState: UI = {
 export type UI = {
   showFriendsDrawer: boolean
   showFriendsSuggestionDrawer: boolean
+  showFriendRequestsDrawer: boolean
+  showPendingFriendsDrawer: boolean
   showLogin: boolean
   showSignup: boolean
   appLoading: boolean

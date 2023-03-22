@@ -5,41 +5,58 @@ import { removeUserInPreview, updateUserInPreview } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import FriendItem from '../Friends/FriendItem'
+import Avatar from '../Avatar'
+
+const SuggestionItemm = ({ user }: { user: User }) => {
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+  const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
+
+  const dispatch = useDispatch()
+
+  const handleSuggestionClick = useCallback(() => {
+    if (userInPreview && userInPreview._id === user._id) return
+    dispatch(removeUserInPreview())
+    setTimeout(() => {
+      dispatch(updateUserInPreview({ ...user }))
+    }, 320)
+  }, [dispatch, user, userInPreview])
+
+  if (authenticatedUser._id === user._id) return null
+
+  return (
+    <div
+      onClick={() => handleSuggestionClick()}
+      className={`w-full h-[72px] flex items-center ${
+        userInPreview?._id === user._id
+          ? 'bg-secondary-darkest'
+          : 'bg-primary-default hover:bg-secondary-default '
+      }`}
+    >
+      <div className='cursor-pointer flex items-center pr-[6px] w-full'>
+        <div className='px-[15px] flex justify-center items-center shrink-0'>
+          <Avatar width={49} height={49} />
+        </div>
+        <div className='h-[72px] basis-auto flex grow flex-col justify-center items-start border-t border-t-contrast-secondary/20'>
+          <div className='text-contrast-strong text-base'>{`${user.nickName}`}</div>
+          <div className='text-contrast-secondary text-sm font-normal whitespace-nowrap flex relative w-full h-[20px]'>
+            {`${user.firstName} ${user.lastName}`}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function SuggestionsList() {
   const { suggestions } = useSelector<Store, FriendsState>(
     (store) => store.friends,
-  )
-  const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
-  const dispatch = useDispatch()
-
-  const handleSuggestionClick = useCallback(
-    (suggestion: User) => {
-      if (userInPreview && userInPreview._id === suggestion._id) return
-      dispatch(removeUserInPreview())
-      setTimeout(() => {
-        dispatch(updateUserInPreview({ ...suggestion }))
-      }, 320)
-    },
-    [dispatch, userInPreview],
   )
 
   return (
     <>
       <div>
         {suggestions.map((suggestion) => (
-          <div
-            key={suggestion._id}
-            onClick={() => handleSuggestionClick(suggestion)}
-          >
-            <FriendItem
-              active={
-                userInPreview ? userInPreview._id === suggestion._id : false
-              }
-              user={suggestion}
-            />
-          </div>
+          <SuggestionItemm user={suggestion} key={suggestion._id} />
         ))}
       </div>
     </>

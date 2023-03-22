@@ -16,10 +16,13 @@ const handleFriendsPayload = (
   const payloadIsFriendsOfUser = payload.every((item) => item.isValid === true)
   if (payloadIsFriendsOfUser) {
     state.friendsPage =
-      makeUniqueArrOfObjectsWith_IdKey([...state.friends, ...payload]).length /
-        state.limit +
-      1
+      Math.ceil(
+        makeUniqueArrOfObjectsWith_IdKey([...state.friends, ...payload])
+          .length / state.limit,
+      ) + 1
     state.hasFetchedAllFriends = payload.length < state.limit
+    if (state.hasFetchedInitialFriends === false)
+      state.hasFetchedInitialFriends = true
   }
 }
 
@@ -39,11 +42,13 @@ const handleFriendRequestsPayload = (
   )
   if (payloadIsFriendRequests) {
     state.friendRequestsPage =
-      makeUniqueArrOfObjectsWith_IdKey([...state.friendRequests, ...payload])
-        .length /
-        state.limit +
-      1
+      Math.ceil(
+        makeUniqueArrOfObjectsWith_IdKey([...state.friendRequests, ...payload])
+          .length / state.limit,
+      ) + 1
     state.hasFetchedAllFriendRequests = payload.length < state.limit
+    if (state.hasFetchedInitialFriendRequests === false)
+      state.hasFetchedInitialFriendRequests = true
   }
 }
 
@@ -64,11 +69,13 @@ const handlePendingFriendsPayload = (
   )
   if (payloadIsPendingFriends) {
     state.pendingFriendsPage =
-      makeUniqueArrOfObjectsWith_IdKey([...state.pendingFriends, ...payload])
-        .length /
-        state.limit +
-      1
+      Math.ceil(
+        makeUniqueArrOfObjectsWith_IdKey([...state.pendingFriends, ...payload])
+          .length / state.limit,
+      ) + 1
     state.hasFetchedAllPendingFriends = payload.length < state.limit
+    if (state.hasFetchedInitialPendingFriends === false)
+      state.hasFetchedInitialPendingFriends = true
   }
 }
 

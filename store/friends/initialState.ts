@@ -41,7 +41,7 @@ const initialState: FriendsState = {
   hasFetchedAllPendingFriends: false,
   hasFetchedInitialFriends: false,
   hasFetchedInitialPendingFriends: false,
-  hasFetchedIntialFriendRequests: false,
+  hasFetchedInitialFriendRequests: false,
 }
 
 export type FriendsState = {
@@ -66,7 +66,7 @@ export type FriendsState = {
   hasFetchedAllPendingFriends: boolean
   hasFetchedInitialFriends: boolean
   hasFetchedInitialPendingFriends: boolean
-  hasFetchedIntialFriendRequests: boolean
+  hasFetchedInitialFriendRequests: boolean
 }
 
 export default initialState

@@ -25,7 +25,7 @@ export default function App() {
   const {
     hasFetchedInitialFriends,
     hasFetchedInitialPendingFriends,
-    hasFetchedIntialFriendRequests,
+    hasFetchedInitialFriendRequests,
   } = useSelector<Store, FriendsState>((store) => store.friends)
   const user = useSelector<Store, User>((store) => store.user)
   const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses()
@@ -50,7 +50,7 @@ export default function App() {
   useEffect(() => {
     if (user._id.length > 0) {
       !hasFetchedInitialFriends && handleGetFriends()
-      !hasFetchedIntialFriendRequests && handleGetFriendRequests()
+      !hasFetchedInitialFriendRequests && handleGetFriendRequests()
       !hasFetchedInitialPendingFriends && handleGetPendingFriends()
     }
   }, [
@@ -59,7 +59,7 @@ export default function App() {
     handleGetPendingFriends,
     hasFetchedInitialFriends,
     hasFetchedInitialPendingFriends,
-    hasFetchedIntialFriendRequests,
+    hasFetchedInitialFriendRequests,
     user._id.length,
   ])
 

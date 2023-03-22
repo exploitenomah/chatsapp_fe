@@ -13,6 +13,7 @@ import UserPreview from '../User/UserPreview'
 import useGetManyFriends from '@hooks/friends/useGetManyFriends'
 import useUpdateFriendsNotifications from '@hooks/friends/useUpdateFriendsNotifications'
 import useGetManyFriendRequests from '@hooks/friends/useFetchFriendRequests'
+import PendingFriendsDrawer from '../PendingFriends/PendingFriendsDrawer'
 
 export default function App() {
   const conversationsSocket = useConversations()
@@ -24,6 +25,7 @@ export default function App() {
   const userSocketEmitters = useEmitter(userSocket, userEvents)
   const handleGetFriends = useGetManyFriends()
   const handleGetFriendRequests = useGetManyFriendRequests()
+  const handleGetPendingRequests = useGetManyFriendRequests()
 
   useEffect(() => {
     conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
@@ -35,6 +37,7 @@ export default function App() {
   useEffect(() => {
     handleGetFriends()
     handleGetFriendRequests()
+    handleGetPendingRequests()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -45,6 +48,7 @@ export default function App() {
           <FriendsDrawer />
           <FriendsSuggestionDrawer />
           <FriendRequestsDrawer />
+          <PendingFriendsDrawer />
           <LeftPanel />
         </div>
         <div className='grow flex border-l border-l-contrast-secondary/20'>

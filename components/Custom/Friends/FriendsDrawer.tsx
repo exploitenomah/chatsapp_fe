@@ -8,6 +8,7 @@ import { UI } from '@store/ui/initialState'
 import {
   toggleShowFriendRequestsDrawer,
   toggleShowFriendsDrawer,
+  toggleShowPendingFriendsDrawer,
   toggleShowSuggestionsDrawer,
 } from '@store/ui/slice'
 import { ReactNode, HTMLAttributes } from 'react'
@@ -77,9 +78,10 @@ const FriendRequestsButton = () => {
 }
 
 const SentRequestsButton = () => {
+  const dispatch = useDispatch()
   return (
     <div>
-      <DefaultButton>
+      <DefaultButton onClick={() => dispatch(toggleShowPendingFriendsDrawer())}>
         <span className='flex items-center justify-center gap-x-4'>
           <AddFriendIcon />
           <span>Sent Requests </span>

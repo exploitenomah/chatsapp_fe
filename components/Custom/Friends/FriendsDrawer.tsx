@@ -6,6 +6,7 @@ import Button from '@components/HTML/Button'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import {
+  removeUserInPreview,
   toggleShowFriendRequestsDrawer,
   toggleShowFriendsDrawer,
   toggleShowPendingFriendsDrawer,
@@ -100,7 +101,10 @@ const Header = () => {
         <div className='h-[59px] flex items-center'>
           <Button
             className='p-0 w-12'
-            onClick={() => dispatch(toggleShowFriendsDrawer())}
+            onClick={() => {
+              dispatch(toggleShowFriendsDrawer())
+              dispatch(removeUserInPreview())
+            }}
           >
             <LeftArrow />
           </Button>

@@ -5,7 +5,7 @@ import { UI } from '@store/ui/initialState'
 import { useCallback, useMemo } from 'react'
 import Avatar from '../Avatar'
 import Button from '@components/HTML/Button'
-import { updateUserInPreview } from '@store/ui/slice'
+import { updateUserInPreview, removeUserInPreview } from '@store/ui/slice'
 import useRemoveFriend from '@hooks/friends/useRemoveFriend'
 
 const PendingFriendItem = ({ pendingFriend }: { pendingFriend: Friend }) => {
@@ -18,7 +18,10 @@ const PendingFriendItem = ({ pendingFriend }: { pendingFriend: Friend }) => {
   const dispatch = useDispatch()
 
   const handleOpenInPreview = useCallback(() => {
-    dispatch(updateUserInPreview(pendingFriend.recipient))
+    dispatch(removeUserInPreview())
+    setTimeout(() => {
+      dispatch(updateUserInPreview(pendingFriend.recipient))
+    }, 150)
   }, [dispatch, pendingFriend.recipient])
 
   return (

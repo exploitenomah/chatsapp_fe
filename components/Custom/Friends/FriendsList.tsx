@@ -25,7 +25,7 @@ const FriendItem = ({ friendItem }: { friendItem: Friend }) => {
       onClick={() => dispatch(updateUserInPreview(friend))}
       className={`w-full flex items-center ${
         userInPreview?._id === friend._id
-          ? 'bg-secondary-darkest/25'
+          ? 'bg-secondary-darkest/50'
           : 'bg-primary-default'
       }`}
     >
@@ -40,7 +40,7 @@ const FriendItem = ({ friendItem }: { friendItem: Friend }) => {
               {`${friend.firstName} ${friend.lastName}`}
             </div>
           </div>
-          <Button className='bg-accent-default py-2 px-3 text-contrast-strong'>
+          <Button className='bg-accent-default py-2 px-3 text-contrast-strong text-center'>
             Message
           </Button>
         </div>

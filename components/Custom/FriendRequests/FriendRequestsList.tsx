@@ -11,7 +11,7 @@ import {
 } from 'react'
 import Avatar from '../Avatar'
 import Button from '@components/HTML/Button'
-import { updateUserInPreview } from '@store/ui/slice'
+import { removeUserInPreview, updateUserInPreview } from '@store/ui/slice'
 import useAcceptFriend from '@hooks/friends/useAcceptFriend'
 import useRemoveFriend from '@hooks/friends/useRemoveFriend'
 import { User } from '@store/user/initialState'
@@ -79,7 +79,10 @@ const FriendRequestItem = ({ friendRequest }: { friendRequest: Friend }) => {
   const dispatch = useDispatch()
 
   const handleOpenInPreview = useCallback(() => {
-    dispatch(updateUserInPreview(friendRequest.requester))
+    dispatch(removeUserInPreview())
+    setTimeout(() => {
+      dispatch(updateUserInPreview(friendRequest.requester))
+    }, 150)
   }, [dispatch, friendRequest.requester])
 
   useUpdateFriendRequestSeen(friendRequestRef, friendRequest)
@@ -87,6 +90,7 @@ const FriendRequestItem = ({ friendRequest }: { friendRequest: Friend }) => {
   return (
     <>
       <div
+        onClick={handleOpenInPreview}
         ref={friendRequestRef}
         className={`w-full flex items-center pb-2 ${
           active ? 'bg-secondary-darkest/25' : 'bg-primary-default'
@@ -94,10 +98,7 @@ const FriendRequestItem = ({ friendRequest }: { friendRequest: Friend }) => {
       >
         <>
           <div className='cursor-pointer flex items-center pr-[6px] w-full'>
-            <div
-              onClick={handleOpenInPreview}
-              className='px-[15px] flex justify-center items-center shrink-0 self-start'
-            >
+            <div className='px-[15px] flex justify-center items-center shrink-0 self-start'>
               <Avatar width={70} height={70} />
             </div>
             <div className='basis-auto flex grow flex-col justify-center items-start border-t border-t-contrast-secondary/20'>
@@ -110,13 +111,19 @@ const FriendRequestItem = ({ friendRequest }: { friendRequest: Friend }) => {
               </div>
               <div className='flex justify-start items-center mt-3 gap-x-4'>
                 <Button
-                  onClick={() => acceptRequest(friendRequest._id)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    acceptRequest(friendRequest._id)
+                  }}
                   className='bg-accent-light text-primary-default py-1.5'
                 >
                   Confirm
                 </Button>
                 <Button
-                  onClick={() => cancelRequest(friendRequest._id)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    cancelRequest(friendRequest._id)
+                  }}
                   className='bg-accent-danger text-primary-dark py-1.5'
                 >
                   Decline

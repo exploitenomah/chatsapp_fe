@@ -8,13 +8,11 @@ import useEmitter from '../useEmitters'
 export default function useGetManyFriendRequests() {
   const friendsSocket = useFriends()
   const friendsSocketEmitters = useEmitter(friendsSocket, friendsEvents)
-  const { friendRequestsPage, limit, hasFetchedAllFriends, user } = useSelector<
-    Store,
-    FriendsState
-  >((store) => store.friends)
+  const { friendRequestsPage, limit, hasFetchedAllFriendRequests, user } =
+    useSelector<Store, FriendsState>((store) => store.friends)
 
   const handleGetFriendRequests = useCallback(() => {
-    if (hasFetchedAllFriends) return
+    if (hasFetchedAllFriendRequests) return
     friendsSocketEmitters.getMany({
       page: friendRequestsPage,
       limit,
@@ -22,7 +20,7 @@ export default function useGetManyFriendRequests() {
       isValid: false,
     })
   }, [
-    hasFetchedAllFriends,
+    hasFetchedAllFriendRequests,
     friendsSocketEmitters,
     friendRequestsPage,
     limit,

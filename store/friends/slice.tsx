@@ -17,7 +17,8 @@ const handleFriendsPayload = (
   if (payloadIsFriendsOfUser) {
     state.friendsPage =
       makeUniqueArrOfObjectsWith_IdKey([...state.friends, ...payload]).length /
-      state.limit
+        state.limit +
+      1
     state.hasFetchedAllFriends = payload.length < state.limit
   }
 }
@@ -39,7 +40,9 @@ const handleFriendRequestsPayload = (
   if (payloadIsFriendRequests) {
     state.friendRequestsPage =
       makeUniqueArrOfObjectsWith_IdKey([...state.friendRequests, ...payload])
-        .length / state.limit
+        .length /
+        state.limit +
+      1
     state.hasFetchedAllFriendRequests = payload.length < state.limit
   }
 }
@@ -62,7 +65,9 @@ const handlePendingFriendsPayload = (
   if (payloadIsPendingFriends) {
     state.pendingFriendsPage =
       makeUniqueArrOfObjectsWith_IdKey([...state.pendingFriends, ...payload])
-        .length / state.limit
+        .length /
+        state.limit +
+      1
     state.hasFetchedAllPendingFriends = payload.length < state.limit
   }
 }
@@ -136,6 +141,7 @@ const friendsSlice = createSlice({
     },
     getMany: (state, action: PayloadAction<Friend[]>) => {
       const payload = action.payload
+      console.log(payload)
       handleFriendsPayload(state, payload)
       handleFriendRequestsPayload(state, payload)
       handlePendingFriendsPayload(state, payload)

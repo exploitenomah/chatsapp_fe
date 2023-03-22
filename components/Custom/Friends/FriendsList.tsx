@@ -2,7 +2,7 @@ import Button from '@components/HTML/Button'
 import { Friend, FriendsState } from '@store/friends/initialState'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
-import { updateUserInPreview } from '@store/ui/slice'
+import { removeUserInPreview, updateUserInPreview } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -22,7 +22,13 @@ const FriendItem = ({ friendItem }: { friendItem: Friend }) => {
 
   return (
     <div
-      onClick={() => dispatch(updateUserInPreview(friend))}
+      onClick={() => {
+        if (userInPreview?._id === friend._id) return
+        dispatch(removeUserInPreview())
+        setTimeout(() => {
+          dispatch(updateUserInPreview(friend))
+        }, 150)
+      }}
       className={`w-full flex items-center ${
         userInPreview?._id === friend._id
           ? 'bg-secondary-darkest/50'
@@ -40,7 +46,13 @@ const FriendItem = ({ friendItem }: { friendItem: Friend }) => {
               {`${friend.firstName} ${friend.lastName}`}
             </div>
           </div>
-          <Button className='bg-accent-default py-2 px-3 text-contrast-strong text-center'>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation()
+              console.log('this')
+            }}
+            className='bg-accent-default py-2 px-3 text-contrast-strong text-center'
+          >
             Message
           </Button>
         </div>

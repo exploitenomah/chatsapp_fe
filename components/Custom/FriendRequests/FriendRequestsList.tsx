@@ -105,8 +105,8 @@ const FriendRequestItem = ({ friendRequest }: { friendRequest: Friend }) => {
                 className='cursor-pointer w-full'
                 onClick={handleOpenInPreview}
               >
-                <div className='text-contrast-strong text-base'>{`${friendRequest.requester.nickName}`}</div>
-                <div className='text-contrast-strong/60 text-base'>{`${friendRequest.requester.firstName} ${friendRequest.requester.lastName}`}</div>
+                <div className='text-contrast-strong text-lg'>{`${friendRequest.requester.nickName}`}</div>
+                <div className='text-contrast-strong/60 text-sm'>{`${friendRequest.requester.firstName} ${friendRequest.requester.lastName}`}</div>
               </div>
               <div className='flex justify-start items-center mt-3 gap-x-4'>
                 <Button
@@ -129,6 +129,7 @@ const FriendRequestItem = ({ friendRequest }: { friendRequest: Friend }) => {
     </>
   )
 }
+
 export default function FriendRequestsList() {
   const { friendRequests } = useSelector<Store, FriendsState>(
     (store) => store.friends,
@@ -138,10 +139,7 @@ export default function FriendRequestsList() {
     <>
       <>
         {friendRequests.map((request) => (
-          <FriendRequestItem
-            friendRequest={request}
-            key={request._id}
-          />
+          <FriendRequestItem friendRequest={request} key={request._id} />
         ))}
       </>
     </>

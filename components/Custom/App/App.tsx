@@ -2,7 +2,9 @@ import FriendsDrawer from '../Friends/FriendsDrawer'
 import FriendsSuggestionDrawer from '../FriendsSuggestions/SuggestionsDrawer'
 import FriendRequestsDrawer from '../FriendRequests/FriendRequestsDrawer'
 import LeftPanel from './LeftPanel/LeftPanel'
-import RightPanel from './RightPanel/RightPanel'
+import RightPanel, {
+  useRightPanelOutOfFocusClasses,
+} from './RightPanel/RightPanel'
 import useConversations from '@sockets/useConversations'
 import useUser from '@sockets/useUser'
 import { useEffect } from 'react'
@@ -16,6 +18,7 @@ import useGetManyFriendRequests from '@hooks/friends/useFetchFriendRequests'
 import PendingFriendsDrawer from '../PendingFriends/PendingFriendsDrawer'
 
 export default function App() {
+  const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses()
   const conversationsSocket = useConversations()
   const conversationsSocketEmitters = useEmitter(
     conversationsSocket,
@@ -52,7 +55,9 @@ export default function App() {
           <LeftPanel />
         </div>
         <div className='grow flex border-l border-l-contrast-secondary/20'>
-          <div className='grow'>
+          <div
+            className={`h-full transition-all duration-150 grow ${rightPanelOutOfFocusClasses}`}
+          >
             <RightPanel />
           </div>
           <UserPreview />

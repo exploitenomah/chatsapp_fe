@@ -79,8 +79,8 @@ const NoPendingFriendsYetBody = () => {
   if (pendingFriends.length > 0) return null
   return (
     <div className='absolute h-2/5 w-full flex justify-center items-center'>
-      <div className='flex justify-center flex-col items-center text-contrast-primary'>
-        <h2 className='prose-xl my-5 text-center'>
+      <div className='flex justify-center flex-col items-center text-center text-contrast-primary'>
+        <h2 className='prose-lg text-contrast-secondary my-5'>
           You haven&apos;t sent out any friend requests yet.
         </h2>
         <Button

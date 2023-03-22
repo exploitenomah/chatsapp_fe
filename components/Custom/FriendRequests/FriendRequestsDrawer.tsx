@@ -6,7 +6,6 @@ import {
   removeUserInPreview,
   toggleShowFriendRequestsDrawer,
   toggleShowSuggestionsDrawer,
-  updateUserInPreview,
 } from '@store/ui/slice'
 import { ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,7 +13,7 @@ import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
 import { FriendsState } from '@store/friends/initialState'
 import FriendRequestsList from './FriendRequestsList'
-import  useFetchInitialSuggestions  from '@hooks/friends/useFetchInitialSuggestions'
+import useFetchInitialSuggestions from '@hooks/friends/useFetchInitialSuggestions'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -26,7 +25,9 @@ const Header = () => {
             className='p-0 w-12'
             onClick={() => {
               dispatch(toggleShowFriendRequestsDrawer())
-              dispatch(removeUserInPreview())
+              setTimeout(() => {
+                dispatch(removeUserInPreview())
+              }, 150)
             }}
           >
             <LeftArrow />
@@ -81,7 +82,9 @@ const NoFriendRequestsYetBody = () => {
   return (
     <div className='absolute h-2/5 w-full flex justify-center items-center'>
       <div className='flex justify-center flex-col items-center text-contrast-primary'>
-        <h2 className='prose-xl my-5'>You have no friends requests yet.</h2>
+        <h2 className='prose-lg text-contrast-secondary my-5'>
+          You have no friends requests yet.
+        </h2>
         <Button
           onClick={() => {
             fetchInitialSuggestions()

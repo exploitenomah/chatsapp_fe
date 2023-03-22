@@ -10,14 +10,24 @@ import useUser from '@sockets/useUser'
 import { useEffect } from 'react'
 import useEmitter from '@hooks/useEmitters'
 import { conversationEvents } from '@store/conversations/initialState'
-import { userEvents } from '@store/user/initialState'
+import { User, userEvents } from '@store/user/initialState'
 import UserPreview from '../User/UserPreview'
 import useGetManyFriends from '@hooks/friends/useGetManyFriends'
 import useUpdateFriendsNotifications from '@hooks/friends/useUpdateFriendsNotifications'
 import useGetManyFriendRequests from '@hooks/friends/useFetchFriendRequests'
 import PendingFriendsDrawer from '../PendingFriends/PendingFriendsDrawer'
+import { Store } from '@store/index'
+import { useSelector } from 'react-redux'
+import { FriendsState } from '@store/friends/initialState'
+import useGetManyPendingFriends from '@hooks/friends/useFetchPendingFriends'
 
 export default function App() {
+  const {
+    hasFetchedInitialFriends,
+    hasFetchedInitialPendingFriends,
+    hasFetchedIntialFriendRequests,
+  } = useSelector<Store, FriendsState>((store) => store.friends)
+  const user = useSelector<Store, User>((store) => store.user)
   const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses()
   const conversationsSocket = useConversations()
   const conversationsSocketEmitters = useEmitter(
@@ -28,7 +38,7 @@ export default function App() {
   const userSocketEmitters = useEmitter(userSocket, userEvents)
   const handleGetFriends = useGetManyFriends()
   const handleGetFriendRequests = useGetManyFriendRequests()
-  const handleGetPendingRequests = useGetManyFriendRequests()
+  const handleGetPendingFriends = useGetManyPendingFriends()
 
   useEffect(() => {
     conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
@@ -38,11 +48,20 @@ export default function App() {
   useUpdateFriendsNotifications()
 
   useEffect(() => {
-    handleGetFriends()
-    handleGetFriendRequests()
-    handleGetPendingRequests()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (user._id.length > 0) {
+      !hasFetchedInitialFriends && handleGetFriends()
+      !hasFetchedIntialFriendRequests && handleGetFriendRequests()
+      !hasFetchedInitialPendingFriends && handleGetPendingFriends()
+    }
+  }, [
+    handleGetFriendRequests,
+    handleGetFriends,
+    handleGetPendingFriends,
+    hasFetchedInitialFriends,
+    hasFetchedInitialPendingFriends,
+    hasFetchedIntialFriendRequests,
+    user._id.length,
+  ])
 
   return (
     <div className='w-screen h-screeen bg-primary-default'>

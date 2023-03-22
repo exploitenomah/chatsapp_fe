@@ -39,6 +39,9 @@ const initialState: FriendsState = {
   pendingFriendsPage: 1,
   hasFetchedAllFriendRequests: false,
   hasFetchedAllPendingFriends: false,
+  hasFetchedInitialFriends: false,
+  hasFetchedInitialPendingFriends: false,
+  hasFetchedIntialFriendRequests: false,
 }
 
 export type FriendsState = {
@@ -61,6 +64,9 @@ export type FriendsState = {
   pendingFriendsPage: number
   hasFetchedAllFriendRequests: boolean
   hasFetchedAllPendingFriends: boolean
+  hasFetchedInitialFriends: boolean
+  hasFetchedInitialPendingFriends: boolean
+  hasFetchedIntialFriendRequests: boolean
 }
 
 export default initialState

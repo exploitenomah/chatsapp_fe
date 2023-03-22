@@ -103,7 +103,9 @@ const Header = () => {
             className='p-0 w-12'
             onClick={() => {
               dispatch(toggleShowFriendsDrawer())
-              dispatch(removeUserInPreview())
+              setTimeout(() => {
+                dispatch(removeUserInPreview())
+              }, 150)
             }}
           >
             <LeftArrow />
@@ -157,7 +159,9 @@ const NoFriendsYetBody = () => {
   return (
     <div className='absolute h-2/5 w-full flex justify-center items-center'>
       <div className='flex justify-center flex-col items-center text-contrast-primary'>
-        <h2 className='prose-xl my-5'>You have no friends yet</h2>
+        <h2 className='prose-lg text-contrast-secondary my-5'>
+          You have no friends yet
+        </h2>
         <Button
           onClick={() => {
             fetchInitialSuggestions()

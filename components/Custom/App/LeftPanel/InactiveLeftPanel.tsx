@@ -11,9 +11,9 @@ export default function InactiveLeftPanel() {
           <div className='mb-3'>No Conversations</div>
           <Button
             onClick={() => dispatch(toggleShowFriendsDrawer())}
-            className='bg-primary-light hover:brightness-100 hover:scale-105 transition-all duration-500 ease'
+            className='bg-accent-default hover:brightness-100 hover:scale-105 transition-all duration-500 ease'
           >
-            Create
+            Message Friends
           </Button>
         </div>
       </div>

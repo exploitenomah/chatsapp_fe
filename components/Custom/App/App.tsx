@@ -12,6 +12,7 @@ import { userEvents } from '@store/user/initialState'
 import UserPreview from '../User/UserPreview'
 import useGetManyFriends from '@hooks/friends/useGetManyFriends'
 import useUpdateFriendsNotifications from '@hooks/friends/useUpdateFriendsNotifications'
+import useGetManyFriendRequests from '@hooks/friends/useFetchFriendRequests'
 
 export default function App() {
   const conversationsSocket = useConversations()
@@ -22,6 +23,7 @@ export default function App() {
   const userSocket = useUser()
   const userSocketEmitters = useEmitter(userSocket, userEvents)
   const handleGetFriends = useGetManyFriends()
+  const handleGetFriendRequests = useGetManyFriendRequests()
 
   useEffect(() => {
     conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
@@ -32,6 +34,7 @@ export default function App() {
 
   useEffect(() => {
     handleGetFriends()
+    handleGetFriendRequests()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

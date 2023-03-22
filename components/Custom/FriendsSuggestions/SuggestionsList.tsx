@@ -7,7 +7,7 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 
-const SuggestionItemm = ({ user }: { user: User }) => {
+const SuggestionItem = ({ user }: { user: User }) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
 
@@ -56,7 +56,7 @@ export default function SuggestionsList() {
     <>
       <div>
         {suggestions.map((suggestion) => (
-          <SuggestionItemm user={suggestion} key={suggestion._id} />
+          <SuggestionItem user={suggestion} key={suggestion._id} />
         ))}
       </div>
     </>

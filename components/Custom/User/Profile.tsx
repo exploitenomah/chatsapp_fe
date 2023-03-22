@@ -225,13 +225,16 @@ export default function Profile({
                 Decline
               </span>
             </RemoveFriendButton>
-            <span
+            <div
               className={`${
                 friendship?.isValid ? 'flex' : 'hidden'
-              } p-0 gap-x-6 items-center text-blue-400 text-base`}
+              } p-0 gap-y-2 flex-col items-center justify-center`}
             >
-              Friends
-            </span>
+              <span className='text-accent-bright text-base'>Friends</span>
+              <Button className='bg-accent-default py-2 px-3 text-contrast-strong text-center'>
+                Message
+              </Button>
+            </div>
           </div>
         </div>
         <div className='bg-primary-default py-8 px-5'>

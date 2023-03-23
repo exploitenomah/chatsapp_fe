@@ -1,3 +1,4 @@
+import { Message } from '@store/messages/initialState'
 import { User } from '@store/user/initialState'
 
 export const conversationsEvents = ['new', 'update', 'getOne', 'getMany']
@@ -6,8 +7,10 @@ export type Conversation = {
   createdAt: Date
   creator: string
   participants: User[]
-  updatedAt: Date
+  updatedAt: string
   _id: string
+  messages?: Message[]
+  latestMessage?: Message
 }
 
 export type ConversationsState = {

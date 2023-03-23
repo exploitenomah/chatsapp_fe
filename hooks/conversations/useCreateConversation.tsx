@@ -3,13 +3,13 @@ import useConversations from '@sockets/useConversations'
 import { useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import useEmitter from '../useEmitters'
-import { User } from '@store/user/initialState'
 import {
   Conversation,
   conversationsEvents,
   ConversationsState,
 } from '@store/conversations/initialState'
 import { bothArraysContainTheSameStringValues } from '@utils/index'
+import { setActiveConversation } from '@store/ui/slice'
 
 export default function useCreateConversation(participants: string[]) {
   const conversationsSocket = useConversations()
@@ -20,6 +20,7 @@ export default function useCreateConversation(participants: string[]) {
   const { conversations } = useSelector<Store, ConversationsState>(
     (store) => store.conversations,
   )
+  const dispatch = useDispatch()
 
   const checkIfConversationExistsInState = useCallback(() => {
     const existingConversationInState = conversations.find((conversation) =>
@@ -41,11 +42,17 @@ export default function useCreateConversation(participants: string[]) {
         data.participants.map((el) => el._id),
         participants,
       )
-      if (isJustCreated) console.log('dispatch Open active conversation')
+      if (isJustCreated)
+        dispatch(
+          setActiveConversation({
+            ...data,
+            messages: data.messages || [],
+          }),
+        )
     })
     return () => {
       conversationsSocket.off('new', () => {})
     }
-  }, [conversationsSocket, participants])
+  }, [conversationsSocket, dispatch, participants])
   return { handleCreateConversation, checkIfConversationExistsInState }
 }

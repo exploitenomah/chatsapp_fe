@@ -29,7 +29,14 @@ export type UI = {
   appLoading: boolean
   loading: boolean
   userInPreview: null | UserInPreview
-  activeConversation: Conversation | null
+  activeConversation:
+    | null
+    | (Conversation & {
+        messagesPage: number
+        hasFetchedAllMessages: boolean
+        hasFetchedInitialMessages: boolean
+      })
 }
 
+export const messagesLimit = 5
 export default initialState

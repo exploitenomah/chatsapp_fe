@@ -1,15 +1,17 @@
-import { FocusEventHandler, RefObject, useCallback } from 'react'
+import { FocusEventHandler, KeyboardEventHandler, RefObject, useCallback } from 'react'
 
 export default function TextInput({
   textInputRef,
   onChange,
   value,
   onFocus,
+  onKeyDown,
 }: {
   textInputRef: RefObject<HTMLTextAreaElement>
   onChange: (value: string) => void
   value: string | undefined
   onFocus: FocusEventHandler<HTMLTextAreaElement>
+  onKeyDown: KeyboardEventHandler<HTMLTextAreaElement>
 }) {
   const calcHeight = useCallback(function (value: string) {
     let numberOfLineBreaks = (value.match(/\n/g) || []).length
@@ -32,6 +34,7 @@ export default function TextInput({
         onFocus={onFocus}
         onChange={(e) => onChange(e.target.value)}
         onKeyUpCapture={(e) => handleHeightChange()}
+        onKeyDown={onKeyDown}
         ref={textInputRef}
         value={value}
         className='resize-none overflow-hidden h-[24px] max-h-[112] w-full focus:outline-0 leading-5 bg-transparent transition-all duration-75'

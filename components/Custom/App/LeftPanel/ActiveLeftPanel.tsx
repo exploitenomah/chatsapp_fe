@@ -1,3 +1,4 @@
+import ConversationsList from '@components/Custom/Conversations/ConversationsList'
 import SearchBar from '../../SearchBar'
 
 export default function ActiveLeftPanel() {
@@ -11,7 +12,7 @@ export default function ActiveLeftPanel() {
         </div>
       </div>
       <div className='absolute bottom-0 w-full top-[52px] overflow-auto'>
-        <div></div>
+        <ConversationsList />
       </div>
     </>
   )

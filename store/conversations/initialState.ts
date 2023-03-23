@@ -9,8 +9,11 @@ export type Conversation = {
   participants: User[]
   updatedAt: string
   _id: string
-  messages?: Message[]
   latestMessage?: Message
+  messages?: Message[]
+  hasFetchedAllMessages?: boolean
+  hasFetchedInitialMessages?: boolean
+  messagesPage?: number
 }
 
 export type ConversationsState = {

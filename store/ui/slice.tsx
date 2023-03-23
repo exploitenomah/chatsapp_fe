@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Conversation } from '@store/conversations/initialState'
 import { User } from '@store/user/initialState'
 import initialState, { UI, UserInPreview } from './initialState'
 
@@ -42,6 +43,21 @@ export const uiSlice = createSlice({
     removeUserInPreview: (state) => {
       state.userInPreview = null
     },
+    setActiveConversation: (state, action: PayloadAction<Conversation>) => {
+      state.activeConversation = action.payload
+    },
+    removeActiveConversation: (state) => {
+      state.activeConversation = null
+    },
+    updateActiveConversation: (
+      state,
+      action: PayloadAction<Partial<Conversation>>,
+    ) => {
+      state.activeConversation = {
+        ...state.activeConversation,
+        ...(action.payload as Conversation),
+      }
+    },
   },
 })
 
@@ -57,6 +73,7 @@ export const {
   updateLoading,
   updateUserInPreview,
   removeUserInPreview,
+  setActiveConversation,removeActiveConversation,updateActiveConversation
 } = uiSlice.actions
 
 export default uiSlice.reducer

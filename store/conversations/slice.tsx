@@ -7,13 +7,18 @@ const conversationsSlice = createSlice({
   initialState,
   reducers: {
     getMany: (state, action: PayloadAction<Conversation[]>) => {
-      state.conversations = makeUniqueArrOfObjectsWith_IdKey(action.payload)
+      state.conversations = makeUniqueArrOfObjectsWith_IdKey(
+        action.payload.map((item) => ({
+          ...item,
+          messages: item.messages || [],
+        })),
+      )
       if (state.hasFetchedConversations === false)
         state.hasFetchedConversations = true
     },
     new: (state, action: PayloadAction<Conversation>) => {
       state.conversations = makeUniqueArrOfObjectsWith_IdKey([
-        action.payload,
+        { ...action.payload, messages: action.payload.messages || [] },
         ...state.conversations,
       ])
     },

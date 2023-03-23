@@ -1,5 +1,7 @@
 import { User } from '@store/user/initialState'
 
+export const conversationsEvents = ['new', 'update', 'getOne', 'getMany']
+
 export type Conversation = {
   createdAt: Date
   creator: string

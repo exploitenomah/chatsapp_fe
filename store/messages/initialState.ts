@@ -1,8 +1,10 @@
 import { User } from '@store/user/initialState'
+export const messagesEvents = ['new', 'update', 'getOne', 'getMany']
 
 export type Message = {
+  _id: string
   conversationId: string
-  sender: User
+  sender: string
   recipients: User[]
   isDeleted: boolean
   deletedFor: string
@@ -16,6 +18,8 @@ export type Message = {
   deletedAt: string
   seen: boolean
   delivered: boolean
+  createdAt: string | Date
+  updatedAt: string
   // quotedMessage: {
   //   type: mongoose.Schema.ObjectId,
   // }

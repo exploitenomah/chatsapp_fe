@@ -1,3 +1,4 @@
+import { Conversation } from '@store/conversations/initialState'
 import { User } from '@store/user/initialState'
 
 export type UserInPreview = User & {
@@ -15,6 +16,7 @@ const initialState: UI = {
   appLoading: true,
   loading: false,
   userInPreview: null,
+  activeConversation: null,
 }
 
 export type UI = {
@@ -27,6 +29,7 @@ export type UI = {
   appLoading: boolean
   loading: boolean
   userInPreview: null | UserInPreview
+  activeConversation: Conversation | null
 }
 
 export default initialState

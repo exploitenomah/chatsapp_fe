@@ -1,8 +1,23 @@
 import ChatroomHeader from '@components/Custom/Conversations/ConversationHeader'
+import useEmitGetManyMessages from '@hooks/messages/useEmitGetManyMessages'
+import { Store } from '@store/index'
+import { UI } from '@store/ui/initialState'
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import MessageInput from '../MessageInput'
 import MessagesList from '../Messages/MessagesList'
 
 export default function ChatRoom() {
+  const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
+
+  const handleEmitGetManyMessages = useEmitGetManyMessages()
+
+  useEffect(() => {
+    if (activeConversation && !activeConversation?.hasFetchedInitialMessages) {
+      handleEmitGetManyMessages(activeConversation._id)
+    }
+  }, [activeConversation, handleEmitGetManyMessages])
+
   return (
     <div className='relative h-full'>
       <div className='bg-doodle absolute z-[1] top-0 left-0 w-full h-full' />

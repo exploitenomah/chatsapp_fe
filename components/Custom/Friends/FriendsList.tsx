@@ -2,7 +2,11 @@ import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageBu
 import { Friend, FriendsState } from '@store/friends/initialState'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
-import { removeUserInPreview, updateUserInPreview } from '@store/ui/slice'
+import {
+  removeUserInPreview,
+  toggleShowFriendsDrawer,
+  updateUserInPreview,
+} from '@store/ui/slice'
 import { User } from '@store/user/initialState'
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -58,6 +62,8 @@ const FriendItem = ({ friendItem }: { friendItem: Friend }) => {
             onClick={(e) => {
               e.stopPropagation()
               handleMessageButtonClick()
+              dispatch(removeUserInPreview())
+              dispatch(toggleShowFriendsDrawer())
             }}
           />
         </div>

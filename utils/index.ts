@@ -11,3 +11,11 @@ export const makeUniqueArrOfObjectsWith_IdKey = (
     ),
   )
 }
+
+export const bothArraysContainTheSameStringValues = (
+  arr1: string[],
+  arr2: string[],
+) => {
+  const setFromBothArrays = new Set([...arr1, ...arr2])
+  return arr1.length === arr2.length && setFromBothArrays.size === arr2.length
+}

@@ -11,6 +11,9 @@ const conversationsSlice = createSlice({
         action.payload.map((item) => ({
           ...item,
           messages: item.messages || [],
+          hasFetchedAllMessages: false,
+          hasFetchedInitialMessages: false,
+          messagesPage: 1,
         })),
       )
       if (state.hasFetchedConversations === false)
@@ -22,8 +25,26 @@ const conversationsSlice = createSlice({
         ...state.conversations,
       ])
     },
+    updateSingleConversation: (
+      state,
+      action: PayloadAction<{ conversationId: string; update: Conversation }>,
+    ) => {
+      const { conversationId, update } = action.payload
+      state.conversations = state.conversations.map((conversation) => {
+        if (conversation._id !== conversationId) return conversation
+        else
+          return {
+            ...conversation,
+            ...update,
+            messages: makeUniqueArrOfObjectsWith_IdKey([
+              ...(conversation.messages || []),
+              ...(update.messages || []),
+            ]),
+          }
+      })
+    },
   },
 })
-
+export const { updateSingleConversation, getMany } = conversationsSlice.actions
 export const conversationsActions = conversationsSlice.actions
 export default conversationsSlice.reducer

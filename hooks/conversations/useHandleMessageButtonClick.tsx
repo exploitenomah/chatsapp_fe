@@ -1,3 +1,4 @@
+import { setActiveConversation } from '@store/ui/slice'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import useCreateConversation from './useCreateConversation'
@@ -10,9 +11,15 @@ export default function useHandleMessageButtonClick(participants: string[]) {
 
   const handleMessageButtonClick = useCallback(() => {
     const existingConversation = checkIfConversationExistsInState()
-    if (existingConversation) console.log('dispatch conversation open')
+    if (existingConversation)
+      dispatch(
+        setActiveConversation({
+          ...existingConversation,
+          messages: existingConversation.messages || [],
+        }),
+      )
     else handleCreateConversation()
-  }, [checkIfConversationExistsInState, handleCreateConversation])
+  }, [checkIfConversationExistsInState, dispatch, handleCreateConversation])
 
   return handleMessageButtonClick
 }

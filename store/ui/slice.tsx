@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Conversation } from '@store/conversations/initialState'
-import { User } from '@store/user/initialState'
 import initialState, { UI, UserInPreview } from './initialState'
 
 export const uiSlice = createSlice({
@@ -44,18 +43,45 @@ export const uiSlice = createSlice({
       state.userInPreview = null
     },
     setActiveConversation: (state, action: PayloadAction<Conversation>) => {
-      state.activeConversation = action.payload
+      state.activeConversation = {
+        ...action.payload,
+        hasFetchedAllMessages: false,
+        hasFetchedInitialMessages: false,
+        messagesPage: 1,
+      }
     },
     removeActiveConversation: (state) => {
       state.activeConversation = null
     },
     updateActiveConversation: (
       state,
-      action: PayloadAction<Partial<Conversation>>,
+      action: PayloadAction<
+        Partial<
+          Conversation & {
+            hasFetchedAllMessages?: boolean
+            hasFetchedInitialMessages?: boolean
+            messagesPage?: number
+          }
+        >
+      >,
     ) => {
-      state.activeConversation = {
-        ...state.activeConversation,
-        ...(action.payload as Conversation),
+      if (state.activeConversation) {
+        state.activeConversation = {
+          ...state.activeConversation,
+          ...(action.payload as Conversation),
+
+          hasFetchedAllMessages:
+            action.payload.hasFetchedAllMessages ||
+            state.activeConversation?.hasFetchedAllMessages,
+
+          hasFetchedInitialMessages:
+            action.payload.hasFetchedInitialMessages ||
+            state.activeConversation?.hasFetchedInitialMessages,
+
+          messagesPage:
+            action.payload.messagesPage ||
+            state.activeConversation?.messagesPage,
+        }
       }
     },
   },
@@ -73,7 +99,9 @@ export const {
   updateLoading,
   updateUserInPreview,
   removeUserInPreview,
-  setActiveConversation,removeActiveConversation,updateActiveConversation
+  setActiveConversation,
+  removeActiveConversation,
+  updateActiveConversation,
 } = uiSlice.actions
 
 export default uiSlice.reducer

@@ -1,4 +1,4 @@
-import Button from '@components/HTML/Button'
+import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import { Friend, FriendsState } from '@store/friends/initialState'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
@@ -7,16 +7,24 @@ import { User } from '@store/user/initialState'
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
+import { MessageButton } from '../User/Profile'
 
 const FriendItem = ({ friendItem }: { friendItem: Friend }) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
+
   const dispatch = useDispatch()
+
   const friend = useMemo(() => {
     if (friendItem.requester._id === authenticatedUser._id)
       return friendItem.recipient
     else return friendItem.requester
   }, [friendItem.requester, friendItem.recipient, authenticatedUser._id])
+
+  const handleMessageButtonClick = useHandleMessageButtonClick([
+    authenticatedUser._id,
+    friend._id,
+  ])
 
   if (authenticatedUser._id === friend._id) return null
 
@@ -46,15 +54,12 @@ const FriendItem = ({ friendItem }: { friendItem: Friend }) => {
               {`${friend.firstName} ${friend.lastName}`}
             </div>
           </div>
-          <Button
+          <MessageButton
             onClick={(e) => {
               e.stopPropagation()
-              console.log('this')
+              handleMessageButtonClick()
             }}
-            className='bg-accent-default py-2 px-3 text-contrast-strong text-center'
-          >
-            Message
-          </Button>
+          />
         </div>
       </div>
     </div>

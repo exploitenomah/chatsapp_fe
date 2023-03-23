@@ -11,6 +11,12 @@ const conversationsSlice = createSlice({
       if (state.hasFetchedConversations === false)
         state.hasFetchedConversations = true
     },
+    new: (state, action: PayloadAction<Conversation>) => {
+      state.conversations = makeUniqueArrOfObjectsWith_IdKey([
+        action.payload,
+        ...state.conversations,
+      ])
+    },
   },
 })
 

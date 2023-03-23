@@ -10,7 +10,11 @@ import useRemoveFriend from '@hooks/friends/useRemoveFriend'
 import useAcceptFriend from '@hooks/friends/useAcceptFriend'
 import { Friend } from '@store/friends/initialState'
 import CloseIcon from '@assets/CloseIcon'
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { MouseEventHandler, ReactNode, useCallback, useEffect, useState } from 'react'
+import { Store } from '@store/index'
+import { User } from '@store/user/initialState'
+import { useSelector } from 'react-redux'
+import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 
 const AddFriendButton = ({
   show,
@@ -175,6 +179,23 @@ const ProfileFooter = ({
   )
 }
 
+export const MessageButton = ({
+  onClick,
+}: {
+  onClick: MouseEventHandler<HTMLButtonElement> | undefined
+}) => {
+  return (
+    <>
+      <Button
+        onClick={onClick}
+        className='bg-accent-default py-2 px-3 text-contrast-strong text-center'
+      >
+        Message
+      </Button>
+    </>
+  )
+}
+
 export default function Profile({
   user,
   friendship,
@@ -182,6 +203,12 @@ export default function Profile({
   user: UserInPreview
   friendship?: Friend
 }) {
+  const userInState = useSelector<Store, User>((store) => store.user)
+
+  const handleMessageButtonClick = useHandleMessageButtonClick([
+    user._id,
+    userInState._id,
+  ])
   return (
     <>
       <div className='flex flex-col h-full gap-y-2.5'>
@@ -231,9 +258,9 @@ export default function Profile({
               } p-0 gap-y-2 flex-col items-center justify-center`}
             >
               <span className='text-accent-bright text-base'>Friends</span>
-              <Button className='bg-accent-default py-2 px-3 text-contrast-strong text-center'>
-                Message
-              </Button>
+              <MessageButton
+                onClick={handleMessageButtonClick}
+              />
             </div>
           </div>
         </div>

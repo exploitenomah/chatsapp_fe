@@ -18,10 +18,8 @@ export const useRightPanelOutOfFocusClasses = () => {
 }
 
 export default function RightPanel() {
-  return (
-    <>
-      <InactiveRightPanel />
-      {/* <ChatRoom /> */}
-    </>
-  )
+  const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
+
+  if (activeConversation !== null) return <ChatRoom />
+  else return <InactiveRightPanel />
 }

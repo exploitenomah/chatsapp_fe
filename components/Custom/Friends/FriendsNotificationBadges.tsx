@@ -18,3 +18,14 @@ export const FriendRequestsCountBadge = () => {
     </>
   )
 }
+export const TotalFriendsNotificationsBadge = () => {
+  const { totalNotificationsCount } = useSelector<Store, FriendsState>((store) => store.friends)
+
+  if (totalNotificationsCount <= 0) return null
+
+  return (
+    <>
+      <Badge>{totalNotificationsCount}</Badge>
+    </>
+  )
+}

@@ -5,7 +5,7 @@ import { toggleShowFriendsDrawer } from '@store/ui/slice'
 import { HTMLAttributes, ReactNode } from 'react'
 import { useDispatch } from 'react-redux'
 import Avatar from '../Avatar'
-import { FriendRequestsCountBadge } from '@components/Custom/Friends/FriendsNotificationBadges'
+import { TotalFriendsNotificationsBadge } from '@components/Custom/Friends/FriendsNotificationBadges'
 
 export const NavItem = ({
   children,
@@ -46,7 +46,7 @@ export default function AppHeader() {
               }}
             >
               <div className='absolute bottom-[50%] scale-x-75 scale-y-75 right-[-3px] scale-1'>
-                <FriendRequestsCountBadge />
+                <TotalFriendsNotificationsBadge />
               </div>
               <FriendsIcon />
             </NavItem>

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import useOnNewMessage from '@hooks/messages/useOnNewMessage'
 import useOnGetManyMessages from '@hooks/messages/useOnGetManyMessages'
+import useOnUpdateMessages from '@hooks/messages/useOnUpdateMessage'
 
 export default function useMessages() {
   const { token } = useSelector<Store, Auth>((store) => store.auth)
@@ -25,6 +26,7 @@ export default function useMessages() {
 
   const handleNewMessage = useOnNewMessage()
   const handleGetManyMessages = useOnGetManyMessages()
+  const handleUpdateMessagesSeen = useOnUpdateMessages()
 
   useEffect(() => {
     messagesSocket.onAny((event) => {
@@ -33,6 +35,7 @@ export default function useMessages() {
 
     messagesSocket.on('new', handleNewMessage)
     messagesSocket.on('getMany', handleGetManyMessages)
+    messagesSocket.on('messagesSeen', handleUpdateMessagesSeen)
 
     messagesSocket.io.on('reconnect', (attempt) => {
       console.error(`${attempt} ==> at root socket`)
@@ -78,7 +81,8 @@ export default function useMessages() {
 
     return () => {
       messagesSocket.off('new', handleNewMessage)
-      messagesSocket.on('getMany', handleGetManyMessages)
+      messagesSocket.off('getMany', handleGetManyMessages)
+      messagesSocket.off('update', handleUpdateMessagesSeen)
       messagesSocket.off('connect', () => console.log(`connect off`))
       messagesSocket.off('disconnect', (reason) => console.log(`${reason} off`))
       messagesSocket.io.off('error', (msg) => console.log(`${msg} off`))
@@ -91,7 +95,13 @@ export default function useMessages() {
         console.log(`${data} off`),
       )
     }
-  }, [dispatch, handleGetManyMessages, handleNewMessage, messagesSocket])
+  }, [
+    dispatch,
+    handleGetManyMessages,
+    handleNewMessage,
+    handleUpdateMessagesSeen,
+    messagesSocket,
+  ])
 
   return messagesSocket
 }

@@ -16,6 +16,7 @@ import useAcceptFriend from '@hooks/friends/useAcceptFriend'
 import useRemoveFriend from '@hooks/friends/useRemoveFriend'
 import { User } from '@store/user/initialState'
 import useFriendRequestSeen from '@hooks/friends/useFriendRequestSeen'
+import useElementIsInView from '@hooks/useElementIsInView'
 
 const useUpdateFriendRequestSeen = (
   elementRef: MutableRefObject<HTMLDivElement | null>,
@@ -26,21 +27,18 @@ const useUpdateFriendRequestSeen = (
     (store) => store.ui,
   )
   const friendRequestSeen = useFriendRequestSeen()
+  const elementInViewHandler = useElementIsInView()
   const handleElementInView = useCallback(
     (currentElementRef: HTMLDivElement | null) => {
-      const elementCurrentParent = currentElementRef?.parentElement
       if (
         showFriendRequestsDrawer &&
         elementRef.current &&
         friendRequest.recipient._id === userId &&
         friendRequest.seen === false
       ) {
-        let elementIsInView =
-          currentElementRef?.offsetTop! - elementCurrentParent?.scrollTop! <=
-          elementCurrentParent?.clientHeight!
-        if (elementIsInView) {
+        elementInViewHandler(currentElementRef, () => {
           friendRequestSeen(friendRequest._id)
-        }
+        })
       }
     },
     [
@@ -49,6 +47,7 @@ const useUpdateFriendRequestSeen = (
       friendRequest.recipient._id,
       friendRequest.seen,
       friendRequestSeen,
+      elementInViewHandler,
       showFriendRequestsDrawer,
       userId,
     ],
@@ -61,7 +60,9 @@ const useUpdateFriendRequestSeen = (
       handleElementInView(currentElementRef)
     })
     return () => {
-      currentElementRef?.parentElement?.removeEventListener('scroll', () => {})
+      currentElementRef?.parentElement?.removeEventListener('scroll', () => {
+        handleElementInView(currentElementRef)
+      })
     }
   }, [elementRef, handleElementInView])
   return

@@ -38,5 +38,5 @@ export type UI = {
       })
 }
 
-export const messagesLimit = 5
+export const messagesLimit = 100
 export default initialState

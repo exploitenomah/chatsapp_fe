@@ -45,9 +45,10 @@ export const uiSlice = createSlice({
     setActiveConversation: (state, action: PayloadAction<Conversation>) => {
       state.activeConversation = {
         ...action.payload,
-        hasFetchedAllMessages: false,
-        hasFetchedInitialMessages: false,
-        messagesPage: 1,
+        hasFetchedAllMessages: action.payload.hasFetchedAllMessages || false,
+        hasFetchedInitialMessages:
+          action.payload.hasFetchedInitialMessages || false,
+        messagesPage: action.payload.messagesPage || 1,
       }
     },
     removeActiveConversation: (state) => {

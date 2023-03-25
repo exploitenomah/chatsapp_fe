@@ -1,10 +1,10 @@
+import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import { Conversation } from '@store/conversations/initialState'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
-import { setActiveConversation } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
-import { useCallback, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useCallback, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 
 export default function ConversationItem({
@@ -12,8 +12,6 @@ export default function ConversationItem({
 }: {
   conversation: Conversation
 }) {
-  const [active, setActive] = useState(false)
-  const dispatch = useDispatch()
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
 
@@ -24,13 +22,19 @@ export default function ConversationItem({
       ),
     [authenticatedUser, conversation.participants],
   )
-  const handleClick = useCallback(() => {
-    dispatch(setActiveConversation(conversation))
-  }, [conversation, dispatch])
+
+  const handleMessageButtonClick = useHandleMessageButtonClick(
+    conversation.participants.map((el) => el._id),
+  )
+
+  const handleOnClick = useCallback(() => {
+    if (activeConversation?._id === conversation._id) return
+    handleMessageButtonClick()
+  }, [activeConversation?._id, conversation._id, handleMessageButtonClick])
 
   return (
     <div
-      onClick={handleClick}
+      onClick={handleOnClick}
       className={`w-full h-[72px] flex items-center ${
         activeConversation?._id === conversation._id
           ? 'bg-secondary-darkest'

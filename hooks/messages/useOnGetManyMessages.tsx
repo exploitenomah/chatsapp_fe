@@ -21,15 +21,16 @@ export default function useHandleGetManyMessages() {
 
   const formatUpdatedConversation = useCallback(
     (oldConversation: Conversation, messages: Message[]) => {
-      const updatedConversation = {
-        ...oldConversation,
-        messages: makeUniqueArrOfObjectsWith_IdKey([
+      const newMessages = makeUniqueArrOfObjectsWith_IdKey([
           ...messages,
           ...(oldConversation.messages || []),
-        ]),
+        ])
+      const updatedConversation = {
+        ...oldConversation,
+        messages: newMessages,
         hasFetchedInitialMessages: true,
         hasFetchedAllMessages: messages.length < messagesLimit,
-        messagesPage: (oldConversation.messagesPage || 0) + 1,
+        messagesPage: (newMessages.length / messagesLimit || 0) + 1,
       }
       return updatedConversation
     },

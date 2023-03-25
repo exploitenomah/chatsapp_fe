@@ -5,18 +5,19 @@ import { UI } from '@store/ui/initialState'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateActiveConversation } from '@store/ui/slice'
 import { makeUniqueArrOfObjectsWith_IdKey } from '@utils/index'
+import { updateSingleConversation } from '@store/conversations/slice'
+import { ConversationsState } from '@store/conversations/initialState'
 
 export default function useOnNewMessage() {
   const dispatch = useDispatch()
 
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
-
+  const { conversations } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
   const handleNewMessage = useCallback(
     (message: Message) => {
-      if (
-        activeConversation &&
-        message.conversationId === activeConversation._id
-      ) {
+      if (message.conversationId === activeConversation?._id) {
         dispatch(
           updateActiveConversation({
             ...activeConversation,
@@ -26,9 +27,27 @@ export default function useOnNewMessage() {
             ]),
           }),
         )
+      } else {
+        const conversationInState = conversations.filter(
+          (conversation) => conversation._id === message.conversationId,
+        )[0]
+        if (conversationInState) {
+          dispatch(
+            updateSingleConversation({
+              conversationId: message.conversationId,
+              update: {
+                ...conversationInState,
+                messages: makeUniqueArrOfObjectsWith_IdKey([
+                  ...(conversationInState.messages || []),
+                  message,
+                ]),
+              },
+            }),
+          )
+        }
       }
     },
-    [activeConversation, dispatch],
+    [activeConversation, conversations, dispatch],
   )
   return handleNewMessage
 }

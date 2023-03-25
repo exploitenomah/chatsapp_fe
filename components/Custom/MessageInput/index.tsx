@@ -22,11 +22,15 @@ export default function MessageInput() {
   const handleSendMessage = useSendMessage()
 
   const sendMessage = useCallback(() => {
-    if (message.text.trim().length === 0 && message.attachments.length === 0)
-      return setMessage((prev) => ({ ...prev, text: '' }))
+    if (message.text.trim().length === 0 && message.attachments.length === 0) {
+      setMessage((prev) => ({ ...prev, text: '' }))
+      return
+    }
+
     if (activeConversation) {
       handleSendMessage(activeConversation, { ...message, sender: user._id })
-       setMessage((prev) => ({ ...prev, text: '' }))
+      setMessage((prev) => ({ ...prev, text: '' }))
+      return
     }
   }, [activeConversation, handleSendMessage, message, user._id])
 
@@ -48,9 +52,10 @@ export default function MessageInput() {
               setMessage((prev) => ({ ...prev, text: value }))
             }}
             onKeyDown={(e) => {
-              if (e.shiftKey && e.key === 'Enter') return
-              e.key === 'Enter' &&
-                !e.shiftKey && [e.preventDefault(), sendMessage()]
+              if (e.key === 'Enter' && e.shiftKey === false) {
+                e.preventDefault()
+                sendMessage()
+              } else return
             }}
             onFocus={(e) => console.log('focused', e.target.selectionStart)}
             value={message.text}

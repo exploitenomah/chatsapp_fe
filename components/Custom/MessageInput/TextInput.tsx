@@ -1,4 +1,9 @@
-import { FocusEventHandler, KeyboardEventHandler, RefObject, useCallback } from 'react'
+import {
+  FocusEventHandler,
+  KeyboardEventHandler,
+  RefObject,
+  useCallback,
+} from 'react'
 
 export default function TextInput({
   textInputRef,
@@ -15,7 +20,6 @@ export default function TextInput({
 }) {
   const calcHeight = useCallback(function (value: string) {
     let numberOfLineBreaks = (value.match(/\n/g) || []).length
-    //* min-height + lines x line-height + padding + border *//
     let newHeight = 24 + numberOfLineBreaks * 20 + 0 + 0
     return newHeight
   }, [])
@@ -33,8 +37,8 @@ export default function TextInput({
         placeholder='Type a message'
         onFocus={onFocus}
         onChange={(e) => onChange(e.target.value)}
-        onKeyUpCapture={(e) => handleHeightChange()}
-        onKeyDown={onKeyDown}
+        onKeyUpCapture={() => handleHeightChange()}
+        onKeyDown={(e) => onKeyDown(e)}
         ref={textInputRef}
         value={value}
         className='resize-none overflow-hidden h-[24px] max-h-[112] w-full focus:outline-0 leading-5 bg-transparent transition-all duration-75'

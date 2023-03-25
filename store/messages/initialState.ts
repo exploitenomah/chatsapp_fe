@@ -1,5 +1,11 @@
 import { User } from '@store/user/initialState'
-export const messagesEvents = ['new', 'update', 'getOne', 'getMany']
+export const messagesEvents = [
+  'new',
+  'update',
+  'getOne',
+  'getMany',
+  'messagesSeen',
+]
 
 export type Message = {
   _id: string

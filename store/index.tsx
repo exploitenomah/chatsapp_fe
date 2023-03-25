@@ -7,6 +7,15 @@ import friends from './friends/slice'
 import conversations from './conversations/slice'
 
 const store = configureStore({
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      immutableCheck: {
+        ignoredPaths: ['ui.activeConversation', 'conversations.conversations'],
+      },
+      serializableCheck: {
+        ignoredPaths: ['ui.activeConversation', 'conversations.conversations'],
+      },
+    }),
   reducer: { ui, auth, notification, user, friends, conversations },
 })
 const state = store.getState()

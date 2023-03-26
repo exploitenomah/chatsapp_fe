@@ -16,7 +16,8 @@ export default function useHandleMessageButtonClick(participants: string[]) {
         setActiveConversation({
           ...existingConversation,
           messages: existingConversation.messages || [],
-        }),
+        shouldScrollMessages: true
+      }),
       )
     else handleCreateConversation()
   }, [checkIfConversationExistsInState, dispatch, handleCreateConversation])

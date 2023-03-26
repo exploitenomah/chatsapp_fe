@@ -14,6 +14,7 @@ const conversationsSlice = createSlice({
           hasFetchedAllMessages: false,
           hasFetchedInitialMessages: false,
           messagesPage: 1,
+          shouldScrollMessages: true,
         })),
       )
       if (state.hasFetchedConversations === false)
@@ -43,8 +44,20 @@ const conversationsSlice = createSlice({
           }
       })
     },
+    updateNotifications: (
+      state,
+      action: PayloadAction<{
+        totalUnseenMessages: number
+        conversationsWithUnseenMessagesCount: number
+      }>,
+    ) => {
+      state.totalUnseenMessages = action.payload.totalUnseenMessages
+      state.conversationsWithUnseenMessagesCount =
+        action.payload.conversationsWithUnseenMessagesCount
+    },
   },
 })
-export const { updateSingleConversation, getMany } = conversationsSlice.actions
+export const { updateSingleConversation, getMany, updateNotifications } =
+  conversationsSlice.actions
 export const conversationsActions = conversationsSlice.actions
 export default conversationsSlice.reducer

@@ -7,7 +7,7 @@ import { User } from '@store/user/initialState'
 import { Message } from '@store/messages/initialState'
 import { UI } from '@store/ui/initialState'
 
-const UnreadMessagesCountBanner = () => {
+const UnreadMessagesCountBanner = ({ show }: { show: boolean }) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
   const unreadMessagesCount = useMemo(() => {
@@ -19,7 +19,13 @@ const UnreadMessagesCountBanner = () => {
   }, [activeConversation, authenticatedUser._id])
   if (unreadMessagesCount === 0) return null
   return (
-    <div className='flex my-3 justify-center items-center py-1 w-full bg-primary-darkest/50'>
+    <div
+      className={`${
+        show
+          ? 'opacity-100 visible h-auto py-1 my-3 '
+          : 'opacity-0 invisible h-0 m-0 py-0 '
+      } transition-all duration-500 flex justify-center items-center w-full bg-primary-darkest/50`}
+    >
       <div className='uppercase font-medium text-sm bg-primary-default px-4 py-2 rounded-full '>
         {unreadMessagesCount} unread
         {unreadMessagesCount > 1 ? <> messages </> : <> message</>}
@@ -51,10 +57,12 @@ const MessageWrapperWithScrollIntoViewRef = ({
   children,
   shouldScrollIntoView,
   isNotSender,
+  shouldShowUnreadBannerAbove,
 }: {
   children: ReactNode | ReactNode[]
   shouldScrollIntoView: boolean
   isNotSender?: boolean
+  shouldShowUnreadBannerAbove?: boolean
 }) => {
   const msgRef = useRef<HTMLDivElement | null>(null)
   const [hasScrolledIntoView, setHasScrolledIntoView] = useState(false)
@@ -62,7 +70,6 @@ const MessageWrapperWithScrollIntoViewRef = ({
     if (shouldScrollIntoView && !hasScrolledIntoView) {
       if (msgRef.current) {
         msgRef.current.scrollIntoView({
-          behavior: 'smooth',
           block: 'start',
           inline: 'nearest',
         })
@@ -72,7 +79,9 @@ const MessageWrapperWithScrollIntoViewRef = ({
   }, [hasScrolledIntoView, shouldScrollIntoView])
   return (
     <div ref={msgRef}>
-      {shouldScrollIntoView && isNotSender && <UnreadMessagesCountBanner />}
+      <UnreadMessagesCountBanner
+        show={shouldShowUnreadBannerAbove === true && isNotSender === true}
+      />
       {children}
     </div>
   )
@@ -81,9 +90,11 @@ const MessageWrapperWithScrollIntoViewRef = ({
 export default function MessageComponent({
   message,
   scrollMessageIntoView,
+  shouldShowUnreadBannerAbove,
 }: {
   message: Message
   scrollMessageIntoView: boolean
+  shouldShowUnreadBannerAbove: boolean
 }) {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const isNotSender = useMemo(
@@ -95,6 +106,7 @@ export default function MessageComponent({
       <MessageWrapperWithScrollIntoViewRef
         isNotSender={isNotSender}
         shouldScrollIntoView={scrollMessageIntoView}
+        shouldShowUnreadBannerAbove={shouldShowUnreadBannerAbove}
       >
         <CurrentUserMsg message={message} />
       </MessageWrapperWithScrollIntoViewRef>
@@ -103,6 +115,7 @@ export default function MessageComponent({
     <MessageWrapperWithScrollIntoViewRef
       isNotSender={isNotSender}
       shouldScrollIntoView={scrollMessageIntoView}
+      shouldShowUnreadBannerAbove={shouldShowUnreadBannerAbove}
     >
       <OtherUserMsg message={message} />
     </MessageWrapperWithScrollIntoViewRef>

@@ -1,32 +1,53 @@
-import ChatroomHeader from '@components/Custom/Conversations/ConversationHeader'
+import ChevronIcon from '@assets/ChevronDownIcon'
+import ConversationRoomHeader from '@components/Custom/Conversations/ConversationHeader'
+import Button from '@components/HTML/Button'
 import useEmitGetManyMessages from '@hooks/messages/useEmitGetManyMessages'
 import useEmitUpdateMessages from '@hooks/messages/useEmitUpdateMessage'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
+import { updateActiveConversation } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
-import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import {
+  UIEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import Badge from '../Badge'
 import MessageInput from '../MessageInput'
 import MessagesList from '../Messages/MessagesList'
 
-export default function ChatRoom() {
+const MessagesListContainer = () => {
+  const handleUpdateMessagesSeen = useEmitUpdateMessages()
+  const [showScrollToBottomButton, setShowScrollToBottomButton] =
+    useState(false)
+  const msgsContainerRef = useRef<HTMLDivElement | null>(null)
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
+  const unseenMsgs = useMemo(
+    () =>
+      activeConversation?.messages?.filter(
+        (msg) => msg.sender !== authenticatedUser._id && msg.seen === false,
+      ),
+    [activeConversation?.messages, authenticatedUser._id],
+  )
+  const dispatch = useDispatch()
 
-  const handleEmitGetManyMessages = useEmitGetManyMessages()
-  const handleUpdateMessagesSeen = useEmitUpdateMessages()
-
-  useEffect(() => {
-    if (
-      activeConversation &&
-      activeConversation?.hasFetchedInitialMessages === false
-    ) {
-      handleEmitGetManyMessages(activeConversation._id)
+  const handleScrollToBottomClick = useCallback(() => {
+    const lastElementChild = msgsContainerRef.current?.lastElementChild
+    if (lastElementChild) {
+      lastElementChild.scrollIntoView({
+        block: 'start',
+        inline: 'nearest',
+      })
     }
-  }, [activeConversation, handleEmitGetManyMessages])
+  }, [msgsContainerRef])
 
-  useEffect(() => {
-    const updateSeenInterval = setInterval(() => {
+  const updateSeenMessages = useCallback(() => {
+    return setTimeout(() => {
       if (activeConversation?.messages) {
         const unseenMessage = activeConversation.messages.find(
           (msg) => msg.seen === false && msg.sender !== authenticatedUser._id,
@@ -38,23 +59,91 @@ export default function ChatRoom() {
           )
         }
       }
-    }, 3000)
+    }, 5000)
+  }, [
+    activeConversation?.messages,
+    activeConversation?.participants,
+    authenticatedUser._id,
+    handleUpdateMessagesSeen,
+  ])
 
-    return () => {
-      clearInterval(updateSeenInterval)
+  const handleMsgContainerScroll: UIEventHandler<HTMLDivElement> = useCallback(
+    (scrollEvent) => {
+      const scrollEventTarget = scrollEvent.target as HTMLDivElement
+      const isElementBottomReached =
+        scrollEventTarget.scrollHeight - scrollEventTarget.scrollTop ===
+        scrollEventTarget.clientHeight
+      setShowScrollToBottomButton(
+        scrollEventTarget.scrollHeight -
+          scrollEventTarget.scrollTop -
+          scrollEventTarget.clientHeight >
+          40,
+      )
+      if (isElementBottomReached) {
+        updateSeenMessages()
+        activeConversation &&
+          activeConversation.shouldScrollMessages === true &&
+          dispatch(
+            updateActiveConversation({
+              ...activeConversation,
+              shouldScrollMessages: false,
+            }),
+          )
+      }
+    },
+    [activeConversation, dispatch, updateSeenMessages],
+  )
+
+  return (
+    <div className='absolute z-[2] w-full h-[88%] '>
+      <div
+        ref={msgsContainerRef}
+        onScroll={handleMsgContainerScroll}
+        className='absolute z-[2] bg-transparent h-full overflow-auto flex flex-col w-full text-sm py-6'
+      >
+        <MessagesList />
+      </div>
+      {showScrollToBottomButton ? (
+        <div className='absolute z-[3] right-[11px] bottom-[17px] w-fit'>
+          <Button
+            className={`bg-primary-light rounded-full w-[42px] h-[42px] p-0 flex justify-center items-center`}
+            onClick={() => handleScrollToBottomClick()}
+          >
+            <ChevronIcon />
+            {unseenMsgs?.length! > 0 && (
+              <span className='block absolute w-[19.19px] h-[19.19px] -top-2 -left-1'>
+                <Badge>{unseenMsgs?.length}</Badge>
+              </span>
+            )}
+          </Button>
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+export default function ConversationRoom() {
+  const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
+
+  const handleEmitGetManyMessages = useEmitGetManyMessages()
+
+  useEffect(() => {
+    if (
+      activeConversation &&
+      activeConversation?.hasFetchedInitialMessages === false
+    ) {
+      handleEmitGetManyMessages(activeConversation._id)
     }
-  }, [activeConversation, authenticatedUser._id, handleUpdateMessagesSeen])
+  }, [activeConversation, handleEmitGetManyMessages])
 
   return (
     <div className='relative h-full'>
       <div className='bg-doodle absolute z-[1] top-0 left-0 w-full h-full' />
       <div className='bg-primary-darkest absolute z-[0] top-0 left-0 w-full h-full' />
       <div className='relative z-[2] bg-transparent'>
-        <ChatroomHeader />
+        <ConversationRoomHeader />
       </div>
-      <div className='absolute z-[2] bg-transparent h-[88%] overflow-auto flex flex-col w-full text-sm py-6'>
-        <MessagesList />
-      </div>
+      <MessagesListContainer />
       <footer className='absolute w-full z-[2] bottom-0'>
         <MessageInput />
       </footer>

@@ -36,8 +36,8 @@ const useUpdateFriendRequestSeen = (
         friendRequest.recipient._id === userId &&
         friendRequest.seen === false
       ) {
-        elementInViewHandler(currentElementRef, () => {
-          friendRequestSeen(friendRequest._id)
+        elementInViewHandler(currentElementRef, (elementIsInView) => {
+          elementIsInView && friendRequestSeen(friendRequest._id)
         })
       }
     },

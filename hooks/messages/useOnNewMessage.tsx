@@ -22,29 +22,30 @@ export default function useOnNewMessage() {
           updateActiveConversation({
             ...activeConversation,
             messages: makeUniqueArrOfObjectsWith_IdKey([
-              ...(activeConversation?.messages || []),
               message,
+              ...(activeConversation?.messages || []),
             ]),
+            latestMessage: message,
           }),
         )
-      } else {
-        const conversationInState = conversations.filter(
-          (conversation) => conversation._id === message.conversationId,
-        )[0]
-        if (conversationInState) {
-          dispatch(
-            updateSingleConversation({
-              conversationId: message.conversationId,
-              update: {
-                ...conversationInState,
-                messages: makeUniqueArrOfObjectsWith_IdKey([
-                  ...(conversationInState.messages || []),
-                  message,
-                ]),
-              },
-            }),
-          )
-        }
+      }
+      const conversationInState = conversations.filter(
+        (conversation) => conversation._id === message.conversationId,
+      )[0]
+      if (conversationInState) {
+        dispatch(
+          updateSingleConversation({
+            conversationId: message.conversationId,
+            update: {
+              ...conversationInState,
+              messages: makeUniqueArrOfObjectsWith_IdKey([
+                ...(conversationInState.messages || []),
+                message,
+              ]),
+              latestMessage: message,
+            },
+          }),
+        )
       }
     },
     [activeConversation, conversations, dispatch],

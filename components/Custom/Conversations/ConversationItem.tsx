@@ -1,11 +1,38 @@
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import { Conversation } from '@store/conversations/initialState'
 import { Store } from '@store/index'
+import { Message } from '@store/messages/initialState'
 import { UI } from '@store/ui/initialState'
 import { User } from '@store/user/initialState'
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import Avatar from '../Avatar'
+import Badge from '../Badge'
+
+const LatestMessage = ({
+  latestMessage,
+  otherUser,
+}: {
+  latestMessage?: Message
+  otherUser?: User
+}) => {
+  if (!latestMessage || !otherUser) return null
+  return (
+    <>
+      <span
+        title={latestMessage.text}
+        className='absolute w-full text-ellipsis overflow-hidden'
+      >
+        {otherUser._id === latestMessage.sender ? (
+          otherUser?.nickName
+        ) : (
+          <>You</>
+        )}
+        : {latestMessage.text}
+      </span>
+    </>
+  )
+}
 
 export default function ConversationItem({
   conversation,
@@ -22,6 +49,53 @@ export default function ConversationItem({
       ),
     [authenticatedUser, conversation.participants],
   )
+
+  const unseenMessages = useMemo(() => {
+    return conversation.messages
+      ? conversation.messages.filter(
+          (msg) => msg.seen === false && msg.sender !== authenticatedUser._id,
+        )
+      : []
+  }, [authenticatedUser._id, conversation.messages])
+
+  const showUnseenMsgsBadge = useMemo(
+    () =>
+      unseenMessages.length > 0 && activeConversation?._id !== conversation._id,
+    [activeConversation?._id, conversation._id, unseenMessages.length],
+  )
+
+  const timeOfLastSentMsg = useMemo(() => {
+    let timeStringToBeReturned
+    let latestMsgCreatedAt = conversation.latestMessage?.createdAt
+    if (latestMsgCreatedAt) {
+      latestMsgCreatedAt = new Date(latestMsgCreatedAt)
+      const today = new Date(Date.now())
+      const thisYear = today.getFullYear()
+      const thisMonth = today.getMonth()
+      const thisDate = today.getDate()
+      const yearOfLatestMsg = latestMsgCreatedAt.getFullYear()
+      const monthOfLatestMsg = latestMsgCreatedAt.getMonth()
+      const dateOfLatestMsg = latestMsgCreatedAt.getDate()
+
+      if (yearOfLatestMsg === thisYear || monthOfLatestMsg === thisMonth) {
+        let dateDifference = thisDate - dateOfLatestMsg
+        if (dateDifference < 1)
+          timeStringToBeReturned = latestMsgCreatedAt
+            .toLocaleTimeString()
+            .slice(0, 5)
+        else if (dateDifference < 2) timeStringToBeReturned = 'Yesterday'
+        else if (dateDifference < 7)
+          timeStringToBeReturned = new Intl.DateTimeFormat('en-GB', {
+            weekday: 'long',
+          }).format(latestMsgCreatedAt)
+        else
+          timeStringToBeReturned =
+            latestMsgCreatedAt.toLocaleDateString('en-GB')
+      } else
+        timeStringToBeReturned = latestMsgCreatedAt.toLocaleDateString('en-GB')
+      return timeStringToBeReturned
+    } else return null
+  }, [conversation.latestMessage?.createdAt])
 
   const handleMessageButtonClick = useHandleMessageButtonClick(
     conversation.participants.map((el) => el._id),
@@ -45,14 +119,41 @@ export default function ConversationItem({
         <div className='px-[15px] flex justify-center items-center shrink-0'>
           <Avatar width={49} height={49} />
         </div>
-        <div className='h-[72px] basis-auto flex grow flex-col justify-center items-start border-b border-b-contrast-secondary/20'>
-          <div className='text-contrast-strong text-base'>
-            {otherUser?.nickName}
-          </div>
-          <div className='text-contrast-secondary text-sm font-normal whitespace-nowrap flex relative w-full h-[20px]'>
-            <span className='absolute w-full text-ellipsis overflow-hidden'>
-              {conversation.latestMessage?.text}
-            </span>
+        <div className='h-[72px] grow  flex items-center border-b border-b-contrast-secondary/20 pr-3'>
+          <div className='basis-auto flex items-center grow'>
+            <div className='grow'>
+              <div className='text-contrast-strong text-base '>
+                {otherUser?.nickName}
+              </div>
+              <div className='text-contrast-secondary text-[14px] font-normal whitespace-nowrap flex relative w-[90%] h-[20px]'>
+                <LatestMessage
+                  otherUser={otherUser}
+                  latestMessage={conversation?.latestMessage}
+                />
+              </div>
+            </div>
+            <div className='flex flex-col justify-center self-start'>
+              <div
+                className={`${
+                  showUnseenMsgsBadge
+                    ? 'text-accent-dark font-bold'
+                    : 'text-contrast-secondary/95'
+                } text-xs self-start`}
+              >
+                {timeOfLastSentMsg}
+              </div>
+              {showUnseenMsgsBadge ? (
+                <div className='relative w-[19.19px] h-[19.19px] mt-[2px] ml-auto'>
+                  <Badge>
+                    {unseenMessages.length < 100 ? (
+                      unseenMessages.length
+                    ) : (
+                      <span className='text-[9px]'>99+</span>
+                    )}
+                  </Badge>
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

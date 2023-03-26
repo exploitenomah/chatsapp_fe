@@ -14,17 +14,22 @@ export type Conversation = {
   hasFetchedAllMessages?: boolean
   hasFetchedInitialMessages?: boolean
   messagesPage?: number
+  shouldScrollMessages?: boolean
 }
 
 export type ConversationsState = {
   conversations: Conversation[]
   hasFetchedConversations: boolean
+  conversationsWithUnseenMessagesCount: number
+  totalUnseenMessages: number
 }
 
 export const conversationEvents = ['new', 'update', 'getOne', 'getMany']
 const initialState: ConversationsState = {
   conversations: [],
   hasFetchedConversations: false,
+  conversationsWithUnseenMessagesCount: 0,
+  totalUnseenMessages: 0,
 }
 
 export default initialState

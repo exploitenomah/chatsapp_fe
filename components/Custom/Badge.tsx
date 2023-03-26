@@ -9,7 +9,7 @@ export default function Badge({
     <>
       <span
         {...otherProps}
-        className='block py-[2px] px-[6px] bg-accent-light text-primary-dark text-xs rounded-full'
+        className='absolute w-full h-full flex justify-center items-center py-[2px] px-[6px] bg-accent-dark text-primary-dark text-xs rounded-full'
       >
         {children}
       </span>

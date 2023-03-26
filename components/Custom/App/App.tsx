@@ -20,6 +20,8 @@ import { Store } from '@store/index'
 import { useSelector } from 'react-redux'
 import { FriendsState } from '@store/friends/initialState'
 import useGetManyPendingFriends from '@hooks/friends/useFetchPendingFriends'
+import useMessages from '@sockets/useMessages'
+import useUpdateConversationsNotifications from '@hooks/conversations/useUpdateConversationsNotifications'
 
 export default function App() {
   const {
@@ -30,6 +32,7 @@ export default function App() {
   const user = useSelector<Store, User>((store) => store.user)
   const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses()
   const conversationsSocket = useConversations()
+  useMessages()
   const conversationsSocketEmitters = useEmitter(
     conversationsSocket,
     conversationEvents,
@@ -46,7 +49,7 @@ export default function App() {
   }, [conversationsSocketEmitters, userSocketEmitters])
 
   useUpdateFriendsNotifications()
-
+  useUpdateConversationsNotifications()
   useEffect(() => {
     if (user._id.length > 0) {
       !hasFetchedInitialFriends && handleGetFriends()

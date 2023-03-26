@@ -28,17 +28,30 @@ export default function MessagesList() {
       return (
         (idx === arr.length - 1 &&
           (message.sender === authenticatedUser._id ||
-            arr.every((msg: { seen: boolean }) => msg.seen === true))) ||
-        (idx === 0 &&
-          arr.every((msg: { seen: boolean }) => msg.seen === false)) ||
-        (message.seen === false &&
+            (activeConversation?.shouldScrollMessages === true &&
+              arr.every((msg: Message) => msg.seen === true)))) ||
+        (idx === 0 && arr.every((msg: Message) => msg.seen === false)) ||
+        (activeConversation?.shouldScrollMessages === true &&
+          message.seen === false &&
           message.sender !== authenticatedUser._id &&
           (arr[idx - 1]?.seen === true ||
             arr[idx - 1]?.sender === authenticatedUser._id))
       )
     },
+    [activeConversation?.shouldScrollMessages, authenticatedUser._id],
+  )
+
+  const getShouldShowUnreadBannerAbove = useCallback(
+    (message: Message, idx: number, arr: Message[]) => {
+      return (
+        message.seen === false &&
+        message.sender !== authenticatedUser._id &&
+        arr[idx - 1]?.seen === true
+      )
+    },
     [authenticatedUser._id],
   )
+
   if (messages.length === 0) return null
   return (
     <>
@@ -52,6 +65,11 @@ export default function MessagesList() {
           <MessageComponent
             message={message}
             scrollMessageIntoView={getIfShouldScrollMessageIntoView(
+              message,
+              idx,
+              arr,
+            )}
+            shouldShowUnreadBannerAbove={getShouldShowUnreadBannerAbove(
               message,
               idx,
               arr,

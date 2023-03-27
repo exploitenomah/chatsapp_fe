@@ -5,6 +5,7 @@ export const messagesEvents = [
   'getOne',
   'getMany',
   'messagesSeen',
+  'messagesDelivered',
 ]
 
 export type Message = {

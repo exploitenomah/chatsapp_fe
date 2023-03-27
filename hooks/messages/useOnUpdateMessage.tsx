@@ -22,6 +22,7 @@ export default function useOnUpdateMessages() {
             messages: (activeConversation?.messages || []).map((msg) => ({
               ...msg,
               seen: true,
+              delivered: true,
             })),
           }),
         )
@@ -38,7 +39,15 @@ export default function useOnUpdateMessages() {
               messages: (conversationInState.messages || []).map((msg) => ({
                 ...msg,
                 seen: true,
+                delivered: true,
               })),
+              latestMessage: conversationInState.latestMessage
+                ? {
+                    ...conversationInState.latestMessage,
+                    seen: true,
+                    delivered: true,
+                  }
+                : undefined,
             },
           }),
         )

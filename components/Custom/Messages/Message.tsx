@@ -1,7 +1,5 @@
 import { Store } from '@store/index'
 import { useSelector } from 'react-redux'
-import CurrentUserMsg from './CurrentUser'
-import OtherUserMsg from './OtherUser'
 import {
   HTMLAttributes,
   ReactNode,
@@ -13,7 +11,8 @@ import {
 import { User } from '@store/user/initialState'
 import { Message } from '@store/messages/initialState'
 import { UI } from '@store/ui/initialState'
-import MessageSentIcon from '@assets/MessageSentIcon'
+import SingleCheckIcon from '@assets/SingleCheckIcon'
+import DoubleCheckIcon from '@assets/DoubleCheckIcon'
 import MessageTailIn from '@assets/MessageTailIn'
 import MessageTailOut from '@assets/MessageTailOut'
 
@@ -127,10 +126,18 @@ const StyledMessageComponent = ({
           <div className='whitespace-pre-wrap'>
             <span>{message.text}</span>
           </div>
-          <div className='self-end ml-1'>
-            <div className='ml-1 -mb-1.5 whitespace-nowrap text-[11px] text-contrast-primary/80'>
+          <div className='self-end ml-1 flex items-center gap-x-[2px] text-[11px] h-[15px]'>
+            <div className='ml-1 -mb-1.5 whitespace-nowrap text-contrast-primary/80'>
               {new Date(message.createdAt).toLocaleTimeString().slice(0, 5)}
             </div>
+            <span className='text-contrast-strong/50 pt-[6px]'>
+              {message.seen === false && <SingleCheckIcon />}
+              {message.delivered === true && !isOtherUser && (
+                <DoubleCheckIcon
+                  className={message.seen ? '' : 'text-[#53bdeb]'}
+                />
+              )}
+            </span>
           </div>
         </div>
       </div>

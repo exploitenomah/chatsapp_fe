@@ -1,3 +1,5 @@
+import DoubleCheckIcon from '@assets/AcceptRequestIcon'
+import SingleCheckIcon from '@assets/SingleCheckIcon'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import { Conversation } from '@store/conversations/initialState'
 import { Store } from '@store/index'
@@ -21,14 +23,21 @@ const LatestMessage = ({
     <>
       <span
         title={latestMessage.text}
-        className='absolute w-full text-ellipsis overflow-hidden'
+        className='absolute w-full text-ellipsis overflow-hidden flex items-center gap-x-[3px]'
       >
-        {otherUser._id === latestMessage.sender ? (
-          otherUser?.nickName
-        ) : (
-          <>You</>
+        {otherUser._id === latestMessage.sender ? null : (
+          <>
+            <span className='text-contrast-strong/50'>
+              {latestMessage.seen === false && <SingleCheckIcon />}
+              {latestMessage.delivered === true && (
+                <DoubleCheckIcon
+                  className={latestMessage.seen ? '' : 'text-[#53bdeb]'}
+                />
+              )}
+            </span>
+          </>
         )}
-        : {latestMessage.text}
+        {latestMessage.text}
       </span>
     </>
   )

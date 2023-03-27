@@ -131,10 +131,12 @@ const StyledMessageComponent = ({
               {new Date(message.createdAt).toLocaleTimeString().slice(0, 5)}
             </div>
             <span className='text-contrast-strong/50 pt-[6px]'>
-              {message.seen === false && <SingleCheckIcon />}
+              {message.delivered === false &&
+                message.seen === false &&
+                !isOtherUser && <SingleCheckIcon />}
               {message.delivered === true && !isOtherUser && (
                 <DoubleCheckIcon
-                  className={message.seen ? '' : 'text-[#53bdeb]'}
+                  className={message.seen ? 'text-[#53bdeb]' : ''}
                 />
               )}
             </span>

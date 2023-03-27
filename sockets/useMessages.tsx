@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import useOnNewMessage from '@hooks/messages/useOnNewMessage'
 import useOnGetManyMessages from '@hooks/messages/useOnGetManyMessages'
-import useOnUpdateMessages from '@hooks/messages/useOnUpdateMessage'
+import useOnUpdateMessagesSeen from '@hooks/messages/useOnMessagesSeen'
+import useOnUpdateMessagesDelivered from '@hooks/messages/useOnMessagesDelivered'
 
 export default function useMessages() {
   const { token } = useSelector<Store, Auth>((store) => store.auth)
@@ -26,7 +27,8 @@ export default function useMessages() {
 
   const handleNewMessage = useOnNewMessage()
   const handleGetManyMessages = useOnGetManyMessages()
-  const handleUpdateMessagesSeen = useOnUpdateMessages()
+  const handleUpdateMessagesSeen = useOnUpdateMessagesSeen()
+  const handleUpdateMessagesDelivered = useOnUpdateMessagesDelivered()
 
   useEffect(() => {
     messagesSocket.onAny((event) => {
@@ -36,6 +38,7 @@ export default function useMessages() {
     messagesSocket.on('new', handleNewMessage)
     messagesSocket.on('getMany', handleGetManyMessages)
     messagesSocket.on('messagesSeen', handleUpdateMessagesSeen)
+    messagesSocket.on('messagesDelivered', handleUpdateMessagesDelivered)
 
     messagesSocket.io.on('reconnect', (attempt) => {
       console.error(`${attempt} ==> at root socket`)
@@ -82,7 +85,8 @@ export default function useMessages() {
     return () => {
       messagesSocket.off('new', handleNewMessage)
       messagesSocket.off('getMany', handleGetManyMessages)
-      messagesSocket.off('update', handleUpdateMessagesSeen)
+      messagesSocket.off('messagesSeen', handleUpdateMessagesSeen)
+      messagesSocket.off('messagesDelivered', handleUpdateMessagesDelivered)
       messagesSocket.off('connect', () => console.log(`connect off`))
       messagesSocket.off('disconnect', (reason) => console.log(`${reason} off`))
       messagesSocket.io.off('error', (msg) => console.log(`${msg} off`))
@@ -99,6 +103,7 @@ export default function useMessages() {
     dispatch,
     handleGetManyMessages,
     handleNewMessage,
+    handleUpdateMessagesDelivered,
     handleUpdateMessagesSeen,
     messagesSocket,
   ])

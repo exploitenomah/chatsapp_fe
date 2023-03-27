@@ -1,12 +1,13 @@
 import DoubleCheckIcon from '@assets/DoubleCheckIcon'
 import SingleCheckIcon from '@assets/SingleCheckIcon'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
+import useEmitMessagesDelivered from '@hooks/messages/useEmitMessagesDelivered'
 import { Conversation } from '@store/conversations/initialState'
 import { Store } from '@store/index'
 import { Message } from '@store/messages/initialState'
 import { UI } from '@store/ui/initialState'
 import { User } from '@store/user/initialState'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 import Badge from '../Badge'
@@ -119,6 +120,23 @@ export default function ConversationItem({
     if (activeConversation?._id === conversation._id) return
     handleMessageButtonClick()
   }, [activeConversation?._id, conversation._id, handleMessageButtonClick])
+
+  const handleEmitMessagesDelivered = useEmitMessagesDelivered()
+
+  useEffect(() => {
+    const undeliveredMessage = conversation.messages?.find(
+      (msg) => msg.sender !== authenticatedUser._id && msg.delivered === false,
+    )
+    if (undeliveredMessage) {
+      handleEmitMessagesDelivered(conversation._id, conversation.participants.map(el => el._id))
+    }
+  }, [
+    authenticatedUser._id,
+    conversation._id,
+    conversation.messages,
+    conversation.participants,
+    handleEmitMessagesDelivered,
+  ])
 
   return (
     <div

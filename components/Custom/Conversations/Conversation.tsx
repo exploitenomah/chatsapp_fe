@@ -80,7 +80,6 @@ const MessagesListContainer = () => {
           40,
       )
       if (isElementBottomReached) {
-        updateSeenMessages()
         activeConversation &&
           activeConversation.shouldScrollMessages === true &&
           dispatch(
@@ -91,8 +90,17 @@ const MessagesListContainer = () => {
           )
       }
     },
-    [activeConversation, dispatch, updateSeenMessages],
+    [activeConversation, dispatch],
   )
+
+  useEffect(() => {
+    const msgsSeenTimeout = !showScrollToBottomButton
+      ? updateSeenMessages()
+      : undefined
+    return () => {
+      clearTimeout(msgsSeenTimeout)
+    }
+  }, [showScrollToBottomButton, updateSeenMessages])
 
   return (
     <div className='absolute z-[2] w-full h-[88%] '>

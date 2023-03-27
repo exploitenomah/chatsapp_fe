@@ -2,10 +2,20 @@ import { Store } from '@store/index'
 import { useSelector } from 'react-redux'
 import CurrentUserMsg from './CurrentUser'
 import OtherUserMsg from './OtherUser'
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  HTMLAttributes,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { User } from '@store/user/initialState'
 import { Message } from '@store/messages/initialState'
 import { UI } from '@store/ui/initialState'
+import MessageSentIcon from '@assets/MessageSentIcon'
+import MessageTailIn from '@assets/MessageTailIn'
+import MessageTailOut from '@assets/MessageTailOut'
 
 const UnreadMessagesCountBanner = ({ show }: { show: boolean }) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
@@ -41,13 +51,8 @@ export const MainMessageWrapper = ({
   children: ReactNode | ReactNode[]
   isConcurrentSender: boolean
 }) => {
-  const msgSeenRef = useRef<HTMLDivElement | null>(null)
-
   return (
-    <div
-      ref={msgSeenRef}
-      className={`w-full ${isConcurrentSender ? 'mb-[2px]' : 'mb-3'}`}
-    >
+    <div className={`w-full ${isConcurrentSender ? 'mb-[2px]' : 'mb-3'}`}>
       {children}
     </div>
   )
@@ -87,6 +92,52 @@ const MessageWrapperWithScrollIntoViewRef = ({
   )
 }
 
+const StyledMessageComponent = ({
+  message,
+  MessageTail,
+  isOtherUser,
+}: {
+  message: Message
+  MessageTail: ({}: HTMLAttributes<SVGElement>) => JSX.Element
+  isOtherUser: boolean
+}) => {
+  return (
+    <>
+      <div
+        className={`px-16 min-w-full flex ${
+          isOtherUser ? 'justify-start' : 'justify-end'
+        }`}
+      >
+        <div
+          className={`flex pt-1.5 pb-2.5 px-2 relative font-sm leading-5 rounded-bl-lg rounded-br-lg w-fit max-w-[75%]  ${
+            isOtherUser
+              ? 'rounded-tr-lg text-contrast-strong bg-secondary-default'
+              : 'rounded-tl-lg text-contrast-strong bg-accent-default'
+          }`}
+        >
+          <div
+            className={`absolute top-0 ${
+              isOtherUser
+                ? '-left-2 text-secondary-default'
+                : '-right-2 text-accent-default'
+            } `}
+          >
+            <MessageTail />
+          </div>
+          <div className='whitespace-pre-wrap'>
+            <span>{message.text}</span>
+          </div>
+          <div className='self-end ml-1'>
+            <div className='ml-1 -mb-1.5 whitespace-nowrap text-[11px] text-contrast-primary/80'>
+              {new Date(message.createdAt).toLocaleTimeString().slice(0, 5)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 export default function MessageComponent({
   message,
   scrollMessageIntoView,
@@ -108,7 +159,11 @@ export default function MessageComponent({
         shouldScrollIntoView={scrollMessageIntoView}
         shouldShowUnreadBannerAbove={shouldShowUnreadBannerAbove}
       >
-        <CurrentUserMsg message={message} />
+        <StyledMessageComponent
+          message={message}
+          MessageTail={MessageTailOut}
+          isOtherUser={false}
+        />
       </MessageWrapperWithScrollIntoViewRef>
     )
   return (
@@ -117,7 +172,11 @@ export default function MessageComponent({
       shouldScrollIntoView={scrollMessageIntoView}
       shouldShowUnreadBannerAbove={shouldShowUnreadBannerAbove}
     >
-      <OtherUserMsg message={message} />
+      <StyledMessageComponent
+        message={message}
+        MessageTail={MessageTailIn}
+        isOtherUser={true}
+      />
     </MessageWrapperWithScrollIntoViewRef>
   )
 }

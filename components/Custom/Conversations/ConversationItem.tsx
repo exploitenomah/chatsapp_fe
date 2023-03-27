@@ -1,4 +1,4 @@
-import DoubleCheckIcon from '@assets/AcceptRequestIcon'
+import DoubleCheckIcon from '@assets/DoubleCheckIcon'
 import SingleCheckIcon from '@assets/SingleCheckIcon'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import { Conversation } from '@store/conversations/initialState'
@@ -28,10 +28,12 @@ const LatestMessage = ({
         {otherUser._id === latestMessage.sender ? null : (
           <>
             <span className='text-contrast-strong/50'>
-              {latestMessage.seen === false && <SingleCheckIcon />}
+              {latestMessage.delivered === false &&
+                latestMessage.seen === false &&
+                otherUser._id !== latestMessage.sender && <SingleCheckIcon />}
               {latestMessage.delivered === true && (
                 <DoubleCheckIcon
-                  className={latestMessage.seen ? '' : 'text-[#53bdeb]'}
+                  className={latestMessage.seen ? 'text-[#53bdeb]' : ''}
                 />
               )}
             </span>

@@ -2,7 +2,7 @@ import ChevronIcon from '@assets/ChevronDownIcon'
 import ConversationRoomHeader from '@components/Custom/Conversations/ConversationHeader'
 import Button from '@components/HTML/Button'
 import useEmitGetManyMessages from '@hooks/messages/useEmitGetManyMessages'
-import useEmitUpdateMessages from '@hooks/messages/useEmitUpdateMessage'
+import useEmitMessagesSeen from '@hooks/messages/useEmitMessagesSeen'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { updateActiveConversation } from '@store/ui/slice'
@@ -21,7 +21,7 @@ import MessageInput from '../MessageInput'
 import MessagesList from '../Messages/MessagesList'
 
 const MessagesListContainer = () => {
-  const handleUpdateMessagesSeen = useEmitUpdateMessages()
+  const handleEmitMessagesSeen = useEmitMessagesSeen()
   const [showScrollToBottomButton, setShowScrollToBottomButton] =
     useState(false)
   const msgsContainerRef = useRef<HTMLDivElement | null>(null)
@@ -53,7 +53,7 @@ const MessagesListContainer = () => {
           (msg) => msg.seen === false && msg.sender !== authenticatedUser._id,
         )
         if (unseenMessage) {
-          handleUpdateMessagesSeen(
+          handleEmitMessagesSeen(
             unseenMessage.conversationId,
             activeConversation.participants.map((el) => el._id),
           )
@@ -64,7 +64,7 @@ const MessagesListContainer = () => {
     activeConversation?.messages,
     activeConversation?.participants,
     authenticatedUser._id,
-    handleUpdateMessagesSeen,
+    handleEmitMessagesSeen,
   ])
 
   const handleMsgContainerScroll: UIEventHandler<HTMLDivElement> = useCallback(

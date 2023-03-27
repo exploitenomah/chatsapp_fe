@@ -15,7 +15,7 @@ export default function TextInput({
   textInputRef: RefObject<HTMLTextAreaElement>
   onChange: (value: string) => void
   value: string | undefined
-  onFocus: FocusEventHandler<HTMLTextAreaElement>
+  onFocus?: FocusEventHandler<HTMLTextAreaElement>
   onKeyDown: KeyboardEventHandler<HTMLTextAreaElement>
 }) {
   const calcHeight = useCallback(function (value: string) {

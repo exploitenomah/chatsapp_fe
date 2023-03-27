@@ -41,7 +41,10 @@ export default function ConversationItem({
 }) {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
-
+  const isActive = useMemo(
+    () => activeConversation?._id === conversation._id,
+    [activeConversation?._id, conversation._id],
+  )
   const otherUser = useMemo(
     () =>
       conversation.participants.find(
@@ -110,7 +113,7 @@ export default function ConversationItem({
     <div
       onClick={handleOnClick}
       className={`w-full h-[72px] flex items-center ${
-        activeConversation?._id === conversation._id
+        isActive
           ? 'bg-secondary-darkest'
           : 'bg-primary-default hover:bg-secondary-default '
       }`}
@@ -125,7 +128,11 @@ export default function ConversationItem({
               <div className='text-contrast-strong text-base '>
                 {otherUser?.nickName}
               </div>
-              <div className='text-contrast-secondary text-[14px] font-normal whitespace-nowrap flex relative w-[90%] h-[20px]'>
+              <div
+                className={`${
+                  isActive ? 'text-contrast-strong' : 'text-contrast-secondary'
+                } text-[14px] font-normal whitespace-nowrap flex relative w-[90%] h-[20px]`}
+              >
                 <LatestMessage
                   otherUser={otherUser}
                   latestMessage={conversation?.latestMessage}

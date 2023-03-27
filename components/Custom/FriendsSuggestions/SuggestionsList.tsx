@@ -3,7 +3,7 @@ import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { removeUserInPreview, updateUserInPreview } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 
@@ -12,7 +12,10 @@ const SuggestionItem = ({ user }: { user: User }) => {
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
 
   const dispatch = useDispatch()
-
+  const isActive = useMemo(
+    () => userInPreview?._id === user._id,
+    [user._id, userInPreview?._id],
+  )
   const handleSuggestionClick = useCallback(() => {
     if (userInPreview && userInPreview._id === user._id) return
     dispatch(removeUserInPreview())
@@ -27,7 +30,7 @@ const SuggestionItem = ({ user }: { user: User }) => {
     <div
       onClick={() => handleSuggestionClick()}
       className={`w-full h-[72px] flex items-center ${
-        userInPreview?._id === user._id
+        isActive
           ? 'bg-secondary-darkest'
           : 'bg-primary-default hover:bg-secondary-default '
       }`}
@@ -38,7 +41,11 @@ const SuggestionItem = ({ user }: { user: User }) => {
         </div>
         <div className='h-[72px] basis-auto flex grow flex-col justify-center items-start border-t border-t-contrast-secondary/20'>
           <div className='text-contrast-strong text-base'>{`${user.nickName}`}</div>
-          <div className='text-contrast-secondary text-sm font-normal whitespace-nowrap flex relative w-full h-[20px]'>
+          <div
+            className={`${
+              isActive ? 'text-contrast-strong' : 'text-contrast-secondary'
+            } text-sm font-normal whitespace-nowrap flex relative w-full h-[20px]`}
+          >
             {`${user.firstName} ${user.lastName}`}
           </div>
         </div>

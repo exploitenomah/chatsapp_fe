@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
-import { Message, messagesEvents } from '@store/messages/initialState'
+import { messagesEvents } from '@store/messages/initialState'
 import useEmitter from '@hooks/useEmitters'
 import useMessages from '@sockets/useMessages'
 
-export default function useUpdateMessages() {
+export default function useEmitMessagesSeen() {
   const messagesSocket = useMessages()
   const messagesSocketEmitters = useEmitter(messagesSocket, messagesEvents)
 
-  const handleUpdateMessagesSeen = useCallback(
+  const handleEmitMessagesSeen = useCallback(
     (conversationId: string, participants: string[]) => {
       messagesSocketEmitters.messagesSeen({
         conversationId,
@@ -16,5 +16,5 @@ export default function useUpdateMessages() {
     },
     [messagesSocketEmitters],
   )
-  return handleUpdateMessagesSeen
+  return handleEmitMessagesSeen
 }

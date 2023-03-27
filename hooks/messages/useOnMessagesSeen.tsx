@@ -6,7 +6,7 @@ import { updateActiveConversation } from '@store/ui/slice'
 import { ConversationsState } from '@store/conversations/initialState'
 import { updateSingleConversation } from '@store/conversations/slice'
 
-export default function useOnUpdateMessages() {
+export default function useOnUpdateMessagesSeen() {
   const dispatch = useDispatch()
 
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)

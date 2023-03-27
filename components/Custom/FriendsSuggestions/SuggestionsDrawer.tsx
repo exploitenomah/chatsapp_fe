@@ -7,6 +7,7 @@ import {
   removeUserInPreview,
   toggleShowSuggestionsDrawer,
 } from '@store/ui/slice'
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FriendRequestsCountBadge } from '../Friends/FriendsNotificationBadges'
 import LeftDrawer from '../LeftDrawer'
@@ -16,17 +17,15 @@ import SuggestionsList from './SuggestionsList'
 const Header = () => {
   const dispatch = useDispatch()
 
+  const closeDrawer = useCallback(() => {
+    dispatch(toggleShowSuggestionsDrawer())
+    dispatch(removeUserInPreview())
+  }, [dispatch])
   return (
     <>
       <header className='h-[108px] flex justify-between items-center text-contrast-tertiary/80 bg-secondary-default px-6'>
         <div className='h-[59px] flex items-center'>
-          <Button
-            className='p-0 w-12'
-            onClick={() => {
-              dispatch(toggleShowSuggestionsDrawer())
-              dispatch(removeUserInPreview())
-            }}
-          >
+          <Button className='p-0 w-12' onClick={closeDrawer}>
             <LeftArrow />
           </Button>
           <span className='text-lg font-medium '>Suggestions</span>
@@ -38,10 +37,7 @@ const Header = () => {
           <Button
             title='friend requests'
             className='p-0 gap-x-4 shadow-none flex items-center text-lg'
-            onClick={() => {
-              dispatch(toggleShowSuggestionsDrawer())
-              dispatch(removeUserInPreview())
-            }}
+            onClick={closeDrawer}
           >
             <FriendsIcon />
           </Button>

@@ -3,7 +3,7 @@ import SearchIcon from '@assets/SearchIcon'
 import { headerClasses, NavItem } from '../App/AppHeader'
 import Avatar from '../Avatar'
 
-export default function ChatHeader() {
+export default function ConversationHeader() {
   return (
     <header className={`${headerClasses} flex items-center justify-between`}>
       <div>

@@ -35,7 +35,10 @@ export default function MessagesList() {
           message.seen === false &&
           message.sender !== authenticatedUser._id &&
           (arr[idx - 1]?.seen === true ||
-            arr[idx - 1]?.sender === authenticatedUser._id))
+            arr[idx - 1]?.sender === authenticatedUser._id)) ||
+        (activeConversation?.shouldScrollMessages === true &&
+          idx === arr.length - 1 &&
+          message.seen === true)
       )
     },
     [activeConversation?.shouldScrollMessages, authenticatedUser._id],

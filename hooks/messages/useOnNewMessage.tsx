@@ -5,7 +5,10 @@ import { UI } from '@store/ui/initialState'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateActiveConversation } from '@store/ui/slice'
 import { makeUniqueArrOfObjectsWith_IdKey } from '@utils/index'
-import { updateSingleConversation } from '@store/conversations/slice'
+import {
+  addToIdsOfConversationsNotFetched,
+  updateSingleConversation,
+} from '@store/conversations/slice'
 import { ConversationsState } from '@store/conversations/initialState'
 
 export default function useOnNewMessage() {
@@ -46,6 +49,8 @@ export default function useOnNewMessage() {
             },
           }),
         )
+      } else {
+        dispatch(addToIdsOfConversationsNotFetched(message.conversationId))
       }
     },
     [activeConversation, conversations, dispatch],

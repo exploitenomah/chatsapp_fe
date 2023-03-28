@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Store } from '@store/index'
 import {
   updateFriendRequestsNotificationCount,
-  updatePendingFriendsNotificationCount,
   updateTotalNotificationsCount,
 } from '@store/friends/slice'
 
@@ -20,21 +19,9 @@ export default function useUpdateFriendsNotifications() {
       (friendReq) =>
         friendReq.seen === false && friendReq.requester._id !== user?._id,
     ).length
-    const pendingFriendsNotificationCount = pendingFriends.filter(
-      (pendingFriend) =>
-        pendingFriend.seen === false &&
-        pendingFriend.recipient._id !== user?._id,
-    ).length
     dispatch(
       updateFriendRequestsNotificationCount(friendRequestsNotificationCount),
     )
-    dispatch(
-      updatePendingFriendsNotificationCount(pendingFriendsNotificationCount),
-    )
-    dispatch(
-      updateTotalNotificationsCount(
-        friendRequestsNotificationCount + pendingFriendsNotificationCount,
-      ),
-    )
+    dispatch(updateTotalNotificationsCount(friendRequestsNotificationCount))
   }, [dispatch, friendRequests, pendingFriends, user?._id])
 }

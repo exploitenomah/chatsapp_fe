@@ -22,6 +22,7 @@ import { FriendsState } from '@store/friends/initialState'
 import useGetManyPendingFriends from '@hooks/friends/useFetchPendingFriends'
 import useMessages from '@sockets/useMessages'
 import useUpdateConversationsNotifications from '@hooks/conversations/useUpdateConversationsNotifications'
+import useGetConversationsNotInState from "@hooks/conversations/useGetConversationsNotInState"
 
 export default function App() {
   const {
@@ -43,6 +44,7 @@ export default function App() {
   const handleGetFriendRequests = useGetManyFriendRequests()
   const handleGetPendingFriends = useGetManyPendingFriends()
 
+  useGetConversationsNotInState()
   useEffect(() => {
     conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
     userSocketEmitters.getMe()

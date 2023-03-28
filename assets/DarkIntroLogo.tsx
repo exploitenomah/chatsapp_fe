@@ -6,6 +6,7 @@ export default function DarkIntroLogo({
   return (
     <>
       <svg
+        className={className}
         width='360'
         height='189'
         viewBox='0 0 360 189'

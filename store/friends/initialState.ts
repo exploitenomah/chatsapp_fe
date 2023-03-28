@@ -33,7 +33,6 @@ const initialState: FriendsState = {
   pendingFriends: [],
   friendRequests: [],
   totalNotificationsCount: 0,
-  pendingFriendsNotificationCount: 0,
   friendRequestsNotificationCount: 0,
   friendRequestsPage: 1,
   pendingFriendsPage: 1,
@@ -58,7 +57,6 @@ export type FriendsState = {
   hasFetchedAllFriends: boolean
   hasFetchedInitialSuggestions: boolean
   totalNotificationsCount: number
-  pendingFriendsNotificationCount: number
   friendRequestsNotificationCount: number
   friendRequestsPage: number
   pendingFriendsPage: number

@@ -162,12 +162,6 @@ const friendsSlice = createSlice({
     ) => {
       state.friendRequestsNotificationCount = action.payload
     },
-    updatePendingFriendsNotificationCount: (
-      state,
-      action: PayloadAction<number>,
-    ) => {
-      state.pendingFriendsNotificationCount = action.payload
-    },
   },
 })
 
@@ -176,7 +170,6 @@ export const {
   updateUser,
   updateTotalNotificationsCount,
   updateFriendRequestsNotificationCount,
-  updatePendingFriendsNotificationCount,
 } = friendsSlice.actions
 
 export const friendsActions = friendsSlice.actions

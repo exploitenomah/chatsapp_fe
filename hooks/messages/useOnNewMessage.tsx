@@ -10,6 +10,7 @@ import {
   updateSingleConversation,
 } from '@store/conversations/slice'
 import { ConversationsState } from '@store/conversations/initialState'
+import { addMessageWithoutConversationInState } from '@store/messages/slice'
 
 export default function useOnNewMessage() {
   const dispatch = useDispatch()
@@ -51,6 +52,7 @@ export default function useOnNewMessage() {
         )
       } else {
         dispatch(addToIdsOfConversationsNotFetched(message.conversationId))
+        dispatch(addMessageWithoutConversationInState(message))
       }
     },
     [activeConversation, conversations, dispatch],

@@ -70,7 +70,9 @@ const FriendRequestsButton = () => {
         <span className='flex items-center justify-center gap-x-4'>
           <AcceptRequestIcon />
           <span>Friend Requests </span>
-          <FriendRequestsCountBadge />
+          <div className='w-5 h-5 relative'>
+            <FriendRequestsCountBadge />
+          </div>
         </span>
         <RightChevron />
       </DefaultButton>

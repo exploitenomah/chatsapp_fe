@@ -31,3 +31,11 @@ export type Message = {
   //   type: mongoose.Schema.ObjectId,
   // }
 }
+export type MessagesState = {
+  messagesWithoutConversationInState: Message[]
+}
+
+const initialState: MessagesState = {
+  messagesWithoutConversationInState: [],
+}
+export default initialState

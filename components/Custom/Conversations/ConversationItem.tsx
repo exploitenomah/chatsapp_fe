@@ -1,6 +1,7 @@
 import DoubleCheckIcon from '@assets/DoubleCheckIcon'
 import SingleCheckIcon from '@assets/SingleCheckIcon'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
+import useManageConversation from '@hooks/conversations/useManageConversations'
 import useEmitMessagesDelivered from '@hooks/messages/useEmitMessagesDelivered'
 import { Conversation } from '@store/conversations/initialState'
 import { Store } from '@store/index'
@@ -51,6 +52,7 @@ export default function ConversationItem({
 }: {
   conversation: Conversation
 }) {
+  useManageConversation(conversation)
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
   const isActive = useMemo(
@@ -128,7 +130,10 @@ export default function ConversationItem({
       (msg) => msg.sender !== authenticatedUser._id && msg.delivered === false,
     )
     if (undeliveredMessage) {
-      handleEmitMessagesDelivered(conversation._id, conversation.participants.map(el => el._id))
+      handleEmitMessagesDelivered(
+        conversation._id,
+        conversation.participants.map((el) => el._id),
+      )
     }
   }, [
     authenticatedUser._id,

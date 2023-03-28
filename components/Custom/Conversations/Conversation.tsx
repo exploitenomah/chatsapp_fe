@@ -111,21 +111,24 @@ const MessagesListContainer = () => {
       >
         <MessagesList />
       </div>
-      {showScrollToBottomButton ? (
-        <div className='absolute z-[3] right-[11px] bottom-[17px] w-fit'>
-          <Button
-            className={`bg-primary-light rounded-full w-[42px] h-[42px] p-0 flex justify-center items-center`}
-            onClick={() => handleScrollToBottomClick()}
-          >
-            <ChevronIcon />
-            {unseenMsgs?.length! > 0 && (
-              <span className='block absolute w-[19.19px] h-[19.19px] -top-2 -left-1'>
-                <Badge>{unseenMsgs?.length}</Badge>
-              </span>
-            )}
-          </Button>
-        </div>
-      ) : null}
+
+      <div
+        className={`${
+          showScrollToBottomButton ? 'scale-100' : 'scale-0'
+        } absolute z-[3] right-[11px] bottom-[17px] w-fit duration-150 transition-all origin-top`}
+      >
+        <Button
+          className={`bg-primary-light rounded-full w-[42px] h-[42px] p-0 flex justify-center items-center`}
+          onClick={() => handleScrollToBottomClick()}
+        >
+          <ChevronIcon />
+          {unseenMsgs?.length! > 0 && (
+            <span className='block absolute w-[19.19px] h-[19.19px] -top-2 -left-1'>
+              <Badge>{unseenMsgs?.length}</Badge>
+            </span>
+          )}
+        </Button>
+      </div>
     </div>
   )
 }

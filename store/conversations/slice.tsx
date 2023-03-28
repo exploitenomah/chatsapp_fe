@@ -7,6 +7,10 @@ const conversationsSlice = createSlice({
   initialState,
   reducers: {
     getMany: (state, action: PayloadAction<Conversation[]>) => {
+      state.idsOfConversationsNotFetched =
+        state.idsOfConversationsNotFetched.filter((id) =>
+          action.payload.map((conv) => conv._id).includes(id),
+        )
       state.conversations = makeUniqueArrOfObjectsWith_IdKey(
         action.payload.map((item) => ({
           ...item,
@@ -44,6 +48,23 @@ const conversationsSlice = createSlice({
           }
       })
     },
+    addToIdsOfConversationsNotFetched: (
+      state,
+      action: PayloadAction<string>,
+    ) => {
+      const s = new Set([...state.idsOfConversationsNotFetched, action.payload])
+      console.log(Array.from(s))
+      state.idsOfConversationsNotFetched = Array.from(s)
+    },
+    removeFromIdsOfConversationsNotFetched: (
+      state,
+      action: PayloadAction<string[]>,
+    ) => {
+      state.idsOfConversationsNotFetched =
+        state.idsOfConversationsNotFetched.filter((id) =>
+          action.payload.includes(id),
+        )
+    },
     updateNotifications: (
       state,
       action: PayloadAction<{
@@ -57,7 +78,12 @@ const conversationsSlice = createSlice({
     },
   },
 })
-export const { updateSingleConversation, getMany, updateNotifications } =
-  conversationsSlice.actions
+export const {
+  updateSingleConversation,
+  getMany,
+  updateNotifications,
+  addToIdsOfConversationsNotFetched,
+  removeFromIdsOfConversationsNotFetched,
+} = conversationsSlice.actions
 export const conversationsActions = conversationsSlice.actions
 export default conversationsSlice.reducer

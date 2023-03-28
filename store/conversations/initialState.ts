@@ -22,11 +22,13 @@ export type ConversationsState = {
   hasFetchedConversations: boolean
   conversationsWithUnseenMessagesCount: number
   totalUnseenMessages: number
+  idsOfConversationsNotFetched: string[]
 }
 
 export const conversationEvents = ['new', 'update', 'getOne', 'getMany']
 const initialState: ConversationsState = {
   conversations: [],
+  idsOfConversationsNotFetched: [],
   hasFetchedConversations: false,
   conversationsWithUnseenMessagesCount: 0,
   totalUnseenMessages: 0,

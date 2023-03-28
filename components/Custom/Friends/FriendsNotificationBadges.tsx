@@ -1,5 +1,4 @@
 import RightChevron from '@assets/RightChevron'
-import Button from '@components/HTML/Button'
 import { FriendsState } from '@store/friends/initialState'
 import { Store } from '@store/index'
 import { useSelector } from 'react-redux'
@@ -19,7 +18,9 @@ export const FriendRequestsCountBadge = () => {
   )
 }
 export const TotalFriendsNotificationsBadge = () => {
-  const { totalNotificationsCount } = useSelector<Store, FriendsState>((store) => store.friends)
+  const { totalNotificationsCount } = useSelector<Store, FriendsState>(
+    (store) => store.friends,
+  )
 
   if (totalNotificationsCount <= 0) return null
 

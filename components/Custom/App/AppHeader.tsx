@@ -45,7 +45,7 @@ export default function AppHeader() {
                 onClick: () => dispatch(toggleShowFriendsDrawer()),
               }}
             >
-              <div className='absolute bottom-[50%] scale-x-75 scale-y-75 right-[-3px] scale-1'>
+              <div className='absolute bottom-[50%] w-5 h-5 scale-x-75 scale-y-75 right-[-3px] scale-1'>
                 <TotalFriendsNotificationsBadge />
               </div>
               <FriendsIcon />

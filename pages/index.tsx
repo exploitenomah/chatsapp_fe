@@ -7,12 +7,11 @@ import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
 import { Store } from '@store/index'
 import { Auth } from '@store/auth/initialState'
-import { UI } from '@store/ui/initialState'
-import AppLoadingScreen from '@components/Custom/App/LoadingScreen'
 import { Notifications } from '@store/notifications/initialState'
 import NotificationComponent from '@components/Custom/Notification'
 import Offline from '@components/Custom/Offline/Offline'
 import useOffline from '@hooks/useOffline'
+import { ConversationsState } from '@store/conversations/initialState'
 
 const Login = dynamic(() => import('@components/Custom/Auth/Login'), {
   ssr: false,
@@ -54,7 +53,9 @@ const Render = ({
 
 export default function ChatsApp() {
   const { token, isOffline } = useSelector<Store, Auth>((store) => store.auth)
-  const { appLoading } = useSelector<Store, UI>((store) => store.ui)
+  const {
+    conversationsWithUnseenMessagesCount,
+  } = useSelector<Store, ConversationsState>((store) => store.conversations)
   const rootSocket = useRoot()
 
   useOffline()
@@ -65,15 +66,16 @@ export default function ChatsApp() {
         <Offline />
       </Render>
     )
-  if (appLoading)
-    return (
-      <Render>
-        <AppLoadingScreen />
-      </Render>
-    )
+
   if (token)
     return (
-      <Render>
+      <Render
+        title={`${
+          conversationsWithUnseenMessagesCount > 0
+            ? `(${conversationsWithUnseenMessagesCount})`
+            : ''
+        } ChatsApp`}
+      >
         <App />
       </Render>
     )

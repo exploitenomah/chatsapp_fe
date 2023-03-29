@@ -9,7 +9,10 @@ import useConversations from '@sockets/useConversations'
 import useUser from '@sockets/useUser'
 import { useEffect } from 'react'
 import useEmitter from '@hooks/useEmitters'
-import { conversationEvents } from '@store/conversations/initialState'
+import {
+  conversationEvents,
+  ConversationsState,
+} from '@store/conversations/initialState'
 import { User, userEvents } from '@store/user/initialState'
 import UserPreview from '../User/UserPreview'
 import useGetManyFriends from '@hooks/friends/useGetManyFriends'
@@ -17,12 +20,15 @@ import useUpdateFriendsNotifications from '@hooks/friends/useUpdateFriendsNotifi
 import useGetManyFriendRequests from '@hooks/friends/useFetchFriendRequests'
 import PendingFriendsDrawer from '../PendingFriends/PendingFriendsDrawer'
 import { Store } from '@store/index'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { FriendsState } from '@store/friends/initialState'
 import useGetManyPendingFriends from '@hooks/friends/useFetchPendingFriends'
 import useMessages from '@sockets/useMessages'
 import useUpdateConversationsNotifications from '@hooks/conversations/useUpdateConversationsNotifications'
-import useGetConversationsNotInState from "@hooks/conversations/useGetConversationsNotInState"
+import useGetConversationsNotInState from '@hooks/conversations/useGetConversationsNotInState'
+import { toggleAppLoading } from "@store/ui/slice"
+import { UI } from "@store/ui/initialState"
+import AppLoadingScreen from "./LoadingScreen"
 
 export default function App() {
   const {
@@ -30,7 +36,13 @@ export default function App() {
     hasFetchedInitialPendingFriends,
     hasFetchedInitialFriendRequests,
   } = useSelector<Store, FriendsState>((store) => store.friends)
+  const { hasFetchedInitialConversations } = useSelector<
+    Store,
+    ConversationsState
+  >((store) => store.conversations)
+  const { appLoading } = useSelector<Store, UI>((store) => store.ui)
   const user = useSelector<Store, User>((store) => store.user)
+  const dispatch = useDispatch()
   const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses()
   const conversationsSocket = useConversations()
   useMessages()
@@ -46,9 +58,12 @@ export default function App() {
 
   useGetConversationsNotInState()
   useEffect(() => {
-    conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
+    hasFetchedInitialConversations === false &&
+      conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
+    hasFetchedInitialConversations === true && appLoading === true && dispatch(toggleAppLoading(false))
+
     userSocketEmitters.getMe()
-  }, [conversationsSocketEmitters, userSocketEmitters])
+  }, [appLoading, conversationsSocketEmitters, dispatch, hasFetchedInitialConversations, userSocketEmitters])
 
   useUpdateFriendsNotifications()
   useUpdateConversationsNotifications()
@@ -67,6 +82,13 @@ export default function App() {
     hasFetchedInitialFriendRequests,
     user._id.length,
   ])
+
+  if (appLoading)
+    return (
+      <>
+        <AppLoadingScreen />
+      </>
+    )
 
   return (
     <div className='w-screen h-screeen bg-primary-default'>

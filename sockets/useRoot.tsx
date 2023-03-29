@@ -1,12 +1,12 @@
 import { authenticate } from '@store/auth/slice'
 import { addAppAlert } from '@store/notifications/slice'
-import { toggleAppLoading, updateLoading } from '@store/ui/slice'
+import { updateLoading } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
 import { getMe } from '@store/user/slice'
 import { removeLocalStorageFormValues } from '@utils/auth'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch } from 'react-redux'
-import { io, Socket } from 'socket.io-client'
+import { io } from 'socket.io-client'
 
 export default function useRoot() {
   const rootSocket = useMemo(
@@ -31,7 +31,6 @@ export default function useRoot() {
     const tokenInLs = localStorage.getItem('chatsapp_token')
     if (tokenInLs !== null) {
       dispatch(authenticate(tokenInLs))
-      dispatch(toggleAppLoading(false))
     }
 
     rootSocket.onAny((event) => {

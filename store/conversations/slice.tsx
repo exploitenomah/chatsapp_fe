@@ -11,7 +11,8 @@ const conversationsSlice = createSlice({
         state.idsOfConversationsNotFetched.filter((id) =>
           action.payload.map((conv) => conv._id).includes(id),
         )
-      state.conversations = makeUniqueArrOfObjectsWith_IdKey(
+      const updConversationsList
+      = makeUniqueArrOfObjectsWith_IdKey(
         action.payload.map((item) => ({
           ...item,
           messages: item.messages || [],
@@ -21,8 +22,11 @@ const conversationsSlice = createSlice({
           shouldScrollMessages: true,
         })),
       )
-      if (state.hasFetchedConversations === false)
-        state.hasFetchedConversations = true
+      state.conversations = updConversationsList
+      if (state.hasFetchedInitialConversations === false)
+        state.hasFetchedInitialConversations = true
+      state.hasFetchedAllConversation = action.payload.length < 100
+      state.conversationsPage = Math.ceil(updConversationsList.length / 100) + 1
     },
     new: (state, action: PayloadAction<Conversation>) => {
       state.conversations = makeUniqueArrOfObjectsWith_IdKey([

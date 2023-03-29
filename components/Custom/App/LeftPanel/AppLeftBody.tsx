@@ -6,14 +6,14 @@ import InactiveLeftPanel from './InactiveLeftPanel'
 import ActiveLeftPanel from './ActiveLeftPanel'
 
 const AppLeftBodyContent = () => {
-  const { hasFetchedConversations, conversations } = useSelector<
+  const { hasFetchedInitialConversations, conversations } = useSelector<
     Store,
     ConversationsState
   >((store) => store.conversations)
 
   const hasConversations = useMemo(
-    () => hasFetchedConversations === true && conversations.length > 0,
-    [hasFetchedConversations, conversations.length],
+    () => hasFetchedInitialConversations === true && conversations.length > 0,
+    [hasFetchedInitialConversations, conversations.length],
   )
 
   if (!hasConversations) return <InactiveLeftPanel />

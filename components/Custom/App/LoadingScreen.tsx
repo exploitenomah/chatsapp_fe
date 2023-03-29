@@ -1,11 +1,8 @@
 import LoadingLogo from '@assets/LoadingLogo'
-import { toggleAppLoading } from '@store/ui/slice'
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
 
 export default function AppLoadingScreen() {
   const [progressPercentage, setProgressPercentage] = useState(0)
-  const dispatch = useDispatch()
 
   useEffect(() => {
     const progressInterval = setInterval(() => {
@@ -13,12 +10,11 @@ export default function AppLoadingScreen() {
         setProgressPercentage(
           (prev) => prev + Math.floor(Math.random() * 100) + 25,
         )
-      else dispatch(toggleAppLoading(false))
     }, 250)
     return () => {
       clearInterval(progressInterval)
     }
-  }, [dispatch, progressPercentage])
+  }, [progressPercentage])
 
   return (
     <>

@@ -26,9 +26,10 @@ import useGetManyPendingFriends from '@hooks/friends/useFetchPendingFriends'
 import useMessages from '@sockets/useMessages'
 import useUpdateConversationsNotifications from '@hooks/conversations/useUpdateConversationsNotifications'
 import useGetConversationsNotInState from '@hooks/conversations/useGetConversationsNotInState'
-import { toggleAppLoading } from "@store/ui/slice"
-import { UI } from "@store/ui/initialState"
-import AppLoadingScreen from "./LoadingScreen"
+import { toggleAppLoading } from '@store/ui/slice'
+import { UI } from '@store/ui/initialState'
+import AppLoadingScreen from './LoadingScreen'
+import AuthenticatedUserPreview from '../User/AuthenticatedUserPreview'
 
 export default function App() {
   const {
@@ -60,10 +61,18 @@ export default function App() {
   useEffect(() => {
     hasFetchedInitialConversations === false &&
       conversationsSocketEmitters.getMany({ page: 1, limit: 100 })
-    hasFetchedInitialConversations === true && appLoading === true && dispatch(toggleAppLoading(false))
+    hasFetchedInitialConversations === true &&
+      appLoading === true &&
+      dispatch(toggleAppLoading(false))
 
     userSocketEmitters.getMe()
-  }, [appLoading, conversationsSocketEmitters, dispatch, hasFetchedInitialConversations, userSocketEmitters])
+  }, [
+    appLoading,
+    conversationsSocketEmitters,
+    dispatch,
+    hasFetchedInitialConversations,
+    userSocketEmitters,
+  ])
 
   useUpdateFriendsNotifications()
   useUpdateConversationsNotifications()
@@ -94,6 +103,7 @@ export default function App() {
     <div className='w-screen h-screeen bg-primary-default'>
       <div className='flex max-w-[1600px] mx-auto h-screen 2xl:py-[19px]'>
         <div className='basis-[30%] max-w-[30%] relative overflow-x-hidden'>
+          <AuthenticatedUserPreview />
           <FriendsDrawer />
           <FriendsSuggestionDrawer />
           <FriendRequestsDrawer />

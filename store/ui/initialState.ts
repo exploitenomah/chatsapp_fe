@@ -17,6 +17,7 @@ const initialState: UI = {
   loading: false,
   userInPreview: null,
   activeConversation: null,
+  showAuthenticatedUserProfile: false
 }
 
 export type UI = {
@@ -36,6 +37,7 @@ export type UI = {
         hasFetchedAllMessages: boolean
         hasFetchedInitialMessages: boolean
       })
+      showAuthenticatedUserProfile: boolean
 }
 
 export const messagesLimit = 100

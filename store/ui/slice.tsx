@@ -9,6 +9,15 @@ export const uiSlice = createSlice({
     toggleAppLoading: (state, action: PayloadAction<boolean>) => {
       state.appLoading = action.payload
     },
+    toggleShowAuthenticatedUserProfile: (
+      state,
+      action: PayloadAction<boolean | undefined>,
+    ) => {
+      state.showAuthenticatedUserProfile =
+        typeof action.payload === 'boolean'
+          ? action.payload
+          : !state.showAuthenticatedUserProfile
+    },
     toggleShowFriendsDrawer: (state) => {
       state.showFriendsDrawer = !state.showFriendsDrawer
     },
@@ -103,6 +112,7 @@ export const {
   setActiveConversation,
   removeActiveConversation,
   updateActiveConversation,
+  toggleShowAuthenticatedUserProfile,
 } = uiSlice.actions
 
 export default uiSlice.reducer

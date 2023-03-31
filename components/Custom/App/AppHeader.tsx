@@ -1,7 +1,10 @@
 import FriendsIcon from '@assets/FriendsIcon'
 import OptionsIcon from '@assets/OptionsIcon'
 import Button from '@components/HTML/Button'
-import { toggleShowFriendsDrawer } from '@store/ui/slice'
+import {
+  toggleShowAuthenticatedUserProfile,
+  toggleShowFriendsDrawer,
+} from '@store/ui/slice'
 import { HTMLAttributes, ReactNode } from 'react'
 import { useDispatch } from 'react-redux'
 import Avatar from '../Avatar'
@@ -34,7 +37,10 @@ export default function AppHeader() {
   return (
     <div className={`${headerClasses}`}>
       <header className='flex justify-between items-center'>
-        <Button className='p-0'>
+        <Button
+          className='p-0'
+          onClick={() => dispatch(toggleShowAuthenticatedUserProfile(true))}
+        >
           <Avatar />
         </Button>
         <nav>

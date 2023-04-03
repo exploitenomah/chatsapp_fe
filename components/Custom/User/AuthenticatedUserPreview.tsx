@@ -1,5 +1,7 @@
 import CloseIcon from '@assets/CloseIcon'
 import LeftArrow from '@assets/LeftArrow'
+import PencilIcon from '@assets/PencilIcon'
+import SingleCheckIcon from '@assets/SingleCheckIcon'
 import Button from '@components/HTML/Button'
 import Input from '@components/HTML/Input'
 import { Friend, FriendsState } from '@store/friends/initialState'
@@ -11,7 +13,18 @@ import {
   updateUserInPreview,
 } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
-import { useEffect, useMemo, useState } from 'react'
+import {
+  EventHandler,
+  FormEvent,
+  FormEventHandler,
+  KeyboardEventHandler,
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { headerClasses } from '../App/AppHeader'
 import Avatar from '../Avatar'
@@ -20,23 +33,76 @@ import LeftDrawer from '../LeftDrawer'
 const FormTextDisplay = ({
   value,
   onSubmit,
+  max,
+  min,
 }: {
   value: string
   onSubmit: (value: string) => void
+  max: number
+  min: number
 }) => {
   const [isEditing, setIsEditing] = useState(false)
-  const [updatedValue, setUpdatedValue] = useState(value)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-  if (isEditing)
-    return (
-      <form onSubmit={() => onSubmit(updatedValue)}>
-        <Input
-          value={updatedValue}
-          onChange={(e) => setUpdatedValue(e.target.value)}
-        />
-      </form>
-    )
-  return <span className='text-lg'>{`${value}`} </span>
+  const handleSubmit = useCallback(
+    (submitEvent: FormEvent | KeyboardEvent) => {
+      submitEvent.preventDefault()
+      let updatedVal = inputRef.current?.innerText
+      if (!updatedVal || updatedVal.trim().length < min) return
+      onSubmit(updatedVal)
+      setIsEditing(false)
+    },
+    [min, onSubmit],
+  )
+
+  useEffect(() => {
+    inputRef.current?.focus()
+    console.dir(inputRef.current && inputRef.current.select)
+  })
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className='flex justify-between w-full items-end'
+    >
+      <>
+        <div
+          contentEditable={isEditing ? true : false}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSubmit(e)
+          }}
+          ref={inputRef}
+          className={`bg-transparent px-0 text-contrast-primary border-b-2 
+          rounded-none pb-1 grow outline-none break-words max-w-[90%] ${
+            isEditing
+              ? 'border-b-contrast-primary/75 focus:border-b-accent-darkest'
+              : 'border-b-transparent'
+          }`}
+        >
+          {value}
+        </div>
+      </>
+      {isEditing ? (
+        <Button
+          className='scale-125 p-0 text-contrast-primary/75 transition-color duration-300 pb-1'
+          type='submit'
+        >
+          <SingleCheckIcon />
+        </Button>
+      ) : (
+        <Button
+          className='p-0'
+          onClick={(e) => {
+            e.preventDefault()
+            setIsEditing((prev) => !prev)
+          }}
+          type='button'
+        >
+          <PencilIcon />
+        </Button>
+      )}
+    </form>
+  )
 }
 
 export default function AuthenticatedUserPreview() {
@@ -50,52 +116,66 @@ export default function AuthenticatedUserPreview() {
     <LeftDrawer zIndex='z-[400]' show={showAuthenticatedUserProfile}>
       <div>
         <div className='h-full w-full'>
-          <div className={`${headerClasses} flex items-center`}>
-            <header className='h-[108px] w-full flex justify-between items-center text-contrast-tertiary/80 bg-secondary-default px-6'>
-              <div className='h-[59px] flex items-center'>
+          <div className={`${headerClasses} flex items-center pb-4`}>
+            <header className='h-[80px] w-full flex justify-between items-end font-light text-contrast-tertiary text-xl bg-secondary-default px-3'>
+              <div className='flex items-center gap-x-1'>
                 <Button
-                  className='p-0 w-12'
+                  className='p-0 w-12 font-light'
                   onClick={() =>
                     dispatch(toggleShowAuthenticatedUserProfile(false))
                   }
                 >
                   <LeftArrow />
                 </Button>
-                <span className='text-lg font-medium'>Profile</span>
+                <span className=''>Profile</span>
               </div>
             </header>
           </div>
-          <div className='bg-primary-default px-4 py-7'>
-            <div className='flex justify-center items-center mb-4'>
-              <Avatar width={200} height={200} />
+          {showAuthenticatedUserProfile && (
+            <div className='bg-primary-default py-7'>
+              <div className='flex justify-center items-center mb-4'>
+                <Avatar width={200} height={200} />
+              </div>
+              <div className='flex flex-col justify-start items-start gap-y-3 w-[90%] mx-auto my-12'>
+                <div className='w-full'>
+                  <h3 className='text-sm text-accent-darkest'>Nick name </h3>
+                  <FormTextDisplay
+                    max={50}
+                    min={3}
+                    value={authenticatedUser.nickName}
+                    onSubmit={(upd) => console.log(upd)}
+                  />
+                </div>
+                <div className='w-full'>
+                  <h3 className='text-sm text-accent-darkest'>First name </h3>
+                  <FormTextDisplay
+                    max={250}
+                    min={10}
+                    value={authenticatedUser.firstName}
+                    onSubmit={(upd) => console.log(upd)}
+                  />
+                </div>
+                <div className='w-full'>
+                  <h3 className='text-sm text-accent-darkest'>Last name </h3>
+                  <FormTextDisplay
+                    max={250}
+                    min={10}
+                    value={authenticatedUser.lastName}
+                    onSubmit={(upd) => console.log(upd)}
+                  />
+                </div>
+                <div className='w-full'>
+                  <h3 className='text-sm text-accent-darkest'>About </h3>
+                  <FormTextDisplay
+                    max={250}
+                    min={10}
+                    value={authenticatedUser.nickName}
+                    onSubmit={(upd) => console.log(upd)}
+                  />
+                </div>
+              </div>
             </div>
-            <div className='flex flex-col justify-start items-start gap-y-3'>
-              <div>
-                <h3 className='text-sm text-accent-darkest'>Nick name </h3>
-                <FormTextDisplay
-                  value={authenticatedUser.nickName}
-                  onSubmit={(upd) => console.log(upd)}
-                />
-              </div>
-              <div>
-                <h3 className='text-sm text-accent-darkest'>First name </h3>
-                <h3 className='text-lg'>{`${authenticatedUser.firstName}`} </h3>
-              </div>
-              <div>
-                <h3 className='text-sm text-accent-darkest'>Last name </h3>
-                <h3 className='text-lg'>{`${authenticatedUser.lastName}`} </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='bg-primary-default py-8 px-5'>
-          <div>
-            <h3 className='text-sm text-accent-darkest'>About </h3>
-            <FormTextDisplay
-              value={authenticatedUser.nickName}
-              onSubmit={(upd) => console.log(upd)}
-            />
-          </div>
+          )}
         </div>
       </div>
     </LeftDrawer>

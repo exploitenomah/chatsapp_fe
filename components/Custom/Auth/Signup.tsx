@@ -16,6 +16,7 @@ import { Socket } from 'socket.io-client'
 import AuthLoader, { AuthInputWithShowPasswordToggle } from './AuthComponents'
 import FormContainer from './FormContainer'
 import useDebounce from '@hooks/useDebounce'
+import useIsNickNameInvalid from '@hooks/user/useIsNickNameInvalid'
 
 const initialSignupDetails = {
   nickName: '',
@@ -50,23 +51,12 @@ const inputValidationClasses = (isValid: boolean, isInvalid: boolean) => {
   return `${isValid ? 'border-transparent' : isInvalid ? 'border-red-400' : ''}`
 }
 
-const doesNotContainOnlyNumsRegex = /(?!^\d+$)^.+$/
-const isValidNickNameRegex = /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/
-
 const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   const dispatch = useDispatch()
   const [signupDetails, setSignupDetails] = useState(initialSignupDetails)
   const [isNickNameTaken, setIsNickNameTaken] = useState(false)
   const [isEmailInUse, setIsEmailInUse] = useState(false)
-  const isNickNameInvalid = useMemo(() => {
-    return (
-      signupDetails.nickName.length > 0 &&
-      !(
-        isValidNickNameRegex.test(signupDetails.nickName.trim()) &&
-        doesNotContainOnlyNumsRegex.test(signupDetails.nickName.trim())
-      )
-    )
-  }, [signupDetails.nickName])
+  const isNickNameInvalid = useIsNickNameInvalid(signupDetails.nickName)
   const passwordsNotMatched = useMemo(
     () =>
       signupDetails.password.length > 0 &&

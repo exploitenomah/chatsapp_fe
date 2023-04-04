@@ -35,29 +35,30 @@ const FormTextDisplay = ({
   onSubmit,
   max,
   min,
+  alwaysReadOnly,
 }: {
   value: string
-  onSubmit: (value: string) => void
+  onSubmit?: (value: string) => void
   max: number
   min: number
+  alwaysReadOnly?: boolean
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
-
+  const [updatedVal, setUpdatedVal] = useState(value)
   const handleSubmit = useCallback(
     (submitEvent: FormEvent | KeyboardEvent) => {
       submitEvent.preventDefault()
-      let updatedVal = inputRef.current?.innerText
       if (!updatedVal || updatedVal.trim().length < min) return
-      onSubmit(updatedVal)
+      else if (updatedVal.length >= max) return
+      onSubmit && onSubmit(updatedVal)
       setIsEditing(false)
     },
-    [min, onSubmit],
+    [max, min, onSubmit, updatedVal],
   )
 
   useEffect(() => {
     inputRef.current?.focus()
-    console.dir(inputRef.current && inputRef.current.select)
   })
 
   return (
@@ -67,9 +68,11 @@ const FormTextDisplay = ({
     >
       <>
         <div
+          suppressContentEditableWarning={true}
           contentEditable={isEditing ? true : false}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSubmit(e)
+            else setUpdatedVal((e.target as HTMLElement).innerText)
           }}
           ref={inputRef}
           className={`bg-transparent px-0 text-contrast-primary border-b-2 
@@ -82,25 +85,26 @@ const FormTextDisplay = ({
           {value}
         </div>
       </>
-      {isEditing ? (
-        <Button
-          className='scale-125 p-0 text-contrast-primary/75 transition-color duration-300 pb-1'
-          type='submit'
-        >
-          <SingleCheckIcon />
-        </Button>
-      ) : (
-        <Button
-          className='p-0'
-          onClick={(e) => {
-            e.preventDefault()
-            setIsEditing((prev) => !prev)
-          }}
-          type='button'
-        >
-          <PencilIcon />
-        </Button>
-      )}
+      {!alwaysReadOnly &&
+        (isEditing ? (
+          <Button
+            className='scale-125 p-0 text-contrast-primary/75 transition-color duration-300 pb-1'
+            type='submit'
+          >
+            <SingleCheckIcon />
+          </Button>
+        ) : (
+          <Button
+            className='p-0'
+            onClick={(e) => {
+              e.preventDefault()
+              setIsEditing((prev) => !prev)
+            }}
+            type='button'
+          >
+            <PencilIcon />
+          </Button>
+        ))}
     </form>
   )
 }
@@ -172,6 +176,20 @@ export default function AuthenticatedUserPreview() {
                     value={authenticatedUser.nickName}
                     onSubmit={(upd) => console.log(upd)}
                   />
+                </div>
+                <div className='w-full'>
+                  <h3 className='text-sm text-accent-darkest flex justify-between'>
+                    Email
+                  </h3>
+                  <FormTextDisplay
+                    max={50}
+                    min={3}
+                    value={authenticatedUser.email}
+                    alwaysReadOnly={true}
+                  />
+                  <Button className='p-0 block text-xs text-contrast-secondary/70 ml-auto -mt-6'>
+                    change
+                  </Button>
                 </div>
               </div>
             </div>

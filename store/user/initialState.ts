@@ -5,6 +5,7 @@ const initialState = {
   email: '',
   _id: '',
   friendsCount: 0,
+  about: '',
 }
 
 export type User = typeof initialState

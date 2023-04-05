@@ -30,6 +30,7 @@ import { toggleAppLoading } from '@store/ui/slice'
 import { UI } from '@store/ui/initialState'
 import AppLoadingScreen from './LoadingScreen'
 import AuthenticatedUserPreview from '../User/AuthenticatedUserPreview'
+import useFetchInitialSuggestions from '@hooks/friends/useFetchInitialSuggestions'
 
 export default function App() {
   const {
@@ -56,7 +57,12 @@ export default function App() {
   const handleGetFriends = useGetManyFriends()
   const handleGetFriendRequests = useGetManyFriendRequests()
   const handleGetPendingFriends = useGetManyPendingFriends()
+  const fetchInitialSuggestions = useFetchInitialSuggestions()
 
+  useEffect(() => {
+    fetchInitialSuggestions()
+  }, [fetchInitialSuggestions])
+  
   useGetConversationsNotInState()
   useEffect(() => {
     hasFetchedInitialConversations === false &&

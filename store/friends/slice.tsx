@@ -148,7 +148,6 @@ const friendsSlice = createSlice({
     },
     getMany: (state, action: PayloadAction<Friend[]>) => {
       const payload = action.payload
-      console.log(payload)
       handleFriendsPayload(state, payload)
       handleFriendRequestsPayload(state, payload)
       handlePendingFriendsPayload(state, payload)

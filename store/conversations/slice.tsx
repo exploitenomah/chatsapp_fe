@@ -11,8 +11,7 @@ const conversationsSlice = createSlice({
         state.idsOfConversationsNotFetched.filter((id) =>
           action.payload.map((conv) => conv._id).includes(id),
         )
-      const updConversationsList
-      = makeUniqueArrOfObjectsWith_IdKey(
+      const updConversationsList = makeUniqueArrOfObjectsWith_IdKey(
         action.payload.map((item) => ({
           ...item,
           messages: item.messages || [],
@@ -56,9 +55,8 @@ const conversationsSlice = createSlice({
       state,
       action: PayloadAction<string>,
     ) => {
-      const s = new Set([...state.idsOfConversationsNotFetched, action.payload])
-      console.log(Array.from(s))
-      state.idsOfConversationsNotFetched = Array.from(s)
+      const idsOfConversationsNotInState = new Set([...state.idsOfConversationsNotFetched, action.payload])
+      state.idsOfConversationsNotFetched = Array.from(idsOfConversationsNotInState)
     },
     removeFromIdsOfConversationsNotFetched: (
       state,

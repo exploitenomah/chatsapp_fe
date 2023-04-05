@@ -4,6 +4,11 @@ import PencilIcon from '@assets/PencilIcon'
 import SingleCheckIcon from '@assets/SingleCheckIcon'
 import Button from '@components/HTML/Button'
 import Input from '@components/HTML/Input'
+import useIsNickNameInvalid, {
+  isValidNickNameRegex,
+  useCheckIfNickNameIsValid,
+} from '@hooks/user/useIsNickNameInvalid'
+import useUser from '@sockets/useUser'
 import { Friend, FriendsState } from '@store/friends/initialState'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
@@ -30,51 +35,109 @@ import { headerClasses } from '../App/AppHeader'
 import Avatar from '../Avatar'
 import LeftDrawer from '../LeftDrawer'
 
+function selectElmCnt(elm: any) {
+  if (window.getSelection) {
+    var selection = window.getSelection()
+    var range = document.createRange()
+    range.selectNodeContents(elm)
+    selection?.removeAllRanges()
+    selection?.addRange(range)
+  }
+}
+
 const FormTextDisplay = ({
   value,
-  onSubmit,
+  name,
   max,
   min,
   alwaysReadOnly,
 }: {
   value: string
-  onSubmit?: (value: string) => void
+  onSubmit?: (value: string) => undefined | string
   max: number
   min: number
   alwaysReadOnly?: boolean
+  name?: 'firstName' | 'lastName' | 'nickName' | 'about'
 }) => {
+  const userSocket = useUser()
   const [isEditing, setIsEditing] = useState(false)
+  const [error, setError] = useState('')
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [updatedVal, setUpdatedVal] = useState(value)
+  const checkIfNickNameIsInValid = useCheckIfNickNameIsValid()
+
+  const handleUpdateInfo = useCallback(
+    (update: {
+      [x in Option]?: string
+    }) => {
+      if (update.nickName) {
+        if (checkIfNickNameIsInValid(update.nickName))
+          return 'Invalid Nick name'
+      }
+      userSocket.emit('updateMe', update)
+    },
+    [checkIfNickNameIsInValid, userSocket],
+  )
   const handleSubmit = useCallback(
     (submitEvent: FormEvent | KeyboardEvent) => {
       submitEvent.preventDefault()
-      if (!updatedVal || updatedVal.trim().length < min) return
-      else if (updatedVal.length >= max) return
-      onSubmit && onSubmit(updatedVal)
-      setIsEditing(false)
+      if (!updatedVal || updatedVal.trim().length < min)
+        return setError('too short!')
+      else if (updatedVal.length >= max) return setError('too long!')
+      if (updatedVal === value) return setIsEditing(false)
+      if (!alwaysReadOnly && name) {
+        const error = handleUpdateInfo({ [name]: updatedVal })
+        if (error) {
+          setError(error)
+        } else {
+          setIsEditing(false)
+        }
+      }
     },
-    [max, min, onSubmit, updatedVal],
+    [updatedVal, min, max, value, alwaysReadOnly, name, handleUpdateInfo],
   )
 
   useEffect(() => {
     inputRef.current?.focus()
   })
 
+  useEffect(() => {
+    userSocket.on('error', (msg) => {
+      if (msg.includes(name)) {
+        setError(`Unable to perform update`)
+      }
+    })
+  }, [name, userSocket])
+
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex justify-between w-full items-end'
+      className='flex justify-between w-full items-end relative'
     >
       <>
+        <span className='text-red-400 text-[12px] block absolute top-0 right-[30px]'>
+          {error}
+        </span>
         <div
           suppressContentEditableWarning={true}
           contentEditable={isEditing ? true : false}
           onKeyDown={(e) => {
+            setError('')
             if (e.key === 'Enter') handleSubmit(e)
-            else setUpdatedVal((e.target as HTMLElement).innerText)
+          }}
+          onKeyUp={(e) => {
+            setUpdatedVal((e.target as HTMLElement).innerText)
           }}
           ref={inputRef}
+          onFocus={(e) => selectElmCnt(e.target)}
+          onPaste={(e) => {
+            e.preventDefault()
+            document.execCommand(
+              'insertText',
+              false,
+              e.clipboardData.getData('text/plain'),
+            )
+          }}
           className={`bg-transparent px-0 text-contrast-primary border-b-2 
           rounded-none pb-1 grow outline-none break-words max-w-[90%] ${
             isEditing
@@ -107,6 +170,13 @@ const FormTextDisplay = ({
         ))}
     </form>
   )
+}
+
+enum Option {
+  firstName = 'firstName',
+  nickName = 'nickName',
+  about = 'about',
+  lastName = 'lastName',
 }
 
 export default function AuthenticatedUserPreview() {
@@ -146,26 +216,26 @@ export default function AuthenticatedUserPreview() {
                   <FormTextDisplay
                     max={50}
                     min={3}
+                    name={'nickName'}
                     value={authenticatedUser.nickName}
-                    onSubmit={(upd) => console.log(upd)}
                   />
                 </div>
                 <div className='w-full'>
                   <h3 className='text-sm text-accent-darkest'>First name </h3>
                   <FormTextDisplay
                     max={250}
-                    min={10}
+                    min={3}
+                    name={'firstName'}
                     value={authenticatedUser.firstName}
-                    onSubmit={(upd) => console.log(upd)}
                   />
                 </div>
                 <div className='w-full'>
                   <h3 className='text-sm text-accent-darkest'>Last name </h3>
                   <FormTextDisplay
                     max={250}
-                    min={10}
+                    min={3}
+                    name={'lastName'}
                     value={authenticatedUser.lastName}
-                    onSubmit={(upd) => console.log(upd)}
                   />
                 </div>
                 <div className='w-full'>
@@ -173,11 +243,11 @@ export default function AuthenticatedUserPreview() {
                   <FormTextDisplay
                     max={250}
                     min={10}
-                    value={authenticatedUser.nickName}
-                    onSubmit={(upd) => console.log(upd)}
+                    name={'about'}
+                    value={authenticatedUser.about}
                   />
                 </div>
-                <div className='w-full'>
+                {/* <div className='w-full'>
                   <h3 className='text-sm text-accent-darkest flex justify-between'>
                     Email
                   </h3>
@@ -187,10 +257,10 @@ export default function AuthenticatedUserPreview() {
                     value={authenticatedUser.email}
                     alwaysReadOnly={true}
                   />
-                  <Button className='p-0 block text-xs text-contrast-secondary/70 ml-auto -mt-6'>
+                  <Button className='p-0 block text-xs cursor-pointer hover:text-accent-dark text-contrast-secondary/70 ml-auto -mt-6'>
                     change
                   </Button>
-                </div>
+                </div> */}
               </div>
             </div>
           )}

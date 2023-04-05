@@ -81,6 +81,7 @@ const FormTextDisplay = ({
   const handleSubmit = useCallback(
     (submitEvent: FormEvent | KeyboardEvent) => {
       submitEvent.preventDefault()
+      if (error.length > 0) return
       if (!updatedVal || updatedVal.trim().length < min)
         return setError('too short!')
       else if (updatedVal.length >= max) return setError('too long!')
@@ -94,7 +95,16 @@ const FormTextDisplay = ({
         }
       }
     },
-    [updatedVal, min, max, value, alwaysReadOnly, name, handleUpdateInfo],
+    [
+      error.length,
+      updatedVal,
+      min,
+      max,
+      value,
+      alwaysReadOnly,
+      name,
+      handleUpdateInfo,
+    ],
   )
 
   useEffect(() => {
@@ -105,6 +115,7 @@ const FormTextDisplay = ({
     userSocket.on('error', (msg) => {
       if (msg.includes(name)) {
         setError(`Unable to perform update`)
+        setIsEditing(true)
       }
     })
   }, [name, userSocket])
@@ -122,8 +133,8 @@ const FormTextDisplay = ({
           suppressContentEditableWarning={true}
           contentEditable={isEditing ? true : false}
           onKeyDown={(e) => {
+            if (e.key === 'Enter') return handleSubmit(e)
             setError('')
-            if (e.key === 'Enter') handleSubmit(e)
           }}
           onKeyUp={(e) => {
             setUpdatedVal((e.target as HTMLElement).innerText)

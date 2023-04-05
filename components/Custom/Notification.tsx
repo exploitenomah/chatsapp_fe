@@ -25,7 +25,7 @@ export default function NotificationComponent({ message, variant, id }: Alert) {
   return (
     <div
       role='alert'
-      className={`relative px-6 py-4 text-center ${_variant} left-0 z-[1000000] text-sm my-2 mr-3`}
+      className={`relative px-6 py-4 text-center ${_variant} left-0 z-[1000000] text-sm my-2 mr-3 rounded-lg`}
     >
       <Button
         onClick={() => dispatch(removeAppAlert(id))}

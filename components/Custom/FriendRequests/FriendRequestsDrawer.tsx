@@ -5,7 +5,6 @@ import { UI } from '@store/ui/initialState'
 import {
   removeUserInPreview,
   toggleShowFriendRequestsDrawer,
-  toggleShowSuggestionsDrawer,
 } from '@store/ui/slice'
 import { ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,7 +12,7 @@ import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
 import { FriendsState } from '@store/friends/initialState'
 import FriendRequestsList from './FriendRequestsList'
-import useFetchInitialSuggestions from '@hooks/friends/useFetchInitialSuggestions'
+import SeeSuggestionsButton from "../FriendsSuggestions/SeeSuggestionsBtn"
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -75,7 +74,6 @@ const NoFriendRequestsYetBody = () => {
     (store) => store.friends,
   )
 
-  const fetchInitialSuggestions = useFetchInitialSuggestions()
   const dispatch = useDispatch()
 
   if (friendRequests.length > 0) return null
@@ -85,18 +83,7 @@ const NoFriendRequestsYetBody = () => {
         <h2 className='prose-lg text-contrast-secondary my-5'>
           You have no friends requests yet.
         </h2>
-        <Button
-          onClick={() => {
-            fetchInitialSuggestions()
-            dispatch(toggleShowSuggestionsDrawer())
-            setTimeout(() => {
-              dispatch(toggleShowFriendRequestsDrawer())
-            }, 100)
-          }}
-          className='bg-accent-darkest text-contrast-strong'
-        >
-          See Suggestions
-        </Button>
+        <SeeSuggestionsButton />
       </div>
     </div>
   )

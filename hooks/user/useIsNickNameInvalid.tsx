@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 export const doesNotContainOnlyNumsRegex = /(?!^\d+$)^.+$/
 export const isValidNickNameRegex = /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/
 
@@ -13,4 +13,16 @@ export default function useIsNickNameInvalid(nickName: string) {
     )
   }, [nickName])
   return isNickNameInvalid
+}
+
+export const useCheckIfNickNameIsValid = () => {
+  return useCallback((nickName: string) => {
+    return (
+      nickName.length > 0 &&
+      !(
+        isValidNickNameRegex.test(nickName.trim()) &&
+        doesNotContainOnlyNumsRegex.test(nickName.trim())
+      )
+    )
+  }, [])
 }

@@ -17,10 +17,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
 import FriendsList from './FriendsList'
-import useFetchInitialSuggestions from '@hooks/friends/useFetchInitialSuggestions'
 import { FriendsState } from '@store/friends/initialState'
 import RightChevron from '@assets/RightChevron'
 import { FriendRequestsCountBadge } from './FriendsNotificationBadges'
+import SeeSuggestionsButton from '../FriendsSuggestions/SeeSuggestionsBtn'
 
 const DefaultButton = ({
   onClick,
@@ -41,14 +41,17 @@ const DefaultButton = ({
 }
 
 const FriendsSuggestionButton = () => {
-  const fetchInitialSuggestions = useFetchInitialSuggestions()
+  const { suggestions } = useSelector<Store, FriendsState>(
+    (store) => store.friends,
+  )
   const dispatch = useDispatch()
+
+  if (suggestions.length === 0) return null
 
   return (
     <div>
       <DefaultButton
         onClick={() => {
-          fetchInitialSuggestions()
           dispatch(toggleShowSuggestionsDrawer())
         }}
       >
@@ -154,9 +157,6 @@ const FriendsDrawerContainer = ({
 const NoFriendsYetBody = () => {
   const { friends } = useSelector<Store, FriendsState>((store) => store.friends)
 
-  const fetchInitialSuggestions = useFetchInitialSuggestions()
-  const dispatch = useDispatch()
-
   if (friends.length > 0) return null
   return (
     <div className='absolute h-2/5 w-full flex justify-center items-center'>
@@ -164,15 +164,7 @@ const NoFriendsYetBody = () => {
         <h2 className='prose-lg text-contrast-secondary my-5'>
           You have no friends yet
         </h2>
-        <Button
-          onClick={() => {
-            fetchInitialSuggestions()
-            dispatch(toggleShowSuggestionsDrawer())
-          }}
-          className='bg-accent-darkest text-contrast-strong'
-        >
-          See Suggestions
-        </Button>
+        <SeeSuggestionsButton />
       </div>
     </div>
   )

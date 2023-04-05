@@ -18,17 +18,36 @@ export const uiSlice = createSlice({
           ? action.payload
           : !state.showAuthenticatedUserProfile
     },
-    toggleShowFriendsDrawer: (state) => {
+    toggleShowFriendsDrawer: (
+      state,
+      action: PayloadAction<boolean | undefined>,
+    ) => {
       state.showFriendsDrawer = !state.showFriendsDrawer
     },
-    toggleShowSuggestionsDrawer: (state) => {
-      state.showFriendsSuggestionDrawer = !state.showFriendsSuggestionDrawer
+    toggleShowSuggestionsDrawer: (
+      state,
+      action: PayloadAction<boolean | undefined>,
+    ) => {
+      if (typeof action.payload === 'boolean')
+        state.showFriendsSuggestionDrawer = action.payload
+      else
+        state.showFriendsSuggestionDrawer = !state.showFriendsSuggestionDrawer
     },
-    toggleShowFriendRequestsDrawer: (state) => {
-      state.showFriendRequestsDrawer = !state.showFriendRequestsDrawer
+    toggleShowFriendRequestsDrawer: (
+      state,
+      action: PayloadAction<boolean | undefined>,
+    ) => {
+      if (typeof action.payload === 'boolean')
+        state.showFriendRequestsDrawer = action.payload
+      else state.showFriendRequestsDrawer = !state.showFriendRequestsDrawer
     },
-    toggleShowPendingFriendsDrawer: (state) => {
-      state.showPendingFriendsDrawer = !state.showPendingFriendsDrawer
+    toggleShowPendingFriendsDrawer: (
+      state,
+      action: PayloadAction<boolean | undefined>,
+    ) => {
+      if (typeof action.payload === 'boolean')
+        state.showPendingFriendsDrawer = action.payload
+      else state.showPendingFriendsDrawer = !state.showPendingFriendsDrawer
     },
     toggleShowSignup: (state) => {
       state.showSignup = !state.showSignup

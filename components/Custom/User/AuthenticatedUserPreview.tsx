@@ -19,6 +19,7 @@ import {
 } from '@store/ui/slice'
 import { User } from '@store/user/initialState'
 import {
+  ClipboardEventHandler,
   EventHandler,
   FormEvent,
   FormEventHandler,
@@ -63,7 +64,6 @@ const FormTextDisplay = ({
   const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState('')
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [updatedVal, setUpdatedVal] = useState(value)
   const checkIfNickNameIsInValid = useCheckIfNickNameIsValid()
 
   const handleUpdateInfo = useCallback(
@@ -82,6 +82,7 @@ const FormTextDisplay = ({
     (submitEvent: FormEvent | KeyboardEvent) => {
       submitEvent.preventDefault()
       if (error.length > 0) return
+      const updatedVal = inputRef.current?.innerText
       if (!updatedVal || updatedVal.trim().length < min)
         return setError('too short!')
       else if (updatedVal.length >= max) return setError('too long!')
@@ -95,16 +96,42 @@ const FormTextDisplay = ({
         }
       }
     },
-    [
-      error.length,
-      updatedVal,
-      min,
-      max,
-      value,
-      alwaysReadOnly,
-      name,
-      handleUpdateInfo,
-    ],
+    [error.length, min, max, value, alwaysReadOnly, name, handleUpdateInfo],
+  )
+  const handlePaste: ClipboardEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.preventDefault()
+      let textToPaste = e.clipboardData.getData('text/plain')
+      document.execCommand('insertText', false, textToPaste)
+      if (((e.target as HTMLElement).innerText + textToPaste).length > max) {
+        error.length === 0 && setError('Text too long!')
+      }
+    },
+    [error.length, max],
+  )
+
+  const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      if (e.key === 'Enter') return handleSubmit(e)
+      if (
+        inputRef.current &&
+        inputRef.current.innerText.length >= max &&
+        e.key.length === 1 &&
+        e.code !== 'Space' &&
+        !e.metaKey &&
+        !e.shiftKey &&
+        !e.altKey &&
+        !e.ctrlKey
+      ) {
+        return e.preventDefault()
+      }
+      if (
+        (e.target as HTMLElement).innerText.length < max ||
+        (e.target as HTMLElement).innerText.length >= min
+      )
+        setError('')
+    },
+    [handleSubmit, max, min],
   )
 
   useEffect(() => {
@@ -126,29 +153,16 @@ const FormTextDisplay = ({
       className='flex justify-between w-full items-end relative'
     >
       <>
-        <span className='text-red-400 text-[12px] block absolute top-0 right-[30px]'>
+        <span className='text-red-400 text-[12px] block absolute top-[-15px] right-[30px]'>
           {error}
         </span>
         <div
           suppressContentEditableWarning={true}
           contentEditable={isEditing ? true : false}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') return handleSubmit(e)
-            setError('')
-          }}
-          onKeyUp={(e) => {
-            setUpdatedVal((e.target as HTMLElement).innerText)
-          }}
-          ref={inputRef}
+          onKeyDown={handleKeyDown}
           onFocus={(e) => selectElmCnt(e.target)}
-          onPaste={(e) => {
-            e.preventDefault()
-            document.execCommand(
-              'insertText',
-              false,
-              e.clipboardData.getData('text/plain'),
-            )
-          }}
+          ref={inputRef}
+          onPaste={handlePaste}
           className={`bg-transparent px-0 text-contrast-primary border-b-2 
           rounded-none pb-1 grow outline-none break-words max-w-[90%] ${
             isEditing

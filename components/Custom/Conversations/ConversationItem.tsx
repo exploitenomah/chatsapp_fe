@@ -79,7 +79,8 @@ export default function ConversationItem({
       : []
   }, [authenticatedUser._id, conversation.messages])
   const unSeenMsgsCount = useMemo(() => {
-   return !conversation.hasFetchedInitialMessages && conversation.unSeenMsgsCount
+    return !conversation.hasFetchedInitialMessages &&
+      conversation.unSeenMsgsCount
       ? conversation.unSeenMsgsCount
       : unseenMessages.length
   }, [

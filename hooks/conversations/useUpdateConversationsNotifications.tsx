@@ -20,12 +20,13 @@ export default function useUpdateConversationsNotifications() {
       )
       return acc + convoUnreadMessages.length
     }, 0)
-    const conversationsWithUnseenMessagesCount = conversations.filter(
-      (convo) =>
-        convo.messages &&
-        convo.messages.find(
-          (msg) => msg.seen === false && msg.sender !== authenticatedUser._id,
-        ),
+    const conversationsWithUnseenMessagesCount = conversations.filter((convo) =>
+      !convo.hasFetchedInitialMessages && convo.unSeenMsgsCount
+        ? convo.unSeenMsgsCount
+        : convo.messages &&
+          convo.messages.find(
+            (msg) => msg.seen === false && msg.sender !== authenticatedUser._id,
+          ),
     ).length
 
     dispatch(

@@ -1,7 +1,7 @@
 import useEmitter from '@hooks/useEmitters'
 import useConversations from '@sockets/useConversations'
 import {
-  conversationEvents,
+  conversationsEvents,
   ConversationsState,
 } from '@store/conversations/initialState'
 import { Store } from '@store/index'
@@ -16,7 +16,7 @@ export default function useGetConversationsNotInState() {
   const conversationsSocket = useConversations()
   const conversationsSocketEmitters = useEmitter(
     conversationsSocket,
-    conversationEvents,
+    conversationsEvents,
   )
   useEffect(() => {
     if (idsOfConversationsNotFetched.length > 0) {

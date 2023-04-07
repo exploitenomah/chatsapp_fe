@@ -6,6 +6,18 @@ const conversationsSlice = createSlice({
   name: 'conversations',
   initialState,
   reducers: {
+    unSeenMsgsCount: (
+      state,
+      action: PayloadAction<{
+        conversationId: string
+        unSeenMsgsCount: number
+      }>,
+    ) => {
+      state.conversations = state.conversations.map((conv) => {
+        if (conv._id !== action.payload.conversationId) return conv
+        else return { ...conv, unSeenMsgsCount: action.payload.unSeenMsgsCount }
+      })
+    },
     getMany: (state, action: PayloadAction<Conversation[]>) => {
       state.idsOfConversationsNotFetched =
         state.idsOfConversationsNotFetched.filter((id) =>
@@ -55,8 +67,13 @@ const conversationsSlice = createSlice({
       state,
       action: PayloadAction<string>,
     ) => {
-      const idsOfConversationsNotInState = new Set([...state.idsOfConversationsNotFetched, action.payload])
-      state.idsOfConversationsNotFetched = Array.from(idsOfConversationsNotInState)
+      const idsOfConversationsNotInState = new Set([
+        ...state.idsOfConversationsNotFetched,
+        action.payload,
+      ])
+      state.idsOfConversationsNotFetched = Array.from(
+        idsOfConversationsNotInState,
+      )
     },
     removeFromIdsOfConversationsNotFetched: (
       state,

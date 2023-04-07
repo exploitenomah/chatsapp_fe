@@ -10,7 +10,7 @@ import useUser from '@sockets/useUser'
 import { useEffect } from 'react'
 import useEmitter from '@hooks/useEmitters'
 import {
-  conversationEvents,
+  conversationsEvents,
   ConversationsState,
 } from '@store/conversations/initialState'
 import { User, userEvents } from '@store/user/initialState'
@@ -50,7 +50,7 @@ export default function App() {
   useMessages()
   const conversationsSocketEmitters = useEmitter(
     conversationsSocket,
-    conversationEvents,
+    conversationsEvents,
   )
   const userSocket = useUser()
   const userSocketEmitters = useEmitter(userSocket, userEvents)
@@ -62,7 +62,7 @@ export default function App() {
   useEffect(() => {
     fetchInitialSuggestions()
   }, [fetchInitialSuggestions])
-  
+
   useGetConversationsNotInState()
   useEffect(() => {
     hasFetchedInitialConversations === false &&

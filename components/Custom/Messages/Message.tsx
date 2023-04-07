@@ -123,7 +123,7 @@ const StyledMessageComponent = ({
           >
             <MessageTail />
           </div>
-          <div className='whitespace-pre-wrap'>
+          <div className='whitespace-pre-wrap break-all'>
             <span>{message.text}</span>
           </div>
           <div className='self-end ml-1 flex items-center gap-x-[2px] text-[11px] h-[15px]'>

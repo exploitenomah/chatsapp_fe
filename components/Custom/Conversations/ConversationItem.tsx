@@ -78,6 +78,15 @@ export default function ConversationItem({
         )
       : []
   }, [authenticatedUser._id, conversation.messages])
+  const unSeenMsgsCount = useMemo(() => {
+   return !conversation.hasFetchedInitialMessages && conversation.unSeenMsgsCount
+      ? conversation.unSeenMsgsCount
+      : unseenMessages.length
+  }, [
+    conversation.hasFetchedInitialMessages,
+    conversation.unSeenMsgsCount,
+    unseenMessages.length,
+  ])
 
   const showUnseenMsgsBadge = useMemo(
     () =>
@@ -213,12 +222,8 @@ export default function ConversationItem({
               {showUnseenMsgsBadge ? (
                 <div className='relative w-[19.19px] h-[19.19px] mt-[2px] ml-auto'>
                   <Badge>
-                    {unseenMessages.length < 100 ? (
-                      conversation.unSeenMsgsCount ? (
-                        conversation.unSeenMsgsCount
-                      ) : (
-                        unseenMessages.length
-                      )
+                    {unSeenMsgsCount < 100 ? (
+                      unSeenMsgsCount
                     ) : (
                       <span className='text-[9px]'>99+</span>
                     )}

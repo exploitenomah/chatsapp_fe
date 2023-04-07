@@ -7,7 +7,7 @@ import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import useHandlers from '@hooks/useHandlers'
-import { conversationEvents } from '@store/conversations/initialState'
+import { conversationsEvents } from '@store/conversations/initialState'
 import { conversationsActions } from '@store/conversations/slice'
 
 export default function useConversations() {
@@ -27,7 +27,7 @@ export default function useConversations() {
 
   useHandlers(
     conversationsSocket,
-    conversationEvents,
+    conversationsEvents,
     conversationsActions as {},
   )
 

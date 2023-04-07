@@ -29,7 +29,10 @@ export default function useOnUpdateMessagesDelivered() {
       const conversationInState = conversations.filter(
         (conversation) => conversation._id === acknowledgement.conversationId,
       )[0]
-      if (conversationInState) {
+      const hasUndeliveredMsgs = conversationInState.messages?.some(
+        (msg) => msg.delivered === false,
+      )
+      if (conversationInState && hasUndeliveredMsgs) {
         dispatch(
           updateSingleConversation({
             conversationId: acknowledgement.conversationId,

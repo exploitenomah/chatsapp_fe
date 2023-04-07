@@ -9,9 +9,11 @@ import { Message } from '@store/messages/initialState'
 import { UI } from '@store/ui/initialState'
 import { User } from '@store/user/initialState'
 import { useCallback, useMemo, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 import Badge from '../Badge'
+import useEmitUnSeenMsgsCount from '@hooks/conversations/useEmitUnseenMsgsCount'
+import { updateSingleConversation } from '@store/conversations/slice'
 
 const LatestMessage = ({
   latestMessage,
@@ -53,8 +55,10 @@ export default function ConversationItem({
   conversation: Conversation
 }) {
   useManageConversation(conversation)
+  useEmitUnSeenMsgsCount(conversation._id)
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
+  const dispatch = useDispatch()
   const isActive = useMemo(
     () => activeConversation?._id === conversation._id,
     [activeConversation?._id, conversation._id],
@@ -77,8 +81,17 @@ export default function ConversationItem({
 
   const showUnseenMsgsBadge = useMemo(
     () =>
-      unseenMessages.length > 0 && activeConversation?._id !== conversation._id,
-    [activeConversation?._id, conversation._id, unseenMessages.length],
+      !conversation.hasFetchedInitialMessages && conversation.unSeenMsgsCount
+        ? true
+        : unseenMessages.length > 0 &&
+          activeConversation?._id !== conversation._id,
+    [
+      activeConversation?._id,
+      conversation._id,
+      conversation.hasFetchedInitialMessages,
+      conversation.unSeenMsgsCount,
+      unseenMessages.length,
+    ],
   )
 
   const timeOfLastSentMsg = useMemo(() => {
@@ -121,7 +134,21 @@ export default function ConversationItem({
   const handleOnClick = useCallback(() => {
     if (activeConversation?._id === conversation._id) return
     handleMessageButtonClick()
-  }, [activeConversation?._id, conversation._id, handleMessageButtonClick])
+    dispatch(
+      updateSingleConversation({
+        conversationId: conversation._id,
+        update: {
+          ...conversation,
+          unSeenMsgsCount: 0,
+        },
+      }),
+    )
+  }, [
+    activeConversation?._id,
+    conversation,
+    dispatch,
+    handleMessageButtonClick,
+  ])
 
   const handleEmitMessagesDelivered = useEmitMessagesDelivered()
 
@@ -187,7 +214,11 @@ export default function ConversationItem({
                 <div className='relative w-[19.19px] h-[19.19px] mt-[2px] ml-auto'>
                   <Badge>
                     {unseenMessages.length < 100 ? (
-                      unseenMessages.length
+                      conversation.unSeenMsgsCount ? (
+                        conversation.unSeenMsgsCount
+                      ) : (
+                        unseenMessages.length
+                      )
                     ) : (
                       <span className='text-[9px]'>99+</span>
                     )}

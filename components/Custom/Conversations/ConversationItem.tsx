@@ -79,15 +79,8 @@ export default function ConversationItem({
       : []
   }, [authenticatedUser._id, conversation.messages])
   const unSeenMsgsCount = useMemo(() => {
-    return !conversation.hasFetchedInitialMessages &&
-      conversation.unSeenMsgsCount
-      ? conversation.unSeenMsgsCount
-      : unseenMessages.length
-  }, [
-    conversation.hasFetchedInitialMessages,
-    conversation.unSeenMsgsCount,
-    unseenMessages.length,
-  ])
+    return (conversation.unSeenMsgsCount || 0) + unseenMessages.length
+  }, [conversation.unSeenMsgsCount, unseenMessages.length])
 
   const showUnseenMsgsBadge = useMemo(
     () =>
@@ -166,7 +159,7 @@ export default function ConversationItem({
     const undeliveredMessage = conversation.messages?.find(
       (msg) => msg.sender !== authenticatedUser._id && msg.delivered === false,
     )
-    if (undeliveredMessage) {
+    if (undeliveredMessage || conversation.unSeenMsgsCount) {
       handleEmitMessagesDelivered(
         conversation._id,
         conversation.participants.map((el) => el._id),
@@ -177,6 +170,7 @@ export default function ConversationItem({
     conversation._id,
     conversation.messages,
     conversation.participants,
+    conversation.unSeenMsgsCount,
     handleEmitMessagesDelivered,
   ])
 

@@ -59,7 +59,7 @@ const MessagesListContainer = () => {
           )
         }
       }
-    }, 5000)
+    }, 3000)
   }, [
     activeConversation?.messages,
     activeConversation?.participants,

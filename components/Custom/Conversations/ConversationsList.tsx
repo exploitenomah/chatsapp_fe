@@ -1,4 +1,7 @@
-import { Conversation, ConversationsState } from '@store/conversations/initialState'
+import {
+  Conversation,
+  ConversationsState,
+} from '@store/conversations/initialState'
 import { Store } from '@store/index'
 import { useSelector } from 'react-redux'
 import ConversationItem from './ConversationItem'
@@ -34,12 +37,24 @@ export default function ConversationsList() {
           return 1
         }
       })
+      .map((convo) => ({
+        ...convo,
+        latestMessage: convo.latestMessage
+          ? {
+              ...convo.latestMessage,
+              createdAt: convo.latestMessage?.createdAt?.toTimeString(),
+            }
+          : convo.latestMessage,
+      }))
   }, [conversations])
 
   return (
     <>
       {sortedConversations.map((conversation) => (
-        <ConversationItem key={conversation._id} conversation={conversation as Conversation} />
+        <ConversationItem
+          key={conversation._id}
+          conversation={conversation as Conversation}
+        />
       ))}
     </>
   )

@@ -42,7 +42,7 @@ export default function ConversationsList() {
         latestMessage: convo.latestMessage
           ? {
               ...convo.latestMessage,
-              createdAt: convo.latestMessage?.createdAt?.toTimeString(),
+              createdAt: convo.latestMessage?.createdAt?.toUTCString(),
             }
           : convo.latestMessage,
       }))

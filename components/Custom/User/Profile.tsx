@@ -10,11 +10,18 @@ import useRemoveFriend from '@hooks/friends/useRemoveFriend'
 import useAcceptFriend from '@hooks/friends/useAcceptFriend'
 import { Friend } from '@store/friends/initialState'
 import CloseIcon from '@assets/CloseIcon'
-import { MouseEventHandler, ReactNode, useCallback, useEffect, useState } from 'react'
+import {
+  MouseEventHandler,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { Store } from '@store/index'
 import { User } from '@store/user/initialState'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
+import { removeUserInPreview, toggleShowFriendsDrawer } from '@store/ui/slice'
 
 const AddFriendButton = ({
   show,
@@ -209,6 +216,14 @@ export default function Profile({
     user._id,
     userInState._id,
   ])
+  const dispatch = useDispatch()
+
+  const handleMsgBtnClick = useCallback(() => {
+    handleMessageButtonClick()
+    dispatch(removeUserInPreview())
+    dispatch(toggleShowFriendsDrawer(false))
+  }, [dispatch, handleMessageButtonClick])
+
   return (
     <>
       <div className='flex flex-col h-full gap-y-2.5'>
@@ -258,9 +273,7 @@ export default function Profile({
               } p-0 gap-y-2 flex-col items-center justify-center`}
             >
               <span className='text-accent-bright text-base'>Friends</span>
-              <MessageButton
-                onClick={handleMessageButtonClick}
-              />
+              <MessageButton onClick={handleMsgBtnClick} />
             </div>
           </div>
         </div>

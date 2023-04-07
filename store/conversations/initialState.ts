@@ -1,7 +1,13 @@
 import { Message } from '@store/messages/initialState'
 import { User } from '@store/user/initialState'
 
-export const conversationsEvents = ['new', 'update', 'getOne', 'getMany']
+export const conversationsEvents = [
+  'new',
+  'update',
+  'getOne',
+  'getMany',
+  'unSeenMsgsCount',
+]
 
 export type Conversation = {
   createdAt: Date
@@ -15,6 +21,7 @@ export type Conversation = {
   hasFetchedInitialMessages?: boolean
   messagesPage?: number
   shouldScrollMessages?: boolean
+  unSeenMsgsCount?: number
 }
 
 export type ConversationsState = {
@@ -27,7 +34,6 @@ export type ConversationsState = {
   hasFetchedAllConversation: boolean
 }
 
-export const conversationEvents = ['new', 'update', 'getOne', 'getMany']
 const initialState: ConversationsState = {
   conversations: [],
   idsOfConversationsNotFetched: [],
@@ -35,7 +41,7 @@ const initialState: ConversationsState = {
   conversationsWithUnseenMessagesCount: 0,
   totalUnseenMessages: 0,
   conversationsPage: 0,
-  hasFetchedAllConversation: false
+  hasFetchedAllConversation: false,
 }
 
 export default initialState

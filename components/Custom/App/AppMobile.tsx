@@ -2,9 +2,6 @@ import FriendsDrawer from '../Friends/FriendsDrawer'
 import FriendsSuggestionDrawer from '../FriendsSuggestions/SuggestionsDrawer'
 import FriendRequestsDrawer from '../FriendRequests/FriendRequestsDrawer'
 import LeftPanel from './LeftPanel/LeftPanel'
-import RightPanel, {
-  useRightPanelOutOfFocusClasses,
-} from './RightPanel/RightPanel'
 import useConversations from '@sockets/useConversations'
 import useUser from '@sockets/useUser'
 import { useEffect } from 'react'
@@ -50,7 +47,6 @@ export default function AppMobile() {
   >((store) => store.ui)
   const user = useSelector<Store, User>((store) => store.user)
   const dispatch = useDispatch()
-  const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses()
   const conversationsSocket = useConversations()
   useMessages()
   const conversationsSocketEmitters = useEmitter(

@@ -31,6 +31,7 @@ import { UI } from '@store/ui/initialState'
 import AppLoadingScreen from './LoadingScreen'
 import AuthenticatedUserPreview from '../User/AuthenticatedUserPreview'
 import useFetchInitialSuggestions from '@hooks/friends/useFetchInitialSuggestions'
+import SecondaryPanel from './RightPanel/SecondaryPanel'
 
 export default function App() {
   const {
@@ -42,7 +43,9 @@ export default function App() {
     Store,
     ConversationsState
   >((store) => store.conversations)
-  const { appLoading } = useSelector<Store, UI>((store) => store.ui)
+  const { appLoading, userInPreview } = useSelector<Store, UI>(
+    (store) => store.ui,
+  )
   const user = useSelector<Store, User>((store) => store.user)
   const dispatch = useDispatch()
   const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses()
@@ -122,7 +125,11 @@ export default function App() {
           >
             <RightPanel />
           </div>
-          <UserPreview />
+          <SecondaryPanel show={Boolean(userInPreview)}>
+            <div className='border-l-contrast-secondary/20 border-l'>
+              <UserPreview />
+            </div>
+          </SecondaryPanel>
         </div>
       </div>
     </div>

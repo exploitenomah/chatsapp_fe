@@ -16,11 +16,8 @@ import useLogout from '@hooks/user/useLogout'
 
 export const NavItem = ({
   children,
-  buttonProps,
-}: {
-  children: ReactNode
-  buttonProps: HTMLAttributes<HTMLButtonElement>
-}) => {
+  ...buttonProps
+}: HTMLAttributes<HTMLButtonElement>) => {
   return (
     <>
       <Button
@@ -35,46 +32,40 @@ export const NavItem = ({
 
 export const headerClasses = 'bg-secondary-default py-2.5 px-4 '
 
-const AppOptions = () => {
-  const { showAppOptions } = useSelector<Store, UI>((store) => store.ui)
-  const dispatch = useDispatch()
-  const logUserOut = useLogout()
-
+export const OptionsComponent = ({
+  toggleShowOptions,
+  children,
+  showOptions,
+}: {
+  toggleShowOptions: () => void
+  children: ReactNode | ReactNode[]
+  showOptions: boolean
+}) => {
   return (
-    <li className='relative'>
-      <NavItem
-        buttonProps={{
-          onClick: () => dispatch(toggleShowAppOptions()),
-        }}
-      >
+    <div className='relative'>
+      <NavItem onClick={() => toggleShowOptions()}>
         <OptionsIcon />
       </NavItem>
       <div
-        onClick={() => dispatch(toggleShowAppOptions())}
+        onClick={() => toggleShowOptions()}
         className={`${
-          showAppOptions ? 'block' : 'hidden'
+          showOptions ? 'block' : 'hidden'
         } fixed z-[9] h-screen w-screen top-0 left-0`}
       />
       <div
         className={`${
-          showAppOptions ? 'scale-100' : 'scale-0'
+          showOptions ? 'scale-100' : 'scale-0'
         } bg-primary-default min-h-[50px] px-4 shadow-2xl shadow-primary-dark/50 origin-top-right absolute top-[10px] duration-300 right-[32px] min-w-[100px] z-[100] flex flex-col justify-center items-center`}
       >
-        <Button
-          className='text-red-300 shadow-none'
-          onClick={() => {
-            dispatch(toggleShowAppOptions())
-            logUserOut()
-          }}
-        >
-          Logout
-        </Button>
+        {children}
       </div>
-    </li>
+    </div>
   )
 }
 export default function AppHeader() {
   const dispatch = useDispatch()
+  const logUserOut = useLogout()
+  const { showAppOptions } = useSelector<Store, UI>((store) => store.ui)
 
   return (
     <div className={`${headerClasses}`}>
@@ -89,10 +80,8 @@ export default function AppHeader() {
           <ul className='flex items-center'>
             <li>
               <NavItem
-                buttonProps={{
-                  className: 'relative',
-                  onClick: () => dispatch(toggleShowFriendsDrawer()),
-                }}
+                className='relative'
+                onClick={() => dispatch(toggleShowFriendsDrawer())}
               >
                 <span className='absolute bottom-[50%] w-5 h-5 scale-x-75 scale-y-75 right-[-3px] scale-1'>
                   <TotalFriendsNotificationsBadge />
@@ -100,7 +89,22 @@ export default function AppHeader() {
                 <FriendsIcon />
               </NavItem>
             </li>
-            <AppOptions />
+            <li>
+              <OptionsComponent
+                showOptions={showAppOptions}
+                toggleShowOptions={() => dispatch(toggleShowAppOptions())}
+              >
+                <Button
+                  className='text-red-300 shadow-none'
+                  onClick={() => {
+                    dispatch(toggleShowAppOptions())
+                    logUserOut()
+                  }}
+                >
+                  Logout
+                </Button>
+              </OptionsComponent>
+            </li>
           </ul>
         </nav>
       </header>

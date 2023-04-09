@@ -1,10 +1,49 @@
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { useSelector } from 'react-redux'
-import { useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import MessageComponent, { MainMessageWrapper } from './Message'
 import { User } from '@store/user/initialState'
 import { Message } from '@store/messages/initialState'
+
+const groupMessagesByDate = (messages: Message[]) => {
+  const todaysDate = new Date(Date.now())
+  const thisYear = todaysDate.getFullYear()
+  const thisMonth = todaysDate.getMonth()
+  const thisDay = todaysDate.getDate()
+  return messages.reduce((acc: { [x: string]: Message[] }, msg) => {
+    let dateSent = new Date(msg.createdAt)
+    let msgMonth = dateSent.getMonth()
+    let msgYear = dateSent.getFullYear()
+    let msgDay = dateSent.getDate()
+    let formattedDateKey = dateSent.toLocaleDateString('en-GB')
+    if (msgYear === thisYear && msgMonth === thisMonth) {
+      let diffInDays = thisDay - msgDay
+      if (msgDay === thisDay) formattedDateKey = 'Today'
+      else if (Math.sign(diffInDays) === 1)
+        if (diffInDays === 1) formattedDateKey = 'Yesterday'
+        else if (diffInDays <= 7)
+          formattedDateKey = dateSent.toLocaleString('en-GB', {
+            weekday: 'long',
+          })
+    }
+    if (acc[formattedDateKey])
+      return { ...acc, [formattedDateKey]: [...acc[formattedDateKey], msg] }
+    return { ...acc, [formattedDateKey]: [msg] }
+  }, {})
+}
+
+const MessageGroupHeader = ({ date }: { date: string }) => {
+  return (
+    <>
+      <div>
+        <div className='mx-auto max-w-fit px-4 py-2 uppercase text-contrast-default bg-primary-light/50 rounded-lg'>
+          {date}
+        </div>
+      </div>
+    </>
+  )
+}
 
 export default function MessagesList() {
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
@@ -55,30 +94,47 @@ export default function MessagesList() {
     [authenticatedUser._id],
   )
 
-  if (messages.length === 0) return null
+  const messagesGroupedByDate = useMemo(
+    () => groupMessagesByDate(messages),
+    [messages],
+  )
+
+  const datesOfMessages = useMemo(
+    () => Object.keys(messagesGroupedByDate),
+    [messagesGroupedByDate],
+  )
+
+  if (datesOfMessages.length === 0) return null
+
   return (
     <>
-      {messages.map((message, idx, arr) => (
-        <MainMessageWrapper
-          isConcurrentSender={
-            message.sender === arr[idx + 1]?.sender || idx === arr.length - 1
-          }
-          key={message._id}
-        >
-          <MessageComponent
-            message={message}
-            scrollMessageIntoView={getIfShouldScrollMessageIntoView(
-              message,
-              idx,
-              arr,
-            )}
-            shouldShowUnreadBannerAbove={getShouldShowUnreadBannerAbove(
-              message,
-              idx,
-              arr,
-            )}
-          />
-        </MainMessageWrapper>
+      {datesOfMessages.map((date) => (
+        <Fragment key={date}>
+          <MessageGroupHeader date={date} />
+          {messagesGroupedByDate[date].map((message, idx, arr) => (
+            <MainMessageWrapper
+              isConcurrentSender={
+                message.sender === arr[idx + 1]?.sender ||
+                idx === arr.length - 1
+              }
+              key={message._id}
+            >
+              <MessageComponent
+                message={message}
+                scrollMessageIntoView={getIfShouldScrollMessageIntoView(
+                  message,
+                  idx,
+                  arr,
+                )}
+                shouldShowUnreadBannerAbove={getShouldShowUnreadBannerAbove(
+                  message,
+                  idx,
+                  arr,
+                )}
+              />
+            </MainMessageWrapper>
+          ))}
+        </Fragment>
       ))}
     </>
   )

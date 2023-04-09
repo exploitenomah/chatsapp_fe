@@ -132,7 +132,6 @@ export default function AppMobile() {
           </div>
         </LeftDrawer>
         <LeftPanel />
-        {/* <RightPanel /> */}
       </div>
     </div>
   )

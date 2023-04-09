@@ -8,8 +8,8 @@ export default function Avatar({
 }: ImgHTMLAttributes<HTMLImageElement>) {
   return (
     <Image
-      className='object-contain rounded-full'
-      src='/images/profilepic.jpeg'
+      className='object-contain h-full rounded-full'
+      src='/images/profilepic.webp'
       alt={''}
       width={Number(width) || 40}
       height={Number(height) || 40}

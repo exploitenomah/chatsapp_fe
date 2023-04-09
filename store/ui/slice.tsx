@@ -6,8 +6,17 @@ export const uiSlice = createSlice({
   name: 'ui',
   initialState: initialState as UI,
   reducers: {
-    toggleShowAppOptions: (state, action: PayloadAction<boolean | undefined>) => {
-      state.showAppOptions = typeof action.payload === 'boolean' ? action.payload : !state.showAppOptions
+    toggleDeviceIsMobile: (state, action: PayloadAction<boolean>) => {
+      state.deviceIsMobile = action.payload
+    },
+    toggleShowAppOptions: (
+      state,
+      action: PayloadAction<boolean | undefined>,
+    ) => {
+      state.showAppOptions =
+        typeof action.payload === 'boolean'
+          ? action.payload
+          : !state.showAppOptions
     },
     toggleAppLoading: (state, action: PayloadAction<boolean>) => {
       state.appLoading = action.payload
@@ -120,6 +129,7 @@ export const uiSlice = createSlice({
 })
 
 export const {
+  toggleDeviceIsMobile,
   toggleShowAppOptions,
   toggleShowFriendsDrawer,
   toggleShowSuggestionsDrawer,

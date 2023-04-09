@@ -90,6 +90,7 @@ export default function ChatsApp() {
       handleDeviceType()
     })
   }, [handleDeviceType])
+
   useOffline()
 
   if (isOffline)

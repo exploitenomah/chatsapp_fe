@@ -2,13 +2,17 @@ import FriendsIcon from '@assets/FriendsIcon'
 import OptionsIcon from '@assets/OptionsIcon'
 import Button from '@components/HTML/Button'
 import {
+  toggleShowAppOptions,
   toggleShowAuthenticatedUserProfile,
   toggleShowFriendsDrawer,
 } from '@store/ui/slice'
 import { HTMLAttributes, ReactNode } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 import { TotalFriendsNotificationsBadge } from '@components/Custom/Friends/FriendsNotificationBadges'
+import { Store } from '@store/index'
+import { UI } from '@store/ui/initialState'
+import useLogout from '@hooks/user/useLogout'
 
 export const NavItem = ({
   children,
@@ -18,19 +22,56 @@ export const NavItem = ({
   buttonProps: HTMLAttributes<HTMLButtonElement>
 }) => {
   return (
-    <li>
+    <>
       <Button
         {...buttonProps}
         className={`${buttonProps.className} p-2 max-w-[40px] max-h-[40px] shadow-none flex justify-center items-center ml-2.5`}
       >
         {children}
       </Button>
-    </li>
+    </>
   )
 }
 
 export const headerClasses = 'bg-secondary-default py-2.5 px-4 '
 
+const AppOptions = () => {
+  const { showAppOptions } = useSelector<Store, UI>((store) => store.ui)
+  const dispatch = useDispatch()
+  const logUserOut = useLogout()
+
+  return (
+    <li className='relative'>
+      <NavItem
+        buttonProps={{
+          onClick: () => dispatch(toggleShowAppOptions()),
+        }}
+      >
+        <OptionsIcon />
+      </NavItem>
+      <div
+      onClick={() => dispatch(toggleShowAppOptions())}
+        className={`${
+          showAppOptions ? 'block' : 'hidden'
+        } fixed z-[9] h-screen w-screen top-0 left-0`}
+      />
+      <div
+        className={`${
+          showAppOptions ? 'scale-100' : 'scale-0'
+        } bg-primary-light origin-top-right absolute top-[10px] duration-300 right-[32px] min-w-[100px] z-10 flex flex-col justify-center items-center`}
+      >
+        <Button
+          onClick={() => {
+            dispatch(toggleShowAppOptions())
+            logUserOut()
+          }}
+        >
+          Logout
+        </Button>
+      </div>
+    </li>
+  )
+}
 export default function AppHeader() {
   const dispatch = useDispatch()
 
@@ -45,20 +86,20 @@ export default function AppHeader() {
         </Button>
         <nav>
           <ul className='flex items-center'>
-            <NavItem
-              buttonProps={{
-                className: 'relative',
-                onClick: () => dispatch(toggleShowFriendsDrawer()),
-              }}
-            >
-              <div className='absolute bottom-[50%] w-5 h-5 scale-x-75 scale-y-75 right-[-3px] scale-1'>
-                <TotalFriendsNotificationsBadge />
-              </div>
-              <FriendsIcon />
-            </NavItem>
-            <NavItem buttonProps={{}}>
-              <OptionsIcon />
-            </NavItem>
+            <li>
+              <NavItem
+                buttonProps={{
+                  className: 'relative',
+                  onClick: () => dispatch(toggleShowFriendsDrawer()),
+                }}
+              >
+                <span className='absolute bottom-[50%] w-5 h-5 scale-x-75 scale-y-75 right-[-3px] scale-1'>
+                  <TotalFriendsNotificationsBadge />
+                </span>
+                <FriendsIcon />
+              </NavItem>
+            </li>
+            <AppOptions />
           </ul>
         </nav>
       </header>

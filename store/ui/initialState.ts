@@ -7,6 +7,7 @@ export type UserInPreview = User & {
   hasSentRequest?: boolean
 }
 const initialState: UI = {
+  showAppOptions: false,
   showFriendsDrawer: false,
   showFriendsSuggestionDrawer: false,
   showFriendRequestsDrawer: false,
@@ -17,10 +18,11 @@ const initialState: UI = {
   loading: false,
   userInPreview: null,
   activeConversation: null,
-  showAuthenticatedUserProfile: false
+  showAuthenticatedUserProfile: false,
 }
 
 export type UI = {
+  showAppOptions: boolean
   showFriendsDrawer: boolean
   showFriendsSuggestionDrawer: boolean
   showFriendRequestsDrawer: boolean
@@ -37,7 +39,7 @@ export type UI = {
         hasFetchedAllMessages: boolean
         hasFetchedInitialMessages: boolean
       })
-      showAuthenticatedUserProfile: boolean
+  showAuthenticatedUserProfile: boolean
 }
 
 export const messagesLimit = 100

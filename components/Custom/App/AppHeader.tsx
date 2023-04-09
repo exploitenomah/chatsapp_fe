@@ -50,7 +50,7 @@ const AppOptions = () => {
         <OptionsIcon />
       </NavItem>
       <div
-      onClick={() => dispatch(toggleShowAppOptions())}
+        onClick={() => dispatch(toggleShowAppOptions())}
         className={`${
           showAppOptions ? 'block' : 'hidden'
         } fixed z-[9] h-screen w-screen top-0 left-0`}
@@ -58,9 +58,10 @@ const AppOptions = () => {
       <div
         className={`${
           showAppOptions ? 'scale-100' : 'scale-0'
-        } bg-primary-light origin-top-right absolute top-[10px] duration-300 right-[32px] min-w-[100px] z-10 flex flex-col justify-center items-center`}
+        } bg-primary-default min-h-[50px] px-4 shadow-2xl shadow-primary-dark/50 origin-top-right absolute top-[10px] duration-300 right-[32px] min-w-[100px] z-[100] flex flex-col justify-center items-center`}
       >
         <Button
+          className='text-red-300 shadow-none'
           onClick={() => {
             dispatch(toggleShowAppOptions())
             logUserOut()

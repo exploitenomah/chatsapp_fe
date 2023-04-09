@@ -111,7 +111,7 @@ export default function App() {
   return (
     <div className='w-screen h-screeen bg-primary-default'>
       <div className='flex max-w-[1600px] mx-auto h-screen 2xl:py-[19px]'>
-        <div className='basis-[30%] max-w-[30%] relative overflow-x-hidden'>
+        <div className='basis-[30%] max-w-[30%] relative overflow-hidden'>
           <AuthenticatedUserPreview />
           <FriendsDrawer />
           <FriendsSuggestionDrawer />

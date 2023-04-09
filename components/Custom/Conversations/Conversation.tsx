@@ -107,7 +107,7 @@ const MessagesListContainer = () => {
       <div
         ref={msgsContainerRef}
         onScroll={handleMsgContainerScroll}
-        className='absolute z-[2] bg-transparent h-full overflow-auto flex flex-col w-full text-sm py-6'
+        className='absolute z-[2] bg-transparent h-full overflow-auto flex flex-col w-full text-sm md:pt-6 pb-8'
       >
         <MessagesList />
       </div>

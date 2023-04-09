@@ -107,9 +107,9 @@ export default function AppMobile() {
     )
 
   return (
-    <div className='w-screen h-screen max-w-[650px] mx-auto md:py-[19px]'>
+    <div className='w-screen h-screen max-w-[650px] mx-auto pt-[60px] md:py-[19px] overflow-hidden'>
       <div
-        className={`h-full bg-primary-default transition-all duration-150 grow relative overflow-x-hidden mx-auto  md:rounded-md`}
+        className={`h-full overflow-hidden bg-primary-default transition-all duration-150 grow relative overflow-x-hidden mx-auto  md:rounded-md`}
       >
         <AuthenticatedUserPreview />
         <FriendsDrawer />

@@ -36,12 +36,12 @@ const Header = () => {
   )
 }
 
-const FriendsSearchBar = () => {
+const PendingFriendsSearchBar = () => {
   return (
     <>
-      <div className='py-2 pl-2 pr-3'>
+      {/* <div className='py-2 pl-2 pr-3'>
         <SearchBar inputProps={{ placeholder: 'Search Friends' }} />
-      </div>
+      </div> */}
     </>
   )
 }
@@ -59,7 +59,7 @@ const PendingFriendsDrawerContainer = ({
       <LeftDrawer zIndex={'z-[200]'} show={showPendingFriendsDrawer}>
         <div className='relative h-full'>
           <Header />
-          <FriendsSearchBar />
+          <PendingFriendsSearchBar />
           {children}
         </div>
       </LeftDrawer>

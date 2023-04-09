@@ -12,7 +12,7 @@ import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
 import { FriendsState } from '@store/friends/initialState'
 import FriendRequestsList from './FriendRequestsList'
-import SeeSuggestionsButton from "../FriendsSuggestions/SeeSuggestionsBtn"
+import SeeSuggestionsButton from '../FriendsSuggestions/SeeSuggestionsBtn'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -38,12 +38,12 @@ const Header = () => {
   )
 }
 
-const FriendsSearchBar = () => {
+const FriendRequestsSearchBar = () => {
   return (
     <>
-      <div className='py-2 pl-2 pr-3'>
+      {/* <div className='py-2 pl-2 pr-3'>
         <SearchBar inputProps={{ placeholder: 'Search Friends' }} />
-      </div>
+      </div> */}
     </>
   )
 }
@@ -61,7 +61,7 @@ const FriendsDrawerContainer = ({
       <LeftDrawer zIndex={'z-[200]'} show={showFriendRequestsDrawer}>
         <div className='relative h-full'>
           <Header />
-          <FriendsSearchBar />
+          <FriendRequestsSearchBar />
           {children}
         </div>
       </LeftDrawer>

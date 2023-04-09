@@ -125,9 +125,9 @@ const Header = () => {
 const FriendsSearchBar = () => {
   return (
     <>
-      <div className='py-2 pl-2 pr-3'>
+      {/* <div className='py-2 pl-2 pr-3'>
         <SearchBar inputProps={{ placeholder: 'Search Friends' }} />
-      </div>
+      </div> */}
     </>
   )
 }

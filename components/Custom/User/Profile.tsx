@@ -226,7 +226,7 @@ export default function Profile({
 
   return (
     <>
-      <div className='flex flex-col components/Custom/User/Profile.tsx gap-y-2.5'>
+      <div className='flex flex-col gap-y-2.5'>
         <div className='bg-primary-default text-center px-4 py-7'>
           <div className='flex justify-center items-center mb-4'>
             <Avatar width={200} height={200} />

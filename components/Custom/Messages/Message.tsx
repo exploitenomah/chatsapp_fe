@@ -103,7 +103,7 @@ const StyledMessageComponent = ({
   return (
     <>
       <div
-        className={`px-16 min-w-full flex ${
+        className={`px-8 md:px-16 min-w-full flex ${
           isOtherUser ? 'justify-start' : 'justify-end'
         }`}
       >

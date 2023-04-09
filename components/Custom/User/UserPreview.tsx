@@ -107,8 +107,8 @@ export default function UserPreview() {
 
   if (userInPreview?._id === authenticatedUser._id) return null
   return (
-    <SecondaryPanel show={Boolean(userInPreview)}>
-      <div className='border-l-contrast-secondary/20 border-l h-full'>
+    <>
+      <div className='h-full'>
         <div className={`${headerClasses} px-5 h-[59px] flex items-center`}>
           <header className='flex justify-between items-center grow'>
             <p>User Info</p>
@@ -124,6 +124,6 @@ export default function UserPreview() {
           <Profile friendship={friendship} user={userInPreview} />
         )}
       </div>
-    </SecondaryPanel>
+    </>
   )
 }

@@ -37,7 +37,7 @@ const MessageGroupHeader = ({ date }: { date: string }) => {
   return (
     <>
       <div>
-        <div className='mx-auto max-w-fit px-4 py-2 uppercase text-contrast-default bg-primary-light/50 rounded-lg'>
+        <div className='mx-auto my-4 md:my-0 max-w-fit px-4 py-2 uppercase text-contrast-default bg-primary-light/50 rounded-lg'>
           {date}
         </div>
       </div>

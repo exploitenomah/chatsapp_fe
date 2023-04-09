@@ -60,7 +60,8 @@ export default function MessageInput() {
           />
         </div>
         <Button
-          type='submit'
+          type='button'
+          onClick={sendMessage}
           className='pt-1 pb-3.5 px-2.5 self-end text-contrast-secondary/90'
         >
           <SendIcon />

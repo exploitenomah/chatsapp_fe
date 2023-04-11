@@ -9,9 +9,10 @@ export default function useEmitGetManyMessages() {
   const messagesSocketEmitters = useEmitter(messagesSocket, messagesEvents)
 
   const handleGetManyMessages = useCallback(
-    (conversationId: string) => {
+    (conversationId: string, page?: number) => {
       messagesSocketEmitters.getMany({
         conversationId,
+        page: page || 1,
         sort: '-createdAt',
         limit: messagesLimit,
       })

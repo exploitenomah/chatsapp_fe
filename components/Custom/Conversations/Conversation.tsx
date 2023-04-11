@@ -34,6 +34,7 @@ const MessagesListContainer = () => {
       ),
     [activeConversation?.messages, authenticatedUser._id],
   )
+  const handleGetManyMessages = useEmitGetManyMessages()
   const dispatch = useDispatch()
 
   const handleScrollToBottomClick = useCallback(() => {
@@ -67,9 +68,8 @@ const MessagesListContainer = () => {
     handleEmitMessagesSeen,
   ])
 
-  const handleMsgContainerScroll: UIEventHandler<HTMLDivElement> = useCallback(
-    (scrollEvent) => {
-      const scrollEventTarget = scrollEvent.target as HTMLDivElement
+  const handleScrollToBottom = useCallback(
+    (scrollEventTarget: HTMLDivElement) => {
       const isElementBottomReached =
         scrollEventTarget.scrollHeight - scrollEventTarget.scrollTop ===
         scrollEventTarget.clientHeight
@@ -91,6 +91,37 @@ const MessagesListContainer = () => {
       }
     },
     [activeConversation, dispatch],
+  )
+
+  const handleFetchMessagesOnScroll = useCallback(
+    (scrollEventTarget: HTMLDivElement) => {
+      if (
+        scrollEventTarget.scrollTop <= 1000 &&
+        activeConversation?.hasFetchedAllMessages === false
+      ) {
+        handleGetManyMessages(
+          activeConversation._id,
+          activeConversation.messagesPage,
+        )
+      }
+    },
+    [
+      activeConversation?._id,
+      activeConversation?.hasFetchedAllMessages,
+      activeConversation?.messagesPage,
+      handleGetManyMessages,
+    ],
+  )
+
+  const handleMsgContainerScroll: UIEventHandler<HTMLDivElement> = useCallback(
+    (scrollEvent) => {
+      const scrollEventTarget = scrollEvent.target as HTMLDivElement
+      if (activeConversation !== null) {
+        handleScrollToBottom(scrollEventTarget)
+        handleFetchMessagesOnScroll(scrollEventTarget)
+      }
+    },
+    [activeConversation, handleScrollToBottom, handleFetchMessagesOnScroll],
   )
 
   useEffect(() => {

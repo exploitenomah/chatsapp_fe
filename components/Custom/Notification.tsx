@@ -29,9 +29,9 @@ export default function NotificationComponent({ message, variant, id }: Alert) {
     >
       <Button
         onClick={() => dispatch(removeAppAlert(id))}
-        className='absolute top-[6px] right-[6px] p-0'
+        className='absolute top-[6px] right-[4px] p-0'
       >
-        <CloseIcon />
+        <CloseIcon className='w-[17px] h-[17px]' />
       </Button>
       <div>{message}</div>
     </div>

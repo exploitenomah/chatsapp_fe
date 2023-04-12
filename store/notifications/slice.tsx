@@ -16,9 +16,11 @@ const notificationsSlice = createSlice({
         (appAlert) => appAlert.id !== action.payload,
       )
     },
+    resetNotifications: () => initialState,
   },
 })
 
-export const { addAppAlert, removeAppAlert } = notificationsSlice.actions
+export const { addAppAlert, removeAppAlert, resetNotifications } =
+  notificationsSlice.actions
 
 export default notificationsSlice.reducer

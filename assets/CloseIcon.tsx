@@ -1,7 +1,10 @@
-export default function CloseIcon() {
+import { HTMLAttributes } from 'react'
+
+export default function CloseIcon({ className }: HTMLAttributes<SVGElement>) {
   return (
     <>
       <svg
+        className={className}
         viewBox='0 0 24 24'
         height='24'
         width='24'

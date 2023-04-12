@@ -100,7 +100,7 @@ const FriendRequestItem = ({ friendRequest }: { friendRequest: Friend }) => {
         <>
           <div className='cursor-pointer flex items-center pr-[6px] w-full'>
             <div className='px-[15px] flex justify-center items-center shrink-0 self-start'>
-              <Avatar width={70} height={70} />
+              <Avatar width={70} height={70} src={''} alt={''} />
             </div>
             <div className='basis-auto flex grow flex-col justify-center items-start border-t border-t-contrast-secondary/20'>
               <div

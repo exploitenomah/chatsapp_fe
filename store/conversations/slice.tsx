@@ -95,6 +95,7 @@ const conversationsSlice = createSlice({
       state.conversationsWithUnseenMessagesCount =
         action.payload.conversationsWithUnseenMessagesCount
     },
+    resetConversations: () => initialState,
   },
 })
 export const {
@@ -103,6 +104,7 @@ export const {
   updateNotifications,
   addToIdsOfConversationsNotFetched,
   removeFromIdsOfConversationsNotFetched,
+  resetConversations,
 } = conversationsSlice.actions
 export const conversationsActions = conversationsSlice.actions
 export default conversationsSlice.reducer

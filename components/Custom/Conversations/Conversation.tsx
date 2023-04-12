@@ -182,7 +182,7 @@ export default function ConversationRoom() {
     <div className='relative h-full'>
       <div className='bg-doodle absolute z-[1] top-0 left-0 w-full h-full' />
       <div className='bg-primary-darkest absolute z-[0] top-0 left-0 w-full h-full' />
-      <div className='relative z-[2] bg-transparent'>
+      <div className='relative z-[3] bg-transparent'>
         <ConversationRoomHeader />
       </div>
       <MessagesListContainer />

@@ -37,7 +37,7 @@ const SuggestionItem = ({ user }: { user: User }) => {
     >
       <div className='cursor-pointer flex items-center pr-[6px] w-full'>
         <div className='px-[15px] flex justify-center items-center shrink-0'>
-          <Avatar width={49} height={49} />
+          <Avatar width={49} height={49} src={""} alt={""} />
         </div>
         <div className='h-[72px] basis-auto flex grow flex-col justify-center items-start border-t border-t-contrast-secondary/20'>
           <div className='text-contrast-strong text-base'>{`${user.nickName}`}</div>

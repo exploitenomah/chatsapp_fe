@@ -50,7 +50,7 @@ export const OptionsComponent = ({
         onClick={() => toggleShowOptions()}
         className={`${
           showOptions ? 'block' : 'hidden'
-        } fixed z-[9] h-screen w-screen top-0 left-0`}
+        } fixed right-0 bottom-0 top-0 left-0`}
       />
       <div
         className={`${

@@ -74,7 +74,7 @@ export default function AppHeader() {
           className='p-0'
           onClick={() => dispatch(toggleShowAuthenticatedUserProfile(true))}
         >
-          <Avatar />
+          <Avatar src={''} alt={''} width={40} height={40} />
         </Button>
         <nav>
           <ul className='flex items-center'>

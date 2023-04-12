@@ -185,7 +185,12 @@ export default function ConversationItem({
     >
       <div className='cursor-pointer flex items-center pr-[6px] w-full'>
         <div className='px-[15px] flex justify-center items-center shrink-0'>
-          <Avatar width={49} height={49} />
+          <Avatar
+            width={49}
+            height={49}
+            src={''}
+            alt={otherUser?.nickName || ''}
+          />
         </div>
         <div className='h-[72px] grow  flex items-center border-b border-b-contrast-secondary/20 pr-3'>
           <div className='basis-auto flex items-center grow'>

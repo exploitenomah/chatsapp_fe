@@ -125,6 +125,7 @@ export const uiSlice = createSlice({
         }
       }
     },
+    resetUI: () => initialState
   },
 })
 
@@ -146,6 +147,7 @@ export const {
   removeActiveConversation,
   updateActiveConversation,
   toggleShowAuthenticatedUserProfile,
+  resetUI
 } = uiSlice.actions
 
 export default uiSlice.reducer

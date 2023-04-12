@@ -1,20 +1,23 @@
-import Image from 'next/image'
-import { ImgHTMLAttributes } from 'react'
+import UserIcon from '@assets/UserIcon'
+import Image, { ImageProps } from 'next/image'
 
 export default function Avatar({
   width,
   height,
   loading,
-}: ImgHTMLAttributes<HTMLImageElement>) {
-  return (
-    <Image
-      className='object-contain h-full rounded-full'
-      src='/images/profilepic.webp'
-      alt={''}
-      width={Number(width) || 40}
-      height={Number(height) || 40}
-      loading={loading || 'eager'}
-      priority
-    />
-  )
+  src,
+  alt,
+}: ImageProps & {
+  src?: ImageProps['src']
+}) {
+  if (!src)
+    return (
+      <div
+        className={`flex justify-center items-center`}
+        style={{ width: `${width}px`, height: `${height}px` }}
+      >
+        <UserIcon className='' />
+      </div>
+    )
+  return <Image {...{ src, width, height, loading, alt }} />
 }

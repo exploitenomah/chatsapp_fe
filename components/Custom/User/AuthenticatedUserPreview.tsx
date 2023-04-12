@@ -268,7 +268,7 @@ export default function AuthenticatedUserPreview() {
           {showAuthenticatedUserProfile && (
             <div className='bg-primary-default py-7'>
               <div className='flex justify-center items-center mb-4'>
-                <Avatar width={200} height={200} />
+                <Avatar width={200} height={200} src={""} alt={""} />
               </div>
               <div className='flex flex-col justify-start items-start gap-y-3 w-[90%] mx-auto my-12'>
                 <NickNameFormTextDisplay

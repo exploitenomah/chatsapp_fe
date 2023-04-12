@@ -1,4 +1,3 @@
-import OptionsIcon from '@assets/OptionsIcon'
 import SearchIcon from '@assets/SearchIcon'
 import { headerClasses, NavItem, OptionsComponent } from '../App/AppHeader'
 import Avatar from '../Avatar'
@@ -14,7 +13,7 @@ export default function ConversationHeader() {
   return (
     <header className={`${headerClasses} flex items-center justify-between`}>
       <div>
-        <Avatar />
+        <Avatar src={''} alt={''} width={40} height={40} />{' '}
       </div>
       <ul className='flex items-center'>
         <li>

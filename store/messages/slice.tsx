@@ -31,12 +31,14 @@ const messagesSlice = createSlice({
           (msg) => msg.conversationId !== action.payload,
         )
     },
+    resetMessages: () => initialState,
   },
 })
 
 export const {
   removeMessageWithoutConversationInState,
   addMessageWithoutConversationInState,
+  resetMessages,
 } = messagesSlice.actions
 
 export default messagesSlice.reducer

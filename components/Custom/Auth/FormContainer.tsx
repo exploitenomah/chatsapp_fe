@@ -3,7 +3,11 @@ import LoadingLogo from '@assets/LoadingLogo'
 import Modal from '../Modal'
 import { ReactNode, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { toggleShowLogin, toggleShowSignup, updateLoading } from '@store/ui/slice'
+import {
+  toggleShowLogin,
+  toggleShowSignup,
+  updateLoading,
+} from '@store/ui/slice'
 import { removeLocalStorageFormValues } from '@utils/auth'
 
 export default function FormContainer({

@@ -18,10 +18,14 @@ const Modal = ({
   const modalsInDom = useMemo((): HTMLDivElement[] => {
     return Array.from(document.querySelectorAll("[data-modal='true']"))
   }, [])
-  const zIndex = useMemo(
-    () => `z-${Math.max(...modalsInDom.map((el) => +el.style.zIndex)) + 10}`,
-    [modalsInDom],
-  )
+  const zIndex = useMemo(() => {
+    {
+      let highestZIndex = Math.max(...modalsInDom.map((el) => +el.style.zIndex))
+      if (highestZIndex === Infinity || highestZIndex === -Infinity)
+        highestZIndex = 0
+      return modalsInDom.length > 0 ? `z-[${highestZIndex + 1000}]` : 'z-[1000]'
+    }
+  }, [modalsInDom])
 
   useEffect(() => {
     if (show) document.body.classList.add('overflow-hidden')
@@ -36,19 +40,24 @@ const Modal = ({
     return (
       <div role='presentation' tabIndex={-1}>
         <div
-          onClick={hide}
-          className={
-            show ? 'fixed inset-0 h-screen w-screen bg-black/25' : 'hidden'
-          }
-        ></div>
-        <div
-          onClick={hide}
           data-modal={'true'}
-          className={`fixed inset-0 ${zIndex} flex justify-center items-center ${
-            animate ? '' : ''
-          }`}
+          className={`fixed inset-0 ${zIndex} ${
+            show
+              ? 'fixed inset-0 h-screen w-screen bg-black/25 flex justify-center items-center '
+              : 'hidden'
+          } ${animate ? '' : ''}`}
         >
-          <ModalContent />
+          <div
+            onClick={hide}
+            className={
+              show
+                ? 'absolute z-[900] inset-0 h-full w-full bg-black/25'
+                : 'hidden'
+            }
+          />
+          <div className={show ? 'relative z-[1000]' : 'hidden'}>
+            <ModalContent />
+          </div>
         </div>
       </div>
     )
@@ -60,22 +69,22 @@ const Modal = ({
         <>
           <div
             onClick={hide}
-            className='fixed inset-0 h-screen w-screen bg-black/50'
+            className='fixed inset-0 h-screen zz-[900] w-screen bg-black/50'
           ></div>
-          <div
-            onClick={(e) => {
-              e.stopPropagation()
 
-              if (e.target === e.currentTarget) {
-                hide()
-              }
-            }}
+          <div
             data-modal='true'
             className={`fixed inset-0 ${zIndex} flex justify-center items-center overflow-auto ${
               animate ? '' : ''
             }`}
           >
-            <ModalContent />
+            <div
+              onClick={hide}
+              className='absolute z-[900] inset-0 h-full w-full bg-black/25'
+            />
+            <div className='relative z-[1000]'>
+              <ModalContent />
+            </div>
           </div>
         </>
       ) : null}

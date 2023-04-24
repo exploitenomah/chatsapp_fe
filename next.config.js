@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [],
+    remotePatterns: [{ hostname: 'res.cloudinary.com' }],
   },
 }
 

@@ -19,6 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <div>
         <Component {...pageProps} />
       </div>
+      <div id='image-preview-container'></div>
     </Provider>
   )
 }

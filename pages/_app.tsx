@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import store from '@store/index'
 import { Provider } from 'react-redux'
 import { removeLocalStorageFormValues } from '@utils/auth'
+import { Analytics } from '@vercel/analytics/react'
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -15,11 +16,14 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   }, [])
   return (
-    <Provider store={store}>
-      <div>
-        <Component {...pageProps} />
-      </div>
-      <div id='image-preview-container'></div>
-    </Provider>
+    <>
+      <Provider store={store}>
+        <div>
+          <Component {...pageProps} />
+        </div>
+        <div id='image-preview-container'></div>
+      </Provider>
+      <Analytics />
+    </>
   )
 }

@@ -13,7 +13,6 @@ import { addAppAlert } from '@store/notifications/slice'
 //https://res.cloudinary.com/<cloud_name>/<asset_type>/<delivery_type>/<transformations>/<version>/<public_id_full_path>.<extension>
 
 const EditImageInput = ({
-  toggleShowOptions,
   handleSubmit,
   loading,
 }: {

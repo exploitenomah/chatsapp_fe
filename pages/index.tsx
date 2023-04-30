@@ -34,13 +34,13 @@ const AppNotifications = () => {
       if (appAlerts[0]) {
         dispatch(removeAppAlert(appAlerts[0].id))
       }
-    }, 4000)
+    }, 10000)
     return () => {
       clearInterval(clearNotificationInterval)
     }
   }, [appAlerts, dispatch])
   return (
-    <div className='absolute top-0 right-0 w-[25%]'>
+    <div className='absolute top-0 right-0 max-w-[300px]'>
       {appAlerts.map((appAlert) => (
         <NotificationComponent key={appAlert.id} {...appAlert} />
       ))}
@@ -91,14 +91,14 @@ export default function ChatsApp() {
     })
   }, [handleDeviceType])
 
-  useOffline()
+  // useOffline()
 
-  if (isOffline)
-    return (
-      <Render favicon='/images/favicon-error.png'>
-        <Offline />
-      </Render>
-    )
+  // if (isOffline)
+  //   return (
+  //     <Render favicon='/images/favicon-error.png'>
+  //       <Offline />
+  //     </Render>
+  //   )
 
   if (token && deviceIsMobile)
     return (

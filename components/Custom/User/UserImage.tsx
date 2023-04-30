@@ -140,7 +140,8 @@ const useHandleProfileImageUpdate = () => {
   return useCallback(
     async (newImg: File) => {
       const profileImage = await postImage(newImg)
-      userSocket.emit('updateMe', { profileImage })
+      profileImage &&
+        userSocket.emit('updateMe', { profileImage: profileImage.file })
     },
     [postImage, userSocket],
   )
@@ -224,7 +225,7 @@ export default function UserImage({
           />
         </div>
         <ImageOptions
-          show={showOptions && imgHasLoadErr}
+          show={showOptions && !imgHasLoadErr}
           toggleShowOptions={() => setShowOptions((prev) => !prev)}
           profileImage={profileImage}
           alt={alt}

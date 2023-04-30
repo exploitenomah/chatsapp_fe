@@ -16,7 +16,6 @@ const EditImageInput = ({
   handleSubmit,
   loading,
 }: {
-  toggleShowOptions: () => void
   handleSubmit: (newImg: File) => void
   loading: boolean
 }) => {
@@ -180,7 +179,6 @@ const ImageOptions = ({
           <li>
             <EditImageInput
               loading={loading}
-              toggleShowOptions={toggleShowOptions}
               handleSubmit={async (newImg) => {
                 setLoading(true)
                 await updateProfileImage(newImg)

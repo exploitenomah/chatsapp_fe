@@ -222,7 +222,7 @@ export default function UserImage({
           />
         </div>
         <ImageOptions
-          show={showOptions && !imgHasLoadErr}
+          show={showOptions}
           toggleShowOptions={() => setShowOptions((prev) => !prev)}
           profileImage={profileImage}
           alt={alt}

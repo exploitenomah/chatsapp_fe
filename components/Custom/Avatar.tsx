@@ -1,5 +1,6 @@
 import UserIcon from '@assets/UserIcon'
 import Image, { ImageProps } from 'next/image'
+import { useMemo } from 'react'
 
 export default function Avatar({
   width,
@@ -14,6 +15,15 @@ export default function Avatar({
   handleError?: () => void
   handleLoad?: () => void
 }) {
+  const imgSrc = useMemo(() => {
+    if (typeof src === 'string' && src.includes('upload')) {
+      const srcSplit = src.split('/upload/')
+      const firstPart = srcSplit[0]
+      const secondPart = srcSplit[1]
+      return `${firstPart}/upload/e_sharpen/w_${width},h_${height},c_scale/${secondPart}`
+    } else return src
+  }, [height, src, width])
+
   if (!Boolean(src))
     return (
       <div
@@ -32,7 +42,7 @@ export default function Avatar({
         handleError && handleError()
       }}
       className='text-center rounded-full '
-      {...{ src, width, height, loading, alt }}
+      {...{ src: imgSrc, width, height, loading, alt }}
     />
   )
 }

@@ -188,7 +188,7 @@ export default function ConversationItem({
           <Avatar
             width={49}
             height={49}
-            src={''}
+            src={otherUser?.profileImage?.path || ''}
             alt={otherUser?.nickName || ''}
           />
         </div>

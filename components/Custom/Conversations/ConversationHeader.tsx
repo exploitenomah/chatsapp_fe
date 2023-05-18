@@ -1,9 +1,9 @@
 import SearchIcon from '@assets/SearchIcon'
 import { headerClasses, NavItem, OptionsComponent } from '../App/AppHeader'
 import Avatar from '../Avatar'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '@components/HTML/Button'
-import { removeActiveConversation } from '@store/ui/slice'
+import { removeActiveConversation, updateUserInPreview } from '@store/ui/slice'
 import { useDispatch } from 'react-redux'
 import { User } from '@store/user/initialState'
 
@@ -13,11 +13,26 @@ export default function ConversationHeader({
   otherUser?: User
 }) {
   const [showConversationOptions, setShowConversationOptions] = useState(false)
+  const [showGuide, setShowGuide] = useState(Boolean(otherUser))
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowGuide(false)
+    }, 5000)
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [])
 
   return (
     <header className={`${headerClasses} flex items-center justify-between`}>
-      <div className='flex gap-x-[15px]'>
+      <div
+        onClick={() => {
+          otherUser && dispatch(updateUserInPreview(otherUser))
+        }}
+        className='flex gap-x-[15px] items-center cursor-pointer'
+      >
         <Avatar
           src={otherUser?.profileImage?.path || ''}
           alt={otherUser?.nickName || ''}
@@ -28,8 +43,9 @@ export default function ConversationHeader({
           <p className='text-ellipsis text-base text-contrast-strong font-medium grow overflow-x-hidden inline-block'>
             {otherUser?.nickName}
           </p>
-          <p className='text-sm text-contrast-secondary'>
-            click here for user info
+
+          <p className='text-sm text-contrast-secondary leading-[10px]'>
+            {showGuide && <>click here for user info</>}
           </p>
         </div>
       </div>

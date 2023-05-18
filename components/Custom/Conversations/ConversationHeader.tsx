@@ -5,15 +5,21 @@ import { useState } from 'react'
 import Button from '@components/HTML/Button'
 import { removeActiveConversation } from '@store/ui/slice'
 import { useDispatch } from 'react-redux'
+import { User } from '@store/user/initialState'
 
-export default function ConversationHeader() {
+export default function ConversationHeader({ otherUser }: { otherUser?: User }) {
   const [showConversationOptions, setShowConversationOptions] = useState(false)
   const dispatch = useDispatch()
 
   return (
     <header className={`${headerClasses} flex items-center justify-between`}>
       <div>
-        <Avatar src={''} alt={''} width={40} height={40} />{' '}
+        <Avatar
+          src={otherUser?.profileImage?.path || ''}
+          alt={otherUser?.nickName || ''}
+          width={40}
+          height={40}
+        />{' '}
       </div>
       <ul className='flex items-center'>
         <li>

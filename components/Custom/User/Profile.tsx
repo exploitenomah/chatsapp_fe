@@ -229,7 +229,12 @@ export default function Profile({
       <div className='flex flex-col gap-y-2.5'>
         <div className='bg-primary-default text-center px-4 py-7'>
           <div className='flex justify-center items-center mb-4'>
-            <Avatar width={200} height={200} src={""} alt={""} />
+            <Avatar
+              width={200}
+              height={200}
+              src={user.profileImage?.path}
+              alt={''}
+            />
           </div>
           <div className='flex flex-col justify-start items-center'>
             <h3 className='text-2xl'>{`${user.nickName}`}</h3>

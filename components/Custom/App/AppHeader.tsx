@@ -13,7 +13,7 @@ import { TotalFriendsNotificationsBadge } from '@components/Custom/Friends/Frien
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import useLogout from '@hooks/user/useLogout'
-import { User } from "@store/user/initialState"
+import { User } from '@store/user/initialState'
 
 export const NavItem = ({
   children,
@@ -43,24 +43,32 @@ export const OptionsComponent = ({
   showOptions: boolean
 }) => {
   return (
-    <div className='relative'>
-      <NavItem onClick={() => toggleShowOptions()}>
-        <OptionsIcon />
-      </NavItem>
-      <div
-        onClick={() => toggleShowOptions()}
-        className={`${
-          showOptions ? 'block' : 'hidden'
-        } fixed right-0 bottom-0 top-0 left-0`}
-      />
-      <div
-        className={`${
-          showOptions ? 'scale-100' : 'scale-0'
-        } bg-primary-default min-h-[50px] px-4 shadow-2xl shadow-primary-dark/50 origin-top-right absolute top-[10px] duration-300 right-[32px] min-w-[100px] z-[100] flex flex-col justify-center items-center`}
-      >
-        {children}
+    <>
+      {showOptions && (
+        <div
+          onClick={() => toggleShowOptions()}
+          className='fixed w-screen h-screen inset-0 bg-transparent z-[98]'
+        ></div>
+      )}
+      <div className='relative'>
+        <NavItem onClick={() => toggleShowOptions()}>
+          <OptionsIcon />
+        </NavItem>
+        <div
+          onClick={() => toggleShowOptions()}
+          className={`${
+            showOptions ? 'block' : 'hidden'
+          } fixed right-0 bottom-0 top-0 left-0`}
+        />
+        <div
+          className={`${
+            showOptions ? 'scale-100' : 'scale-0'
+          } bg-primary-default min-h-[50px] px-4 shadow-2xl shadow-primary-dark/50 origin-top-right absolute top-[10px] duration-300 right-[32px] min-w-[100px] z-[99] flex flex-col justify-center items-center`}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 export default function AppHeader() {

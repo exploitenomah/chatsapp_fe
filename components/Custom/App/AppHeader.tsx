@@ -13,6 +13,7 @@ import { TotalFriendsNotificationsBadge } from '@components/Custom/Friends/Frien
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import useLogout from '@hooks/user/useLogout'
+import { User } from "@store/user/initialState"
 
 export const NavItem = ({
   children,
@@ -66,7 +67,7 @@ export default function AppHeader() {
   const dispatch = useDispatch()
   const logUserOut = useLogout()
   const { showAppOptions } = useSelector<Store, UI>((store) => store.ui)
-
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
   return (
     <div className={`${headerClasses}`}>
       <header className='flex justify-between items-center'>
@@ -74,7 +75,12 @@ export default function AppHeader() {
           className='p-0'
           onClick={() => dispatch(toggleShowAuthenticatedUserProfile(true))}
         >
-          <Avatar src={''} alt={''} width={40} height={40} />
+          <Avatar
+            src={authenticatedUser.profileImage?.path || ''}
+            alt={`${authenticatedUser.nickName} ${authenticatedUser.lastName}`}
+            width={40}
+            height={40}
+          />
         </Button>
         <nav>
           <ul className='flex items-center'>

@@ -200,26 +200,12 @@ export default function UserImage({
   alt: string
 }) {
   const [showOptions, setShowOptions] = useState(false)
-  const [imgHasLoadErr, setImgHasLoadErr] = useState(true)
-  const handleImgLoadErr = useCallback(() => {
-    setImgHasLoadErr(true)
-  }, [])
-  const handleImgLoaded = useCallback(() => {
-    setImgHasLoadErr(false)
-  }, [])
 
   return (
     <>
       <div className='relative'>
         <div onClick={() => setShowOptions((prev) => !prev)} className=''>
-          <Avatar
-            handleError={handleImgLoadErr}
-            handleLoad={handleImgLoaded}
-            width={200}
-            height={200}
-            src={profileImage.path}
-            alt={alt}
-          />
+          <Avatar width={200} height={200} src={profileImage.path} alt={alt} />
         </div>
         <ImageOptions
           show={showOptions}

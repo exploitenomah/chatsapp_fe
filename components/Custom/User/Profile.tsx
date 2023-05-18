@@ -147,6 +147,11 @@ const ProfileFooter = ({
               Are you sure you want to remove
               <span className='text-accent-dark'> {user.nickName} </span> from
               your friends?
+              <br/>
+              <b className='text-xs text-contrast-secondary'>
+                You will no longer be able to send to or recieve messages from
+                them.
+              </b>
             </span>
             <div className='flex gap-x-2 items-center justify-center shadow-none'>
               <Button

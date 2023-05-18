@@ -18,9 +18,7 @@ export default function Avatar({
   const imgSrc = useMemo(() => {
     if (typeof src === 'string' && src.includes('upload')) {
       const srcSplit = src.split('/upload/')
-      const firstPart = srcSplit[0]
-      const secondPart = srcSplit[1]
-      return `${firstPart}/upload/e_sharpen/w_${width},h_${height},c_scale/${secondPart}`
+      return `${srcSplit[0]}/upload/e_sharpen/w_${width},h_${height},c_scale/${srcSplit[1]}`
     } else return src
   }, [height, src, width])
 

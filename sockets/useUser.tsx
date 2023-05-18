@@ -1,6 +1,5 @@
 import { Store } from '@store/index'
 import { Auth } from '@store/auth/initialState'
-import { authenticate } from '@store/auth/slice'
 import { addAppAlert } from '@store/notifications/slice'
 import { updateLoading } from '@store/ui/slice'
 import { useEffect, useMemo } from 'react'
@@ -10,11 +9,10 @@ import useHandlers from '@hooks/useHandlers'
 import { userEvents } from '@store/user/initialState'
 import { userActions } from '@store/user/slice'
 import { updateUser } from '@store/friends/slice'
-import useLogout from '@hooks/user/useLogout'
 
 export default function useUser() {
   const { token } = useSelector<Store, Auth>((store) => store.auth)
-  const logUserOut = useLogout()
+
   const userSocket = useMemo(
     () =>
       io(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
@@ -57,8 +55,11 @@ export default function useUser() {
     })
 
     userSocket.on('connect_error', (err) => {
-      if ((err.message = 'Unauthorized!!!')) logUserOut()
-      else userSocket.connect()
+      dispatch(addAppAlert({
+        message: 'Something went wrong!', variant: 'error',
+        id: Math.random()
+      }))
+      userSocket.connect()
     })
     userSocket.io.on('error', (err) => {
       console.log(err.message)
@@ -96,7 +97,7 @@ export default function useUser() {
       userSocket.io.off('reconnect_failed', () => console.log(`$ off`))
       userSocket.io.off('reconnect_error', (data) => console.log(`${data} off`))
     }
-  }, [dispatch, logUserOut, userSocket])
+  }, [dispatch, userSocket])
 
   return userSocket
 }

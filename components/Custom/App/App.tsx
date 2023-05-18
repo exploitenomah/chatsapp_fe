@@ -26,7 +26,7 @@ import useGetManyPendingFriends from '@hooks/friends/useFetchPendingFriends'
 import useMessages from '@sockets/useMessages'
 import useUpdateConversationsNotifications from '@hooks/conversations/useUpdateConversationsNotifications'
 import useGetConversationsNotInState from '@hooks/conversations/useGetConversationsNotInState'
-import { toggleAppLoading } from '@store/ui/slice'
+import { removeUserInPreview, toggleAppLoading } from '@store/ui/slice'
 import { UI } from '@store/ui/initialState'
 import AppLoadingScreen from './LoadingScreen'
 import AuthenticatedUserPreview from '../User/AuthenticatedUserPreview'
@@ -121,9 +121,16 @@ export default function App() {
         </div>
         <div className='grow flex border-l border-l-contrast-secondary/20'>
           <div
-            className={`h-full transition-all duration-150 grow ${rightPanelOutOfFocusClasses}`}
+            className='grow'
+            onClick={() => {
+              userInPreview && dispatch(removeUserInPreview())
+            }}
           >
-            <RightPanel />
+            <div
+              className={`h-full transition-all duration-150 grow ${rightPanelOutOfFocusClasses}`}
+            >
+              <RightPanel />
+            </div>
           </div>
           <SecondaryPanel show={Boolean(userInPreview)}>
             <div className='border-l-contrast-secondary/20 border-l'>

@@ -34,7 +34,7 @@ export const uiSlice = createSlice({
       state,
       action: PayloadAction<boolean | undefined>,
     ) => {
-      state.showFriendsDrawer = !state.showFriendsDrawer
+      state.showFriendsDrawer = typeof action.payload === 'boolean' ? action.payload : !state.showFriendsDrawer
     },
     toggleShowSuggestionsDrawer: (
       state,

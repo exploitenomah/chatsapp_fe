@@ -166,7 +166,14 @@ const MessagesListContainer = () => {
 
 export default function ConversationRoom() {
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
-
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+  const otherUser = useMemo(
+    () =>
+      activeConversation?.participants.find(
+        (user) => user._id !== authenticatedUser._id,
+      ),
+    [activeConversation?.participants, authenticatedUser._id],
+  )
   const handleEmitGetManyMessages = useEmitGetManyMessages()
 
   useEffect(() => {
@@ -183,7 +190,7 @@ export default function ConversationRoom() {
       <div className='bg-doodle absolute z-[1] top-0 left-0 w-full h-full' />
       <div className='bg-primary-darkest absolute z-[0] top-0 left-0 w-full h-full' />
       <div className='relative z-[3] bg-transparent'>
-        <ConversationRoomHeader />
+        <ConversationRoomHeader otherUser={otherUser} />
       </div>
       <MessagesListContainer />
       <footer className='absolute w-full z-[2] bottom-0'>

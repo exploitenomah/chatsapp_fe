@@ -1,6 +1,6 @@
 import UserIcon from '@assets/UserIcon'
 import Image, { ImageProps } from 'next/image'
-import { useState } from 'react'
+
 export default function Avatar({
   width,
   height,
@@ -14,8 +14,7 @@ export default function Avatar({
   handleError?: () => void
   handleLoad?: () => void
 }) {
-  const [srcLoaded, setSrcLoaded] = useState(true)
-  if (!src || !srcLoaded)
+  if (!Boolean(src))
     return (
       <div
         className={`flex justify-center items-center rounded-full`}
@@ -27,11 +26,9 @@ export default function Avatar({
   return (
     <Image
       onLoad={() => {
-        setSrcLoaded(true)
         handleLoad && handleLoad()
       }}
       onError={() => {
-        setSrcLoaded(false)
         handleError && handleError()
       }}
       className='text-center rounded-full '

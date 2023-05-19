@@ -1,15 +1,18 @@
 import LeftArrow from '@assets/LeftArrow'
 import SearchIcon from '@assets/SearchIcon'
 import Input from '@components/HTML/Input'
-import { HTMLAttributes, useState } from 'react'
+import { ForwardedRef, InputHTMLAttributes, forwardRef, useState } from 'react'
 
-export default function SearchBar({
-  inputProps,
-}: {
-  inputProps: HTMLAttributes<HTMLInputElement>
-}) {
+function SearchBar(
+  {
+    inputProps,
+  }: {
+    inputProps: InputHTMLAttributes<HTMLInputElement>
+  },
+  ref: ForwardedRef<HTMLInputElement>,
+) {
   const [isFocused, setIsFocused] = useState(false)
-  const { onBlur, onFocus, className, ...otherInputProps } = inputProps
+  const { onBlur, onFocus, className, value, ...otherInputProps } = inputProps
 
   return (
     <div className='input-default flex items-center py-2 px-4 gap-2'>
@@ -44,3 +47,4 @@ export default function SearchBar({
     </div>
   )
 }
+export default forwardRef(SearchBar)

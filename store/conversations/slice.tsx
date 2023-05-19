@@ -6,6 +6,9 @@ const conversationsSlice = createSlice({
   name: 'conversations',
   initialState,
   reducers: {
+    updateSearchText: (state, action: PayloadAction<string>) => {
+      state.searchText = action.payload
+    },
     unSeenMsgsCount: (
       state,
       action: PayloadAction<{
@@ -105,6 +108,7 @@ export const {
   addToIdsOfConversationsNotFetched,
   removeFromIdsOfConversationsNotFetched,
   resetConversations,
+  updateSearchText,
 } = conversationsSlice.actions
 export const conversationsActions = conversationsSlice.actions
 export default conversationsSlice.reducer

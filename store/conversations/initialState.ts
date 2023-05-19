@@ -32,6 +32,7 @@ export type ConversationsState = {
   idsOfConversationsNotFetched: string[]
   conversationsPage: number
   hasFetchedAllConversation: boolean
+  searchText?: string
 }
 
 const initialState: ConversationsState = {
@@ -42,6 +43,7 @@ const initialState: ConversationsState = {
   totalUnseenMessages: 0,
   conversationsPage: 0,
   hasFetchedAllConversation: false,
+  searchText: '',
 }
 
 export default initialState

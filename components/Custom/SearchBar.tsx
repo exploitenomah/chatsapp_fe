@@ -33,6 +33,7 @@ function SearchBar(
         />
       </div>
       <Input
+        value={value}
         ref={ref}
         className='text-sm whitespace-nowrap text-contrast-primary px-0 py-0 placeholder:text-sm placeholde placeholder:font-normal'
         {...otherInputProps}

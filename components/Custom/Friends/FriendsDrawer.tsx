@@ -12,7 +12,7 @@ import {
   toggleShowPendingFriendsDrawer,
   toggleShowSuggestionsDrawer,
 } from '@store/ui/slice'
-import { ReactNode, HTMLAttributes } from 'react'
+import { ReactNode, HTMLAttributes, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
@@ -21,6 +21,11 @@ import { FriendsState } from '@store/friends/initialState'
 import RightChevron from '@assets/RightChevron'
 import { FriendRequestsCountBadge } from './FriendsNotificationBadges'
 import SeeSuggestionsButton from '../FriendsSuggestions/SeeSuggestionsBtn'
+import { ConversationsState } from '@store/conversations/initialState'
+import { updateSearchText } from '@store/conversations/slice'
+import { updateSearchText as updateAppSearch } from '@store/search/slice'
+import { SearchState } from '@store/search/initialState'
+import AppSearch from './AppSearch'
 
 const DefaultButton = ({
   onClick,
@@ -123,11 +128,35 @@ const Header = () => {
 }
 
 const FriendsSearchBar = () => {
+  const searchBarRef = useRef<null | HTMLInputElement>(null)
+  const dispatch = useDispatch()
+  const { searchText } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
+  const { searchText: appSearchText } = useSelector<Store, SearchState>(
+    (store) => store.search,
+  )
+  useEffect(() => {
+    searchBarRef.current?.focus()
+
+    if (searchText && searchText !== appSearchText && searchText.length > 0) {
+      dispatch(updateAppSearch(searchText))
+      dispatch(updateSearchText(''))
+    }
+  }, [appSearchText, dispatch, searchText])
+
   return (
     <>
-      {/* <div className='py-2 pl-2 pr-3'>
-        <SearchBar inputProps={{ placeholder: 'Search Friends' }} />
-      </div> */}
+      <div className='py-2 pl-2 pr-3'>
+        <SearchBar
+          inputProps={{
+            placeholder: 'Search Chatsapp',
+            value: appSearchText,
+            onChange: (e) => dispatch(updateAppSearch(e.target.value)),
+          }}
+          ref={searchBarRef}
+        />
+      </div>
     </>
   )
 }
@@ -141,14 +170,16 @@ const FriendsDrawerContainer = ({
   return (
     <>
       <LeftDrawer zIndex={'z-[100]'} show={showFriendsDrawer}>
-        <div className='relative h-full'>
-          <Header />
-          <FriendsSearchBar />
-          <FriendRequestsButton />
-          <FriendsSuggestionButton />
-          <SentRequestsButton />
-          {children}
-        </div>
+        {showFriendsDrawer && (
+          <div className='relative h-full'>
+            <Header />
+            <FriendsSearchBar />
+            <FriendRequestsButton />
+            <FriendsSuggestionButton />
+            <SentRequestsButton />
+            {children}
+          </div>
+        )}
       </LeftDrawer>
     </>
   )
@@ -170,18 +201,27 @@ const NoFriendsYetBody = () => {
   )
 }
 
-export default function FriendRequestsDrawer() {
+export default function FriendsDrawer() {
+  const { searchText } = useSelector<Store, SearchState>(
+    (store) => store.search,
+  )
   return (
     <>
       <FriendsDrawerContainer>
         <div className='pr-[4px] absolute bottom-0 w-full top-[305px] overflow-auto'>
           <div>
-            <div className='uppercase text-accent-darkest font-normal pt-7 pb-4 pl-8'>
-              Friends on ChatsApp
-            </div>
             <div>
-              <FriendsList />
-              <NoFriendsYetBody />
+              {searchText.length === 0 ? (
+                <>
+                  <div className='uppercase text-accent-darkest font-normal pt-7 pb-4 pl-8'>
+                    Friends on ChatsApp
+                  </div>
+                  <FriendsList />
+                  <NoFriendsYetBody />
+                </>
+              ) : (
+                <AppSearch />
+              )}
             </div>
           </div>
         </div>

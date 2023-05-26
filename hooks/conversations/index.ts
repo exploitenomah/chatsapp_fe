@@ -1,12 +1,7 @@
-import { Store } from '@store/index'
-import {
-  Conversation,
-  ConversationsState,
-} from '@store/conversations/initialState'
+import { Conversation } from '@store/conversations/initialState'
 import { User } from '@store/user/initialState'
 import { isMatchingStrStart } from '@utils/index'
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
 
 export const useSearchConversations = ({
   conversations,

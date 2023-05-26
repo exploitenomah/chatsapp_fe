@@ -83,9 +83,6 @@ const friendsSlice = createSlice({
   name: 'friends',
   initialState,
   reducers: {
-    updateAppSearch: (state, action: PayloadAction<string>) => {
-      state.appSearchText = action.payload
-    },
     updateUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload
     },
@@ -164,7 +161,7 @@ const friendsSlice = createSlice({
     ) => {
       state.friendRequestsNotificationCount = action.payload
     },
-    resetFriends: () => initialState
+    resetFriends: () => initialState,
   },
 })
 
@@ -174,7 +171,6 @@ export const {
   updateTotalNotificationsCount,
   updateFriendRequestsNotificationCount,
   resetFriends,
-  updateAppSearch
 } = friendsSlice.actions
 
 export const friendsActions = friendsSlice.actions

@@ -41,7 +41,6 @@ const initialState: FriendsState = {
   hasFetchedInitialFriends: false,
   hasFetchedInitialPendingFriends: false,
   hasFetchedInitialFriendRequests: false,
-  appSearchText: '',
 }
 
 export type FriendsState = {
@@ -66,7 +65,6 @@ export type FriendsState = {
   hasFetchedInitialFriends: boolean
   hasFetchedInitialPendingFriends: boolean
   hasFetchedInitialFriendRequests: boolean
-  appSearchText: string
 }
 
 export default initialState

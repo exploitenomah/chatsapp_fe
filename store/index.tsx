@@ -6,6 +6,7 @@ import user from './user/slice'
 import friends from './friends/slice'
 import conversations from './conversations/slice'
 import messages from './messages/slice'
+import search from './search/slice'
 
 const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -17,7 +18,16 @@ const store = configureStore({
         ignoredPaths: ['ui.activeConversation', 'conversations.conversations'],
       },
     }),
-  reducer: { ui, auth, notification, user, friends, conversations, messages },
+  reducer: {
+    ui,
+    auth,
+    notification,
+    user,
+    friends,
+    conversations,
+    messages,
+    search,
+  },
 })
 const state = store.getState()
 export type Store = typeof state

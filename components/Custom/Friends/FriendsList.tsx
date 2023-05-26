@@ -49,7 +49,12 @@ const FriendItem = ({ friendItem }: { friendItem: Friend }) => {
     >
       <div className='cursor-pointer flex items-center pr-[6px] w-full'>
         <div className='px-[15px] flex justify-center items-center shrink-0'>
-          <Avatar width={49} height={49} src={friend.profileImage?.path} alt={''} />
+          <Avatar
+            width={49}
+            height={49}
+            src={friend.profileImage?.path}
+            alt={''}
+          />
         </div>
         <div className='basis-auto flex grow justify-between items-center py-3 border-t border-t-contrast-secondary/20'>
           <div>

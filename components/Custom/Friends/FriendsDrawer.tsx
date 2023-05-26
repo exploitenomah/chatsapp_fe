@@ -25,7 +25,7 @@ import { ConversationsState } from '@store/conversations/initialState'
 import { updateSearchText } from '@store/conversations/slice'
 import { updateSearchText as updateAppSearch } from '@store/search/slice'
 import { SearchState } from '@store/search/initialState'
-import AppSearch from './AppSearch'
+import AppSearch from '../Search/SearchResults'
 
 const DefaultButton = ({
   onClick,

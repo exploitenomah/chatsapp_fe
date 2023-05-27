@@ -5,6 +5,8 @@ import { Fragment, useCallback, useMemo } from 'react'
 import MessageComponent, { MainMessageWrapper } from './Message'
 import { User } from '@store/user/initialState'
 import { Message } from '@store/messages/initialState'
+import Loader from '@assets/Loader'
+import AuthLoader from '../Auth/AuthComponents'
 
 const groupMessagesByDate = (messages: Message[]) => {
   const todaysDate = new Date(Date.now())
@@ -104,8 +106,13 @@ export default function MessagesList() {
     [messagesGroupedByDate],
   )
 
-  if (datesOfMessages.length === 0) return null
+  // if (datesOfMessages.length === 0) return null
 
+  if (
+    activeConversation &&
+    activeConversation.hasFetchedInitialMessages === false
+  )
+    return <AuthLoader />
   return (
     <>
       {datesOfMessages.map((date) => (

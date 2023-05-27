@@ -1,6 +1,6 @@
 import { Conversation } from '@store/conversations/initialState'
 import { User } from '@store/user/initialState'
-import { isMatchingStrStart } from '@utils/index'
+import { isSubString } from '@utils/index'
 import { useMemo } from 'react'
 
 export const useSearchConversations = ({
@@ -24,13 +24,13 @@ export const useSearchConversations = ({
         return (
           latestMessageText?.toLowerCase().includes(searchText.toLowerCase()) ||
           (otherUser &&
-            (isMatchingStrStart(otherUser.firstName, searchText) ||
-              isMatchingStrStart(otherUser.lastName, searchText) ||
-              isMatchingStrStart(
+            (isSubString(otherUser.firstName, searchText) ||
+              isSubString(otherUser.lastName, searchText) ||
+              isSubString(
                 `${otherUser.firstName} ${otherUser.lastName}`,
                 searchText,
               ) ||
-              isMatchingStrStart(otherUser.nickName, searchText)))
+              isSubString(otherUser.nickName, searchText)))
         )
       })
   }, [authenticatedUser._id, conversations, searchText])

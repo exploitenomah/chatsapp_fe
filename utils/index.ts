@@ -21,6 +21,8 @@ export const bothArraysContainTheSameStringValues = (
 }
 
 export const isSubString = (str: string, match: string) => {
-  str.toLocaleLowerCase().startsWith(match.toLocaleLowerCase().trim()) ||
+  return (
+    str.toLocaleLowerCase().startsWith(match.toLocaleLowerCase().trim()) ||
     str.toLocaleLowerCase().includes(match.toLocaleLowerCase().trim())
+  )
 }

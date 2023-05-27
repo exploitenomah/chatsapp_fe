@@ -12,14 +12,20 @@ import {
   useGetSortedConversations,
 } from '@hooks/conversations'
 import { User } from '@store/user/initialState'
+import { updateSearchText as updateAppSearch } from '@store/search/slice'
 
 const NoChatsFound = () => {
+  const { searchText } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
   const dispatch = useDispatch()
+
   return (
     <div className='flex flex-col items-center my-4 mx-auto'>
       <p>No Chats Found</p>
       <Button
         onClick={() => {
+          dispatch(updateAppSearch(searchText || ''))
           dispatch(toggleShowFriendsDrawer(true))
         }}
         className='flex flex-col items-center my-4 mx-auto bg-primary-light'
@@ -44,9 +50,7 @@ export default function ConversationsList() {
     authenticatedUser,
     searchText: searchText || '',
   })
-  const sortedConversations = useGetSortedConversations(
-    searchedConversations
-  )
+  const sortedConversations = useGetSortedConversations(searchedConversations)
 
   if (searchText && searchText.length > 0 && sortedConversations.length === 0)
     return <NoChatsFound />

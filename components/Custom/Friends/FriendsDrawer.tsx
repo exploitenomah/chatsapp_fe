@@ -140,7 +140,6 @@ const FriendsSearchBar = () => {
     searchBarRef.current?.focus()
 
     if (searchText && searchText !== appSearchText && searchText.length > 0) {
-      dispatch(updateAppSearch(searchText))
       dispatch(updateSearchText(''))
     }
   }, [appSearchText, dispatch, searchText])

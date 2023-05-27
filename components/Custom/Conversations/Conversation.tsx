@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Badge from '../Badge'
 import MessageInput from '../MessageInput'
 import MessagesList from '../Messages/MessagesList'
+import AuthLoader from '../Auth/AuthComponents'
 
 const MessagesListContainer = () => {
   const handleEmitMessagesSeen = useEmitMessagesSeen()
@@ -194,6 +195,7 @@ export default function ConversationRoom() {
       </div>
       <MessagesListContainer />
       <footer className='absolute w-full z-[2] bottom-0'>
+        {!activeConversation?.hasFetchedInitialMessages && <AuthLoader />}
         <MessageInput />
       </footer>
     </div>

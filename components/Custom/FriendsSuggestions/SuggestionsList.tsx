@@ -6,8 +6,9 @@ import { User } from '@store/user/initialState'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
+import { AddFriendButton } from '../User/Profile'
 
-const SuggestionItem = ({ user }: { user: User }) => {
+export const SuggestionItem = ({ user }: { user: User }) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
 
@@ -35,7 +36,7 @@ const SuggestionItem = ({ user }: { user: User }) => {
           : 'bg-primary-default hover:bg-secondary-default '
       }`}
     >
-      <div className='cursor-pointer flex items-center pr-[6px] w-full'>
+      <div className='cursor-pointer flex items-center pr-[6px] w-full border-t border-t-contrast-secondary/20'>
         <div className='px-[15px] flex justify-center items-center shrink-0'>
           <Avatar
             width={49}
@@ -44,7 +45,7 @@ const SuggestionItem = ({ user }: { user: User }) => {
             alt={''}
           />
         </div>
-        <div className='h-[72px] basis-auto flex grow flex-col justify-center items-start border-t border-t-contrast-secondary/20'>
+        <div className='h-[72px] basis-auto flex grow flex-col justify-center items-start'>
           <div className='text-contrast-strong text-base'>{`${user.nickName}`}</div>
           <div
             className={`${
@@ -54,6 +55,7 @@ const SuggestionItem = ({ user }: { user: User }) => {
             {`${user.firstName} ${user.lastName}`}
           </div>
         </div>
+        <AddFriendButton show={true} recipient={user._id} />
       </div>
     </div>
   )

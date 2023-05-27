@@ -20,6 +20,7 @@ export const bothArraysContainTheSameStringValues = (
   return arr1.length === arr2.length && setFromBothArrays.size === arr2.length
 }
 
-export const isMatchingStrStart = (str: string, match: string) => {
-  return str.toLocaleLowerCase().startsWith(match.toLocaleLowerCase().trim())
+export const isSubString = (str: string, match: string) => {
+  str.toLocaleLowerCase().startsWith(match.toLocaleLowerCase().trim()) ||
+    str.toLocaleLowerCase().includes(match.toLocaleLowerCase().trim())
 }

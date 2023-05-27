@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import { removeUserInPreview, toggleShowFriendsDrawer } from '@store/ui/slice'
 
-const AddFriendButton = ({
+export const AddFriendButton = ({
   show,
   recipient,
 }: {
@@ -35,7 +35,10 @@ const AddFriendButton = ({
   return (
     <>
       <Button
-        onClick={() => sendFriendRequest(recipient)}
+        onClick={(e) => {
+          e.stopPropagation()
+          sendFriendRequest(recipient)
+        }}
         className='p-0 flex gap-x-3 items-center text-accent-dark'
       >
         <AddFriendIcon />

@@ -12,12 +12,16 @@ import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 import { MessageButton } from '../User/Profile'
+import { SearchState } from '@store/search/initialState'
+import SearchableContent from '../Search/SearchableContent'
 
 export const FriendItem = ({ friendItem }: { friendItem: User }) => {
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
   const dispatch = useDispatch()
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
-
+  const { searchText } = useSelector<Store, SearchState>(
+    (store) => store.search,
+  )
   const handleMessageButtonClick = useHandleMessageButtonClick([
     authenticatedUser._id,
     friendItem._id,
@@ -49,9 +53,17 @@ export const FriendItem = ({ friendItem }: { friendItem: User }) => {
         </div>
         <div className='basis-auto flex grow justify-between items-center py-3 border-t border-t-contrast-secondary/20'>
           <div>
-            <div className='text-contrast-strong text-base'>{`${friendItem.nickName}`}</div>
+            <div className='text-contrast-strong text-base'>
+              <SearchableContent
+                text={friendItem.nickName}
+                search={searchText}
+              />
+            </div>
             <div className='text-contrast-secondary text-sm font-normal whitespace-nowrap flex relative w-full h-[20px]'>
-              {`${friendItem.firstName} ${friendItem.lastName}`}
+              <SearchableContent
+                text={`${friendItem.firstName} ${friendItem.lastName}`}
+                search={searchText}
+              />
             </div>
           </div>
           <MessageButton

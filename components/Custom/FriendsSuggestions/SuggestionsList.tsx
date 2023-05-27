@@ -7,8 +7,15 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 import { AddFriendButton } from '../User/Profile'
+import SearchableContent from '../Search/SearchableContent'
 
-export const SuggestionItem = ({ user }: { user: User }) => {
+export const SuggestionItem = ({
+  user,
+  search,
+}: {
+  user: User
+  search?: string
+}) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
 
@@ -46,13 +53,17 @@ export const SuggestionItem = ({ user }: { user: User }) => {
           />
         </div>
         <div className='h-[72px] basis-auto flex grow flex-col justify-center items-start'>
-          <div className='text-contrast-strong text-base'>{`${user.nickName}`}</div>
+          <div className='text-contrast-strong text-base'><SearchableContent text={`${user.nickName}`} search={search} /></div>
+
           <div
             className={`${
               isActive ? 'text-contrast-strong' : 'text-contrast-secondary'
             } text-sm font-normal whitespace-nowrap flex relative w-full h-[20px]`}
           >
-            {`${user.firstName} ${user.lastName}`}
+            <SearchableContent
+              text={`${user.firstName} ${user.lastName}`}
+              search={search}
+            />
           </div>
         </div>
         <AddFriendButton show={true} recipient={user._id} />

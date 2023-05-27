@@ -138,10 +138,6 @@ const FriendsSearchBar = () => {
   )
   useEffect(() => {
     searchBarRef.current?.focus()
-
-    if (searchText && searchText !== appSearchText && searchText.length > 0) {
-      dispatch(updateSearchText(''))
-    }
   }, [appSearchText, dispatch, searchText])
 
   return (

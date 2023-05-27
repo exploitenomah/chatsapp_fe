@@ -43,6 +43,9 @@ const useSearchFriends = () => {
 
 export default function AppSearch() {
   const searchedItems = useSearchFriends()
+  const { searchText } = useSelector<Store, SearchState>(
+    (store) => store.search,
+  )
   const { friends } = useSelector<Store, FriendsState>((store) => store.friends)
 
   const searchedUserIsFriend = useCallback(
@@ -66,7 +69,7 @@ export default function AppSearch() {
           searchedUserIsFriend(user._id) ? (
             <FriendItem friendItem={user} key={user._id} />
           ) : (
-            <SuggestionItem user={user} key={user._id} />
+            <SuggestionItem user={user} key={user._id} search={searchText} />
           ),
         )}
       </>

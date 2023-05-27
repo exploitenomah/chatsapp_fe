@@ -8,7 +8,6 @@ import { User } from '@store/user/initialState'
 import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { headerClasses } from '../App/AppHeader'
-import SecondaryPanel from '../App/RightPanel/SecondaryPanel'
 import Profile from './Profile'
 
 const useUpdateUserInPreviewEffect = (friendship?: Friend) => {

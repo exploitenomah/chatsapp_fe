@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { SearchState } from '@store/search/initialState'
 import { useCallback, useMemo } from 'react'
 import { User } from '@store/user/initialState'
-import { isMatchingStrStart } from '@utils/index'
+import { isSubString } from '@utils/index'
 import { SuggestionItem } from '../FriendsSuggestions/SuggestionsList'
 import { FriendItem } from '../Friends/FriendsList'
 
@@ -23,9 +23,9 @@ const useSearchFriends = () => {
           : friend.recipient
 
       return (
-        isMatchingStrStart(otherUser.firstName, searchText) ||
-        isMatchingStrStart(otherUser.lastName, searchText) ||
-        isMatchingStrStart(otherUser.nickName, searchText)
+        isSubString(otherUser.firstName, searchText) ||
+        isSubString(otherUser.lastName, searchText) ||
+        isSubString(otherUser.nickName, searchText)
       )
     })
   }, [authenticatedUser._id, friends, searchText])

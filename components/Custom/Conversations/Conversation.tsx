@@ -196,7 +196,7 @@ export default function ConversationRoom() {
       <MessagesListContainer />
       <footer className='absolute w-full z-[2] bottom-0'>
         {!activeConversation?.hasFetchedInitialMessages && <AuthLoader />}
-        <MessageInput />
+        <MessageInput focus={activeConversation?.hasFetchedInitialMessages} />
       </footer>
     </div>
   )

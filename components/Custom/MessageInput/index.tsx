@@ -4,11 +4,11 @@ import useSendMessage from '@hooks/messages/useSendMessage'
 import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { User } from '@store/user/initialState'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import TextInput from './TextInput'
 
-export default function MessageInput() {
+export default function MessageInput({ focus }: { focus?: boolean }) {
   const textInputRef = useRef<HTMLTextAreaElement>(null)
   const [message, setMessage] = useState({
     text: '',
@@ -32,6 +32,10 @@ export default function MessageInput() {
       return
     }
   }, [activeConversation, handleSendMessage, message, user._id])
+
+  useEffect(() => {
+    focus && textInputRef.current?.focus()
+  })
 
   return (
     <div className='py-1 pr-[17px] pl-[10px] flex items-end border-l border-l-contrast-secondary/20 bg-secondary-default'>

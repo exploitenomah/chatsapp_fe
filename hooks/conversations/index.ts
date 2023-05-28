@@ -46,7 +46,7 @@ export const useGetSortedConversations = (
         ...convo,
         latestMessage: {
           ...(convo.latestMessage || {}),
-          createdAt: convo.latestMessage
+          createdAt: convo.latestMessage?.createdAt!== undefined
             ? new Date(convo.latestMessage.createdAt)
             : undefined,
         },

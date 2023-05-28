@@ -100,7 +100,8 @@ export default function ConversationItem({
   const timeOfLastSentMsg = useMemo(() => {
     let timeStringToBeReturned
     let latestMsgCreatedAt = conversation.latestMessage?.createdAt
-    if (latestMsgCreatedAt) {
+    if (!latestMsgCreatedAt) return null
+    else {
       latestMsgCreatedAt = new Date(latestMsgCreatedAt)
       const today = new Date(Date.now())
       const thisYear = today.getFullYear()
@@ -127,8 +128,8 @@ export default function ConversationItem({
       } else
         timeStringToBeReturned = latestMsgCreatedAt.toLocaleDateString('en-GB')
       return timeStringToBeReturned
-    } else return null
-  }, [conversation.latestMessage?.createdAt])
+    }
+  }, [conversation])
 
   const handleMessageButtonClick = useHandleMessageButtonClick(
     conversation.participants.map((el) => el._id),

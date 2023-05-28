@@ -43,7 +43,7 @@ export default function useHandleGetManyMessages() {
       const allAreMessagesOfTheSameConversation = messages.every(
         (msg) => msg.conversationId === conversationIdOfFirstMessage,
       )
-      if (allAreMessagesOfTheSameConversation) {
+      if (allAreMessagesOfTheSameConversation || messages.length === 0) {
         let updatedConversation
         if (activeConversation) {
           const allAreMessagesOfActiveConversation =
@@ -65,7 +65,7 @@ export default function useHandleGetManyMessages() {
               messages,
             )
         }
-        updatedConversation &&
+        updatedConversation &&conversationIdOfFirstMessage&&
           dispatch(
             updateSingleConversation({
               conversationId: conversationIdOfFirstMessage,

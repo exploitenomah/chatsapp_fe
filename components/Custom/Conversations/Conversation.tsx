@@ -165,6 +165,33 @@ const MessagesListContainer = () => {
   )
 }
 
+const ConversationRoomFooter = ({ otherUser }: { otherUser?: User }) => {
+  const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
+  const isBlocker = useMemo(() => {
+    if (activeConversation)
+      return activeConversation.hasBlocking && activeConversation.isBlocker
+    else return false
+  }, [activeConversation])
+  return (
+    <>
+      <footer className='absolute w-full z-[2] bottom-0'>
+        {!isBlocker ? (
+          <>
+            {!activeConversation?.hasFetchedInitialMessages && <AuthLoader />}
+            <MessageInput
+              focus={activeConversation?.hasFetchedInitialMessages}
+            />
+          </>
+        ) : (
+          <div className='bg-secondary-default px-4 py-5 text-sm text-center text-contrast-secondary'>
+            Can&apos;t send a message to blocked user {otherUser?.nickName}
+          </div>
+        )}
+      </footer>
+    </>
+  )
+}
+
 export default function ConversationRoom() {
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
@@ -175,6 +202,7 @@ export default function ConversationRoom() {
       ),
     [activeConversation?.participants, authenticatedUser._id],
   )
+
   const handleEmitGetManyMessages = useEmitGetManyMessages()
 
   useEffect(() => {
@@ -194,10 +222,7 @@ export default function ConversationRoom() {
         <ConversationRoomHeader otherUser={otherUser} />
       </div>
       <MessagesListContainer />
-      <footer className='absolute w-full z-[2] bottom-0'>
-        {!activeConversation?.hasFetchedInitialMessages && <AuthLoader />}
-        <MessageInput focus={activeConversation?.hasFetchedInitialMessages} />
-      </footer>
+      <ConversationRoomFooter otherUser={otherUser} />
     </div>
   )
 }

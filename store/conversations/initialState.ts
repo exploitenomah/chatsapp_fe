@@ -22,6 +22,13 @@ export type Conversation = {
   messagesPage?: number
   shouldScrollMessages?: boolean
   unSeenMsgsCount?: number
+  blocking: {
+    _id: string
+    blocker: string
+    blockee: string
+  }
+  hasBlocking: boolean
+  isBlocker: boolean
 }
 
 export type ConversationsState = {

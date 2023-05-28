@@ -65,7 +65,8 @@ export default function useHandleGetManyMessages() {
               messages,
             )
         }
-        updatedConversation &&conversationIdOfFirstMessage&&
+        updatedConversation &&
+          conversationIdOfFirstMessage &&
           dispatch(
             updateSingleConversation({
               conversationId: conversationIdOfFirstMessage,

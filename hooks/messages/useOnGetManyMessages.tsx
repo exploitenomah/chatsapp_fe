@@ -22,9 +22,9 @@ export default function useHandleGetManyMessages() {
   const formatUpdatedConversation = useCallback(
     (oldConversation: Conversation, messages: Message[]) => {
       const newMessages = makeUniqueArrOfObjectsWith_IdKey([
-          ...messages,
-          ...(oldConversation.messages || []),
-        ])
+        ...messages,
+        ...(oldConversation.messages || []),
+      ])
       const updatedConversation = {
         ...oldConversation,
         messages: newMessages,
@@ -48,7 +48,7 @@ export default function useHandleGetManyMessages() {
         if (activeConversation) {
           const allAreMessagesOfActiveConversation =
             conversationIdOfFirstMessage === activeConversation._id
-          if (allAreMessagesOfActiveConversation) {
+          if (allAreMessagesOfActiveConversation || messages.length === 0) {
             updatedConversation = formatUpdatedConversation(
               activeConversation,
               messages,

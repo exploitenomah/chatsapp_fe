@@ -34,7 +34,10 @@ export const uiSlice = createSlice({
       state,
       action: PayloadAction<boolean | undefined>,
     ) => {
-      state.showFriendsDrawer = typeof action.payload === 'boolean' ? action.payload : !state.showFriendsDrawer
+      state.showFriendsDrawer =
+        typeof action.payload === 'boolean'
+          ? action.payload
+          : !state.showFriendsDrawer
     },
     toggleShowSuggestionsDrawer: (
       state,
@@ -113,19 +116,19 @@ export const uiSlice = createSlice({
 
           hasFetchedAllMessages:
             action.payload.hasFetchedAllMessages ||
-            state.activeConversation?.hasFetchedAllMessages,
+            state.activeConversation.hasFetchedAllMessages,
 
           hasFetchedInitialMessages:
             action.payload.hasFetchedInitialMessages ||
-            state.activeConversation?.hasFetchedInitialMessages,
+            state.activeConversation.hasFetchedInitialMessages,
 
           messagesPage:
             action.payload.messagesPage ||
-            state.activeConversation?.messagesPage,
+            state.activeConversation.messagesPage,
         }
       }
     },
-    resetUI: () => initialState
+    resetUI: () => initialState,
   },
 })
 
@@ -147,7 +150,7 @@ export const {
   removeActiveConversation,
   updateActiveConversation,
   toggleShowAuthenticatedUserProfile,
-  resetUI
+  resetUI,
 } = uiSlice.actions
 
 export default uiSlice.reducer

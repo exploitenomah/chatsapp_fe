@@ -48,7 +48,7 @@ export const AddFriendButton = ({
   )
 }
 
-const RemoveFriendButton = ({
+export const RemoveFriendButton = ({
   show,
   friendshipId,
   children,

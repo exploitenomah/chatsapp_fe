@@ -14,8 +14,8 @@ import useOffline from '@hooks/useOffline'
 import { ConversationsState } from '@store/conversations/initialState'
 import { removeAppAlert } from '@store/notifications/slice'
 import { UI } from '@store/ui/initialState'
-import AppMobile from '@components/Custom/App/AppMobile'
 import { toggleDeviceIsMobile } from '@store/ui/slice'
+import useMakeResponsive from '@hooks/useMakeResponsive'
 
 const Login = dynamic(() => import('@components/Custom/Auth/Login'), {
   ssr: false,
@@ -72,47 +72,17 @@ export default function ChatsApp() {
     Store,
     ConversationsState
   >((store) => store.conversations)
-  const { deviceIsMobile } = useSelector<Store, UI>((store) => store.ui)
+
   const rootSocket = useRoot()
-  const dispatch = useDispatch()
-
-  const handleDeviceType = useCallback(() => {
-    if (window.innerWidth <= 900) {
-      deviceIsMobile === false && dispatch(toggleDeviceIsMobile(true))
-    } else {
-      deviceIsMobile === true && dispatch(toggleDeviceIsMobile(false))
-    }
-  }, [deviceIsMobile, dispatch])
-
-  useEffect(() => {
-    handleDeviceType()
-    window.addEventListener('resize', (e) => {
-      handleDeviceType()
-    })
-  }, [handleDeviceType])
-
-  // useOffline()
-
-  // if (isOffline)
-  //   return (
-  //     <Render favicon='/images/favicon-error.png'>
-  //       <Offline />
-  //     </Render>
-  //   )
-
-  if (token && deviceIsMobile)
+  useMakeResponsive()
+  useOffline()
+  if (isOffline)
     return (
-      <Render
-        title={`${
-          conversationsWithUnseenMessagesCount > 0
-            ? `(${conversationsWithUnseenMessagesCount})`
-            : ''
-        } ChatsApp`}
-      >
-        <AppMobile />
+      <Render favicon='/images/favicon-error.png'>
+        <Offline />
       </Render>
     )
-  if (token && !deviceIsMobile)
+  if (token)
     return (
       <Render
         title={`${

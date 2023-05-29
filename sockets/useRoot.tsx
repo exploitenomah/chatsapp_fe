@@ -1,5 +1,6 @@
+import useHandleConnection from '@hooks/useHandleConnection'
 import { Auth } from '@store/auth/initialState'
-import { authenticate, goOffline, goOnline } from '@store/auth/slice'
+import { authenticate, goOffline } from '@store/auth/slice'
 import { Store } from '@store/index'
 import { addAppAlert } from '@store/notifications/slice'
 import { updateLoading } from '@store/ui/slice'
@@ -11,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 
 export default function useRoot() {
-  const [isConnected, setIsConnected] = useState(false)
+  const { handleConnect, handleDisconnect } = useHandleConnection()
   const { isOffline } = useSelector<Store, Auth>((store) => store.auth)
   const rootSocket = useMemo(
     () => io(`${process.env.NEXT_PUBLIC_SERVER_URL}`),
@@ -31,20 +32,13 @@ export default function useRoot() {
     [dispatch],
   )
 
-  const handleConnect = useCallback(() => {
-    if (!isConnected) {
-      setIsConnected(true)
-      isOffline && dispatch(goOnline())
-    }
-  }, [isConnected, isOffline, dispatch])
-
   useEffect(() => {
     const tokenInLs = localStorage.getItem('chatsapp_token')
     if (tokenInLs !== null) {
       dispatch(authenticate(tokenInLs))
     }
 
-    rootSocket.onAny((event) => {
+    rootSocket.onAny((_event) => {
       dispatch(updateLoading(false))
     })
 
@@ -56,38 +50,19 @@ export default function useRoot() {
       handleAuth(data)
     })
 
-    rootSocket.io.on('reconnect', (_attempt) => {
-      handleConnect()
-    })
+    rootSocket.on('connect', () => handleConnect())
 
-    rootSocket.io.on('reconnect_attempt', (_attempt) => {
-      isConnected && setIsConnected(false)
-    })
+    rootSocket.io.on('reconnect', (_attempt) => handleConnect())
 
-    rootSocket.io.on('reconnect_error', (_error) => {
-      isConnected && setIsConnected(false)
-    })
+    rootSocket.io.on('reconnect_attempt', (_attempt) => handleDisconnect())
 
-    rootSocket.io.on('reconnect_failed', () => {
-      isConnected && setIsConnected(false)
-    })
+    rootSocket.io.on('reconnect_error', (_error) => handleDisconnect())
 
-    rootSocket.io.on('error', (err) => {
-      isConnected && setIsConnected(false)
-    })
+    rootSocket.io.on('reconnect_failed', () => handleDisconnect())
 
-    rootSocket.on('connect', () => {
-      handleConnect()
-    })
+    rootSocket.io.on('error', (_err) => handleDisconnect())
 
-    rootSocket.on('disconnect', (reason) => {
-      if (
-        reason === 'transport close' ||
-        reason === 'transport error' ||
-        reason === 'ping timeout'
-      )
-        !isOffline && dispatch(goOffline())
-    })
+    rootSocket.on('disconnect', handleDisconnect)
     rootSocket.on('error', (msg) => {
       dispatch(
         addAppAlert({
@@ -110,7 +85,14 @@ export default function useRoot() {
       rootSocket.io.off('reconnect_failed', () => {})
       rootSocket.io.off('reconnect_error', () => {})
     }
-  }, [dispatch, handleAuth, handleConnect, isConnected, isOffline, rootSocket])
+  }, [
+    dispatch,
+    handleAuth,
+    handleConnect,
+    handleDisconnect,
+    isOffline,
+    rootSocket,
+  ])
 
   return rootSocket
 }

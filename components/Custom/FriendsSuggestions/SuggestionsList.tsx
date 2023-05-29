@@ -6,8 +6,9 @@ import { User } from '@store/user/initialState'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
-import { AddFriendButton } from '../User/Profile'
+import { AddFriendButton, RemoveFriendButton } from '../User/Profile'
 import SearchableContent from '../Search/SearchableContent'
+import CancelRequestIcon from '@assets/CancelRequestIcon'
 
 export const SuggestionItem = ({
   user,
@@ -18,7 +19,28 @@ export const SuggestionItem = ({
 }) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
-
+  const { pendingFriends, friendRequests, friends } = useSelector<
+    Store,
+    FriendsState
+  >((store) => store.friends)
+  const sentRequest = useMemo(
+    () =>
+      pendingFriends.find(
+        (pendingFriend) =>
+          pendingFriend.requester._id === user._id ||
+          pendingFriend.recipient._id === user._id,
+      ),
+    [pendingFriends, user._id],
+  )
+  const hideAddFriendButton = useMemo(
+    () =>
+      pendingFriends.some(
+        (pendingFriend) =>
+          pendingFriend.requester._id === user._id ||
+          pendingFriend.recipient._id === user._id,
+      ),
+    [pendingFriends, user._id],
+  )
   const dispatch = useDispatch()
   const isActive = useMemo(
     () => userInPreview?._id === user._id,
@@ -53,7 +75,9 @@ export const SuggestionItem = ({
           />
         </div>
         <div className='h-[72px] basis-auto flex grow flex-col justify-center items-start'>
-          <div className='text-contrast-strong text-base'><SearchableContent text={`${user.nickName}`} search={search} /></div>
+          <div className='text-contrast-strong text-base'>
+            <SearchableContent text={`${user.nickName}`} search={search} />
+          </div>
 
           <div
             className={`${
@@ -66,7 +90,16 @@ export const SuggestionItem = ({
             />
           </div>
         </div>
-        <AddFriendButton show={true} recipient={user._id} />
+        <AddFriendButton show={!hideAddFriendButton} recipient={user._id} />
+        <RemoveFriendButton
+          show={Boolean(sentRequest)}
+          friendshipId={sentRequest?._id}
+        >
+          <span className='flex gap-x-2 justify-center items-center'>
+            <CancelRequestIcon />
+            Cancel Request
+          </span>
+        </RemoveFriendButton>
       </div>
     </div>
   )

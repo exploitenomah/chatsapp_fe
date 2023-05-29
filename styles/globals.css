@@ -26,7 +26,6 @@
   .btn-default {
     cursor: pointer;
     padding: theme('spacing.3') theme('spacing.4');
-    box-shadow: theme('boxShadow.xl');
     white-space: nowrap;
     font-weight: 600;
     border-radius: theme('borderRadius.lg');

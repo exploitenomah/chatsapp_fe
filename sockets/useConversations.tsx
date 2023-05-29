@@ -61,23 +61,15 @@ export default function useConversations() {
     })
 
     return () => {
-      conversationsSocket.off('signup', (data) => console.log(`${data} off`))
-      conversationsSocket.off('login', (data) => console.log(`${data} off`))
-      conversationsSocket.off('connect', () => console.log(`connect off`))
-      conversationsSocket.off('disconnect', (reason) =>
-        console.log(`${reason} off`),
-      )
-      conversationsSocket.io.off('error', (msg) => console.log(`${msg} off`))
-      conversationsSocket.io.off('reconnect', (data) =>
-        console.log(`${data} off`),
-      )
-      conversationsSocket.io.off('reconnect_attempt', (data) =>
-        console.log(`${data} off`),
-      )
-      conversationsSocket.io.off('reconnect_failed', () => console.log(`$ off`))
-      conversationsSocket.io.off('reconnect_error', (data) =>
-        console.log(`${data} off`),
-      )
+      conversationsSocket.off('signup', () => {})
+      conversationsSocket.off('login', () => {})
+      conversationsSocket.off('connect', () => {})
+      conversationsSocket.off('disconnect', () => {})
+      conversationsSocket.io.off('error', () => {})
+      conversationsSocket.io.off('reconnect', () => {})
+      conversationsSocket.io.off('reconnect_attempt', () => {})
+      conversationsSocket.io.off('reconnect_failed', () => {})
+      conversationsSocket.io.off('reconnect_error', () => {})
     }
   }, [dispatch, conversationsSocket, handleDisconnect, handleConnect])
 

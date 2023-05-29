@@ -9,8 +9,10 @@ import useOnNewMessage from '@hooks/messages/useOnNewMessage'
 import useOnGetManyMessages from '@hooks/messages/useOnGetManyMessages'
 import useOnUpdateMessagesSeen from '@hooks/messages/useOnMessagesSeen'
 import useOnUpdateMessagesDelivered from '@hooks/messages/useOnMessagesDelivered'
+import useHandleConnection from '@hooks/useHandleConnection'
 
 export default function useMessages() {
+  const { handleConnect, handleDisconnect } = useHandleConnection()
   const { token } = useSelector<Store, Auth>((store) => store.auth)
 
   const messagesSocket = useMemo(
@@ -40,37 +42,20 @@ export default function useMessages() {
     messagesSocket.on('messagesSeen', handleUpdateMessagesSeen)
     messagesSocket.on('messagesDelivered', handleUpdateMessagesDelivered)
 
-    messagesSocket.io.on('reconnect', (attempt) => {
-      console.error(`${attempt} ==> at root socket`)
-      // if (onError) onError(attempt)
-    })
+    messagesSocket.on('connect', () => handleConnect())
 
-    messagesSocket.io.on('reconnect_attempt', (attempt) => {
-      // ...
-      console.log(attempt)
-    })
+    messagesSocket.io.on('reconnect', () => handleConnect())
 
-    messagesSocket.io.on('reconnect_error', (error) => {
-      // ...
-      console.log(error)
-    })
+    messagesSocket.io.on('reconnect_attempt', (_attempt) => handleDisconnect())
 
-    messagesSocket.io.on('reconnect_failed', () => {
-      // ...
-      console.log('reconnect failed')
-    })
+    messagesSocket.io.on('reconnect_error', (_error) => handleDisconnect())
 
-    messagesSocket.io.on('error', (err) => {
-      console.log(err)
-    })
+    messagesSocket.io.on('reconnect_failed', () => handleDisconnect())
 
-    messagesSocket.on('connect', () => {
-      console.log('root socket connected')
-    })
+    messagesSocket.io.on('error', (_error) => handleDisconnect())
 
-    messagesSocket.on('disconnect', (reason) => {
-      console.log('root socket disconnected', reason)
-    })
+    messagesSocket.on('disconnect', handleDisconnect)
+
     messagesSocket.on('error', (msg) => {
       dispatch(
         addAppAlert({
@@ -87,20 +72,18 @@ export default function useMessages() {
       messagesSocket.off('getMany', handleGetManyMessages)
       messagesSocket.off('messagesSeen', handleUpdateMessagesSeen)
       messagesSocket.off('messagesDelivered', handleUpdateMessagesDelivered)
-      messagesSocket.off('connect', () => console.log(`connect off`))
-      messagesSocket.off('disconnect', (reason) => console.log(`${reason} off`))
-      messagesSocket.io.off('error', (msg) => console.log(`${msg} off`))
-      messagesSocket.io.off('reconnect', (data) => console.log(`${data} off`))
-      messagesSocket.io.off('reconnect_attempt', (data) =>
-        console.log(`${data} off`),
-      )
-      messagesSocket.io.off('reconnect_failed', () => console.log(`$ off`))
-      messagesSocket.io.off('reconnect_error', (data) =>
-        console.log(`${data} off`),
-      )
+      messagesSocket.off('connect', () => {})
+      messagesSocket.off('disconnect', () => {})
+      messagesSocket.io.off('error', () => {})
+      messagesSocket.io.off('reconnect', () => {})
+      messagesSocket.io.off('reconnect_attempt', () => {})
+      messagesSocket.io.off('reconnect_failed', () => {})
+      messagesSocket.io.off('reconnect_error', (data) => {})
     }
   }, [
     dispatch,
+    handleConnect,
+    handleDisconnect,
     handleGetManyMessages,
     handleNewMessage,
     handleUpdateMessagesDelivered,

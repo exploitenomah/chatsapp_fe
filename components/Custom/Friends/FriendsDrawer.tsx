@@ -130,9 +130,6 @@ const Header = () => {
 const FriendsSearchBar = () => {
   const searchBarRef = useRef<null | HTMLInputElement>(null)
   const dispatch = useDispatch()
-  const { searchText } = useSelector<Store, ConversationsState>(
-    (store) => store.conversations,
-  )
   const { searchText: appSearchText } = useSelector<Store, SearchState>(
     (store) => store.search,
   )

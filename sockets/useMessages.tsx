@@ -33,10 +33,6 @@ export default function useMessages() {
   const handleUpdateMessagesDelivered = useOnUpdateMessagesDelivered()
 
   useEffect(() => {
-    messagesSocket.onAny((event) => {
-      console.log(event, 'done')
-    })
-
     messagesSocket.on('new', handleNewMessage)
     messagesSocket.on('getMany', handleGetManyMessages)
     messagesSocket.on('messagesSeen', handleUpdateMessagesSeen)

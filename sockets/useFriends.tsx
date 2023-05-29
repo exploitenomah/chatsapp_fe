@@ -8,8 +8,10 @@ import { io } from 'socket.io-client'
 import useHandlers from '@hooks/useHandlers'
 import { friendsEvents } from '@store/friends/initialState'
 import { friendsActions } from '@store/friends/slice'
+import useHandleConnection from '@hooks/useHandleConnection'
 
 export default function useFriends() {
+  const { handleConnect, handleDisconnect } = useHandleConnection()
   const { token } = useSelector<Store, Auth>((store) => store.auth)
 
   const friendsSocket = useMemo(
@@ -27,41 +29,20 @@ export default function useFriends() {
   useHandlers(friendsSocket, friendsEvents, friendsActions as {})
 
   useEffect(() => {
-    friendsSocket.onAny((event) => {
-      console.log(event, 'done')
-    })
+    friendsSocket.on('connect', () => handleConnect())
 
-    friendsSocket.io.on('reconnect', (attempt) => {
-      console.error(`${attempt} ==> at root socket`)
-      // if (onError) onError(attempt)
-    })
+    friendsSocket.io.on('reconnect', () => handleConnect())
 
-    friendsSocket.io.on('reconnect_attempt', (attempt) => {
-      // ...
-      console.log(attempt)
-    })
+    friendsSocket.io.on('reconnect_attempt', (_attempt) => handleDisconnect())
 
-    friendsSocket.io.on('reconnect_error', (error) => {
-      // ...
-      console.log(error)
-    })
+    friendsSocket.io.on('reconnect_error', (_error) => handleDisconnect())
 
-    friendsSocket.io.on('reconnect_failed', () => {
-      // ...
-      console.log('reconnect failed')
-    })
+    friendsSocket.io.on('reconnect_failed', () => handleDisconnect())
 
-    friendsSocket.io.on('error', (err) => {
-      console.log(err)
-    })
+    friendsSocket.io.on('error', (_error) => handleDisconnect())
 
-    friendsSocket.on('connect', () => {
-      console.log('root socket connected')
-    })
+    friendsSocket.on('disconnect', handleDisconnect)
 
-    friendsSocket.on('disconnect', (reason) => {
-      console.log('root socket disconnected', reason)
-    })
     friendsSocket.on('error', (msg) => {
       dispatch(
         addAppAlert({
@@ -88,7 +69,7 @@ export default function useFriends() {
         console.log(`${data} off`),
       )
     }
-  }, [dispatch, friendsSocket])
+  }, [dispatch, friendsSocket, handleConnect, handleDisconnect])
 
   return friendsSocket
 }

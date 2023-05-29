@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import store from '@store/index'
 import { Provider } from 'react-redux'
 import { removeLocalStorageFormValues } from '@utils/auth'

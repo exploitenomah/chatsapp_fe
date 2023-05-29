@@ -138,7 +138,7 @@ const FriendsSearchBar = () => {
   )
   useEffect(() => {
     searchBarRef.current?.focus()
-  }, [appSearchText, dispatch, searchText])
+  }, [])
 
   return (
     <>

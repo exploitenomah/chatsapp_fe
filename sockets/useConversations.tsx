@@ -9,8 +9,10 @@ import { io } from 'socket.io-client'
 import useHandlers from '@hooks/useHandlers'
 import { conversationsEvents } from '@store/conversations/initialState'
 import { conversationsActions } from '@store/conversations/slice'
+import useHandleConnection from '@hooks/useHandleConnection'
 
 export default function useConversations() {
+  const { handleConnect, handleDisconnect } = useHandleConnection()
   const { token } = useSelector<Store, Auth>((store) => store.auth)
 
   const conversationsSocket = useMemo(
@@ -32,41 +34,21 @@ export default function useConversations() {
   )
 
   useEffect(() => {
-    conversationsSocket.onAny((event) => {
-      console.log('event', event)
-    })
+    conversationsSocket.on('connect', () => handleConnect())
 
-    conversationsSocket.io.on('reconnect', (attempt) => {
-      console.error(`${attempt} ==> at root socket`)
-      // if (onError) onError(attempt)
-    })
+    conversationsSocket.io.on('reconnect', () => handleConnect())
 
-    conversationsSocket.io.on('reconnect_attempt', (attempt) => {
-      // ...
-      console.log(attempt)
-    })
+    conversationsSocket.io.on('reconnect_attempt', (_attempt) =>
+      handleDisconnect(),
+    )
 
-    conversationsSocket.io.on('reconnect_error', (error) => {
-      // ...
-      console.log(error)
-    })
+    conversationsSocket.io.on('reconnect_error', (_error) => handleDisconnect())
 
-    conversationsSocket.io.on('reconnect_failed', () => {
-      // ...
-      console.log('reconnect failed')
-    })
+    conversationsSocket.io.on('reconnect_failed', () => handleDisconnect())
 
-    conversationsSocket.io.on('error', (err) => {
-      console.log(err)
-    })
+    conversationsSocket.io.on('error', (_error) => handleDisconnect())
 
-    conversationsSocket.on('connect', () => {
-      console.log('root socket connected')
-    })
-
-    conversationsSocket.on('disconnect', (reason) => {
-      console.log('root socket disconnected', reason)
-    })
+    conversationsSocket.on('disconnect', handleDisconnect)
     conversationsSocket.on('error', (msg) => {
       dispatch(
         addAppAlert({
@@ -97,7 +79,7 @@ export default function useConversations() {
         console.log(`${data} off`),
       )
     }
-  }, [dispatch, conversationsSocket])
+  }, [dispatch, conversationsSocket, handleDisconnect, handleConnect])
 
   return conversationsSocket
 }

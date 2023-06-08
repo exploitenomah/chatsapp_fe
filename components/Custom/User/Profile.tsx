@@ -10,13 +10,7 @@ import useRemoveFriend from '@hooks/friends/useRemoveFriend'
 import useAcceptFriend from '@hooks/friends/useAcceptFriend'
 import { Friend } from '@store/friends/initialState'
 import CloseIcon from '@assets/CloseIcon'
-import {
-  MouseEventHandler,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { MouseEventHandler, ReactNode, useCallback, useState } from 'react'
 import { Store } from '@store/index'
 import { User } from '@store/user/initialState'
 import { useDispatch, useSelector } from 'react-redux'
@@ -47,48 +41,28 @@ export const AddFriendButton = ({
     </>
   )
 }
-
 export const RemoveFriendButton = ({
   show,
   friendshipId,
   children,
-  useConfirmation,
-  clickConfirmed,
   onClick,
-  done,
-  className,
 }: {
   show: boolean
   friendshipId?: string
   children: ReactNode | ReactNode[]
-  useConfirmation?: boolean
-  clickConfirmed?: boolean
   onClick?: () => void
-  done?: () => void
-  className?: string
 }) => {
   const cancelRequest = useRemoveFriend()
-
-  useEffect(() => {
-    if (
-      useConfirmation === true &&
-      clickConfirmed === true &&
-      friendshipId !== undefined
-    ) {
-      cancelRequest(friendshipId)
-      done && done()
-    }
-  }, [cancelRequest, clickConfirmed, done, friendshipId, useConfirmation])
-
-  if (!show || !friendshipId) return null
+  if (!show) return null
   return (
     <>
       <Button
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation()
           onClick && onClick()
-          !useConfirmation && cancelRequest(friendshipId)
+          friendshipId && cancelRequest(friendshipId)
         }}
-        className={`${className} p-0 text-accent-danger`}
+        className='p-0 flex gap-x-3 items-center text-accent-danger'
       >
         {children}
       </Button>
@@ -125,20 +99,15 @@ const ProfileFooter = ({
   user: UserInPreview
   friendship?: Friend
 }) => {
-  const [removeFriendConfirmed, setRemoveFriendConfirmed] = useState(false)
-  const [showConfirmRemoveFriend, setShowConfirmRemoveFriend] = useState(false)
+  const [showConfirmRemoveFriend, setShowConfirmRemoveFriend] = useState(
+    Boolean(friendship),
+  )
   const onRemoveFriendClick = useCallback(() => {
     setShowConfirmRemoveFriend(true)
   }, [])
 
-  const confirmRemoveFriend = useCallback(() => {
-    setShowConfirmRemoveFriend(false)
-    setRemoveFriendConfirmed(true)
-  }, [])
-
   const cancelRemoveFriend = useCallback(() => {
     setShowConfirmRemoveFriend(false)
-    setRemoveFriendConfirmed(false)
   }, [])
 
   return (
@@ -157,12 +126,13 @@ const ProfileFooter = ({
               </b>
             </span>
             <div className='flex gap-x-2 items-center justify-center shadow-none'>
-              <Button
-                className='text-accent-danger'
-                onClick={() => confirmRemoveFriend()}
+              <RemoveFriendButton
+                onClick={() => setShowConfirmRemoveFriend(false)}
+                show
+                friendshipId={friendship?._id}
               >
-                Remove
-              </Button>
+                Remove Friend
+              </RemoveFriendButton>
               <Button
                 className='shadow-none'
                 onClick={() => cancelRemoveFriend()}
@@ -172,20 +142,17 @@ const ProfileFooter = ({
             </div>
           </div>
         )}
-        <RemoveFriendButton
-          useConfirmation={true}
-          clickConfirmed={removeFriendConfirmed}
-          friendshipId={friendship?._id}
-          show={friendship?.isValid ? true : false}
-          onClick={onRemoveFriendClick}
-          done={() => setRemoveFriendConfirmed(false)}
-          className='shadow-none'
-        >
-          <span className='p-0 flex gap-x-[22px] items-center text-base'>
-            <CancelRequestIcon className='w-[24px] h-[24px] ml-1 mt-1' />
-            Remove Friend
-          </span>
-        </RemoveFriendButton>
+        {friendship?.isValid && (
+          <Button
+            onClick={onRemoveFriendClick}
+            className='p-0 flex gap-x-6 items-center text-accent-danger text-base shadow-none'
+          >
+            <span className='p-0 flex gap-x-[22px] items-center text-base'>
+              <CancelRequestIcon className='w-[24px] h-[24px] ml-1 mt-1' />
+              Remove Friend
+            </span>
+          </Button>
+        )}
       </div>
       <Button className='p-0 flex gap-x-6 items-center text-accent-danger text-base shadow-none'>
         <BlockedIcon /> <span>Block {user.nickName}</span>

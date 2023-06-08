@@ -10,6 +10,9 @@ import {
 } from '@store/ui/slice'
 import { removeLocalStorageFormValues } from '@utils/auth'
 
+export const formHasEmptyFields = (formData: { [x: string]: string }) =>
+  Object.values(formData).some((val) => val.trim().length === 0)
+
 export default function FormContainer({
   show,
   children,

@@ -20,11 +20,10 @@ const initialLoginDetails = {
   nickNameOrEmail: '',
   password: '',
 }
-
-const Form = ({ rootSocket }: { rootSocket: Socket }) => {
+const useLoginFormHandlers = (rootSocket: Socket) => {
   const dispatch = useDispatch()
   const [loginDetails, setLoginDetails] = useState(initialLoginDetails)
-  const formHasEmptyFields = useMemo(
+  const isSubmitDisabled = useMemo(
     () => Object.values(loginDetails).some((val) => val.trim().length === 0),
     [loginDetails],
   )
@@ -61,7 +60,16 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       password,
     }))
   }, [])
-
+  return {
+    onSubmit,
+    loginDetails,
+    isSubmitDisabled,
+    handleFormChange,
+  }
+}
+const Form = ({ rootSocket }: { rootSocket: Socket }) => {
+  const { handleFormChange, loginDetails, isSubmitDisabled, onSubmit } =
+    useLoginFormHandlers(rootSocket)
   return (
     <form className='flex flex-col gap-5' onSubmit={onSubmit}>
       <Input
@@ -81,7 +89,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         onChange={handleFormChange}
       />
       <Button
-        disabled={formHasEmptyFields}
+        disabled={isSubmitDisabled}
         type='submit'
         name='login'
         className='bg-accent-dark/60 mt-2 capitalize text-lg transition-all duration-400 \n

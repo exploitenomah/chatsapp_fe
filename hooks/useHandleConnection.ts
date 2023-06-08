@@ -29,7 +29,7 @@ export default function useHandleConnection() {
         }
       }
     },
-    [isConnected, isOffline, dispatch],
+    [dispatch, isConnected, isOffline],
   )
 
   return { isConnected, handleConnect, handleDisconnect }

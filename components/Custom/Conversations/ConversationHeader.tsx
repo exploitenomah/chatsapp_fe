@@ -7,15 +7,34 @@ import { removeActiveConversation, updateUserInPreview } from '@store/ui/slice'
 import { useDispatch } from 'react-redux'
 import { User } from '@store/user/initialState'
 
-export default function ConversationHeader({
-  otherUser,
-}: {
-  otherUser?: User
-}) {
+const HeaderOptions = () => {
   const [showConversationOptions, setShowConversationOptions] = useState(false)
-  const [showGuide, setShowGuide] = useState(Boolean(otherUser))
   const dispatch = useDispatch()
 
+  return (
+    <OptionsComponent
+      showOptions={showConversationOptions}
+      toggleShowOptions={() => {
+        setShowConversationOptions((prev) => !prev)
+      }}
+    >
+      <Button
+        className='bg-primary-default'
+        onClick={() => {
+          dispatch(removeActiveConversation())
+          setShowConversationOptions((prev) => !prev)
+        }}
+      >
+        Close Chat
+      </Button>
+    </OptionsComponent>
+  )
+}
+
+const TempGuide = ({ showInitially }: {
+  showInitially: Boolean
+}) => {
+  const [showGuide, setShowGuide] = useState(showInitially)
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShowGuide(false)
@@ -24,6 +43,18 @@ export default function ConversationHeader({
       clearTimeout(timeout)
     }
   }, [])
+  return (
+    <p className='text-sm text-contrast-secondary leading-[10px]'>
+      {showGuide && <>click here for user info</>}
+    </p>
+  )
+}
+export default function ConversationHeader({
+  otherUser,
+}: {
+  otherUser?: User
+}) {
+  const dispatch = useDispatch()
 
   return (
     <header className={`${headerClasses} flex items-center justify-between`}>
@@ -43,10 +74,7 @@ export default function ConversationHeader({
           <p className='text-ellipsis text-base text-contrast-strong font-medium grow overflow-x-hidden inline-block'>
             {otherUser?.nickName}
           </p>
-
-          <p className='text-sm text-contrast-secondary leading-[10px]'>
-            {showGuide && <>click here for user info</>}
-          </p>
+          <TempGuide showInitially={Boolean(otherUser)} />
         </div>
       </div>
       <ul className='flex items-center'>
@@ -56,22 +84,7 @@ export default function ConversationHeader({
           </NavItem>
         </li>
         <li>
-          <OptionsComponent
-            showOptions={showConversationOptions}
-            toggleShowOptions={() => {
-              setShowConversationOptions((prev) => !prev)
-            }}
-          >
-            <Button
-              className='bg-primary-default'
-              onClick={() => {
-                dispatch(removeActiveConversation())
-                setShowConversationOptions((prev) => !prev)
-              }}
-            >
-              Close Chat
-            </Button>
-          </OptionsComponent>
+          <HeaderOptions />
         </li>
       </ul>
     </header>

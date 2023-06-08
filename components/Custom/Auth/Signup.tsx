@@ -14,7 +14,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
 import AuthLoader, { AuthInputWithShowPasswordToggle } from './AuthComponents'
-import FormContainer from './FormContainer'
+import FormContainer, { formHasEmptyFields } from './FormContainer'
 import useDebounce from '@hooks/useDebounce'
 import useIsNickNameInvalid from '@hooks/user/useIsNickNameInvalid'
 
@@ -51,23 +51,15 @@ const inputValidationClasses = (isValid: boolean, isInvalid: boolean) => {
   return `${isValid ? 'border-transparent' : isInvalid ? 'border-red-400' : ''}`
 }
 
-const Form = ({ rootSocket }: { rootSocket: Socket }) => {
-  const dispatch = useDispatch()
-  const [signupDetails, setSignupDetails] = useState(initialSignupDetails)
-  const [isNickNameTaken, setIsNickNameTaken] = useState(false)
-  const [isEmailInUse, setIsEmailInUse] = useState(false)
-  const isNickNameInvalid = useIsNickNameInvalid(signupDetails.nickName)
-  const passwordsNotMatched = useMemo(
-    () =>
-      signupDetails.password.length > 0 &&
-      signupDetails.confirmPassword.length > 0 &&
-      signupDetails.password !== signupDetails.confirmPassword,
-    [signupDetails.confirmPassword, signupDetails.password],
-  )
-  const formHasEmptyFields = useMemo(
-    () => Object.values(signupDetails).some((val) => val.trim().length === 0),
-    [signupDetails],
-  )
+const useCheckIfValIsTaken = ({
+  currentValue,
+  rootSocket,
+}: {
+  currentValue: string
+  rootSocket: Socket
+}) => {
+  const [isTaken, setIsTaken] = useState(false)
+  const [key, setKey] = useState('')
   const handleIsTakenCheck = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target
@@ -77,34 +69,30 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           value: value.trim(),
         })
       }
-      switch (name) {
-        case 'email':
-          if (signupDetails.email.trim() === value.trim() && isEmailInUse)
-            return
-          else return emitIsTaken()
-        case 'nickName':
-          if (value.trim().length < 3) return
-          else if (
-            signupDetails.nickName.trim() === value.trim() &&
-            isNickNameTaken
-          )
-            return
-          else return emitIsTaken()
-        default:
-          return
-      }
+      if (name !== key) setKey(name)
+      if (currentValue.trim() === value.trim() && isTaken) return
+      else return emitIsTaken()
     },
-    [
-      isEmailInUse,
-      isNickNameTaken,
-      rootSocket,
-      signupDetails.email,
-      signupDetails.nickName,
-    ],
+    [key, currentValue, isTaken, rootSocket],
   )
-
   const checkIfValIsTaken = useDebounce(handleIsTakenCheck, 500)
+  useEffect(() => {
+    rootSocket.on('isTaken', (data) => {
+      console.log(data)
+      if (data.path === key) setIsTaken(data.isTaken)
+    })
+    return () => {
+      rootSocket.off('isTaken', () => {})
+    }
+  }, [key, rootSocket])
 
+  return { isTaken, checkIfValIsTaken }
+}
+
+const useSignupFormHandlers = (rootSocket: Socket) => {
+  const dispatch = useDispatch()
+  const [signupDetails, setSignupDetails] = useState(initialSignupDetails)
+  const isSubmitDisabled = formHasEmptyFields(signupDetails)
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = changeEvent.target
@@ -129,38 +117,46 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   )
 
   useEffect(() => {
-    rootSocket.on('isTaken', (data) => {
-      switch (data.path) {
-        case 'email':
-          setIsEmailInUse(data.isTaken)
-          return
-        case 'nickName':
-          setIsNickNameTaken(data.isTaken)
-          return
-        default:
-          return
-      }
+    let tempSignupDataFromLs = { ...initialSignupDetails }
+    Object.keys(initialSignupDetails).forEach((key) => {
+      tempSignupDataFromLs[key as keyof typeof tempSignupDataFromLs] =
+        localStorage.getItem(key) || ''
     })
-    return () => {
-      rootSocket.off('isTaken', () => {})
-    }
-  }, [rootSocket])
-
-  useEffect(() => {
-    const firstName = localStorage.getItem('firstName') || ''
-    const lastName = localStorage.getItem('lastName') || ''
-    const nickName = localStorage.getItem('nickName') || ''
-    const email = localStorage.getItem('email') || ''
-    const password = localStorage.getItem('password') || ''
-    setSignupDetails((prev) => ({
-      ...prev,
-      firstName,
-      lastName,
-      nickName,
-      email,
-      password,
-    }))
+    setSignupDetails(tempSignupDataFromLs)
   }, [])
+  return {
+    signupDetails,
+    handleFormChange,
+    onSubmit,
+    isSubmitDisabled,
+  }
+}
+
+const Form = ({ rootSocket }: { rootSocket: Socket }) => {
+  const { signupDetails, handleFormChange, onSubmit, isSubmitDisabled } =
+    useSignupFormHandlers(rootSocket)
+  const isNickNameInvalid = useIsNickNameInvalid(signupDetails.nickName)
+  const passwordsNotMatched = useMemo(
+    () =>
+      signupDetails.password.length > 0 &&
+      signupDetails.confirmPassword.length > 0 &&
+      signupDetails.password !== signupDetails.confirmPassword,
+    [signupDetails.confirmPassword, signupDetails.password],
+  )
+
+  const {
+    isTaken: isNickNameTaken,
+    checkIfValIsTaken: checkIfNickNameIsTaken,
+  } = useCheckIfValIsTaken({
+    currentValue: signupDetails.nickName,
+    rootSocket,
+  })
+
+  const { isTaken: isEmailInUse, checkIfValIsTaken: checkIfEmailIsTaken } =
+    useCheckIfValIsTaken({
+      currentValue: signupDetails.email,
+      rootSocket,
+    })
 
   return (
     <form className='flex flex-col gap-5' onSubmit={onSubmit}>
@@ -202,7 +198,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           name='nickName'
           onChange={(e) => {
             handleFormChange(e)
-            checkIfValIsTaken(e)
+            checkIfNickNameIsTaken(e)
           }}
           value={signupDetails.nickName}
         />
@@ -223,7 +219,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           name='email'
           onChange={(e) => {
             handleFormChange(e)
-            checkIfValIsTaken(e)
+            checkIfEmailIsTaken(e)
           }}
           value={signupDetails.email}
         />
@@ -256,7 +252,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           isNickNameTaken ||
           isEmailInUse ||
           passwordsNotMatched ||
-          formHasEmptyFields
+          isSubmitDisabled
         }
         type='submit'
         name='login'

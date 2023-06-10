@@ -25,11 +25,11 @@ export default function useHandleConnection() {
       ) {
         if (!isConnected) {
           setIsConnected(false)
-          !isOffline && dispatch(goOffline())
+          // !isOffline && dispatch(goOffline())
         }
       }
     },
-    [dispatch, isConnected, isOffline],
+    [isConnected],
   )
 
   return { isConnected, handleConnect, handleDisconnect }

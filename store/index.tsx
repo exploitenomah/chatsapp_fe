@@ -7,6 +7,7 @@ import friends from './friends/slice'
 import conversations from './conversations/slice'
 import messages from './messages/slice'
 import search from './search/slice'
+import blockings from './blockings/slice'
 
 const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -27,6 +28,7 @@ const store = configureStore({
     conversations,
     messages,
     search,
+    blockings,
   },
 })
 const state = store.getState()

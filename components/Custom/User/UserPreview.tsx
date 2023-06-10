@@ -9,12 +9,13 @@ import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { headerClasses } from '../App/AppHeader'
 import Profile from './Profile'
+import useFetchBlocking from "@hooks/blockings/useFetchBlocking"
 
 const useUpdateUserInPreviewEffect = (friendship?: Friend) => {
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
 
   const dispatch = useDispatch()
-
+useFetchBlocking()
   useEffect(() => {
     if (
       userInPreview &&

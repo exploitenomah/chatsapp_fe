@@ -8,8 +8,8 @@ export default function useGetOne() {
   const blockingsSocketEmitters = useEmitter(blockingsSocket, blockingsEvents)
 
   const getOne = useCallback(
-    ({ blockee, blocker }: { blockee: string; blocker: string }) => {
-      blockingsSocketEmitters.getOne({ blockee, blocker })
+    (otherUserId: string) => {
+      blockingsSocketEmitters.getOne({ otherUserId })
     },
     [blockingsSocketEmitters],
   )

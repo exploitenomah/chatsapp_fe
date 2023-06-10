@@ -288,7 +288,7 @@ const ProfileFooterUnBlockUserButton = ({
   const [showConfirmUnBlockUser, setShowConfirmUnBlockUser] = useState(false)
   const unblockUser = useUnblockUser()
   const onUnBlockUserClick = useCallback(() => {
-    setShowConfirmUnBlockUser(true)
+    setShowConfirmUnBlockUser(false)
     if (blocking?._id)
       unblockUser({ blockee: user._id, blockingId: blocking._id })
   }, [unblockUser, user._id, blocking?._id])

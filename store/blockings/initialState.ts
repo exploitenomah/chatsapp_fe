@@ -1,4 +1,4 @@
-const initialState = {
+const initialState: Blockings = {
   blockings: [],
 }
 
@@ -7,7 +7,9 @@ export type Blocking = {
   blockee: string
   _id: string
 }
-export type Blockings = typeof initialState
+export type Blockings = {
+  blockings: Blocking[]
+}
 
 export const blockingsEvents = ['getOne', 'block', 'unblock']
 

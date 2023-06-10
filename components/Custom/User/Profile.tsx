@@ -10,12 +10,22 @@ import useRemoveFriend from '@hooks/friends/useRemoveFriend'
 import useAcceptFriend from '@hooks/friends/useAcceptFriend'
 import { Friend } from '@store/friends/initialState'
 import CloseIcon from '@assets/CloseIcon'
-import { MouseEventHandler, ReactNode, useCallback, useState } from 'react'
+import {
+  MouseEventHandler,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react'
 import { Store } from '@store/index'
 import { User } from '@store/user/initialState'
 import { useDispatch, useSelector } from 'react-redux'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import { removeUserInPreview, toggleShowFriendsDrawer } from '@store/ui/slice'
+import useBlockUser from '@hooks/blockings/useBlockUser'
+import { Blocking, Blockings } from '@store/blockings/initialState'
+import useUnBlockUser from '@hooks/blockings/useUnblockUser'
+import useUnblockUser from '@hooks/blockings/useUnblockUser'
 
 export const AddFriendButton = ({
   show,
@@ -91,17 +101,70 @@ const AcceptRequestButton = ({
     </>
   )
 }
+const BlockUserButton = ({
+  show,
+  user,
+  onClick,
+  showIcon,
+}: {
+  show: boolean
+  user: User
+  onClick: () => void
+  showIcon?: boolean
+}) => {
+  const blockUser = useBlockUser()
+  if (!show) return null
+  return (
+    <>
+      <Button
+        onClick={() => {
+          onClick && onClick()
+          blockUser(user._id)
+        }}
+        className='p-0 flex gap-x-6 items-center text-accent-danger text-base shadow-none'
+      >
+        {showIcon && <BlockedIcon />}
+        <span>Block {user.nickName}</span>
+      </Button>
+    </>
+  )
+}
+const UnBlockUserButton = ({
+  show,
+  blockee,
+  onClick,
+  blockingId,
+}: {
+  show: boolean
+  blockee: string
+  onClick: () => void
+  blockingId: string
+}) => {
+  const unBlockUser = useUnBlockUser()
+  if (!show) return null
+  return (
+    <>
+      <Button
+        onClick={() => {
+          onClick && onClick()
+          unBlockUser({ blockee, blockingId })
+        }}
+        className='p-0 flex gap-x-6 items-center text-accent-primary text-base shadow-none'
+      >
+        <span>Unblock</span>
+      </Button>
+    </>
+  )
+}
 
-const ProfileFooter = ({
+const ProfileFooterUnFriendButton = ({
   user,
   friendship,
 }: {
   user: UserInPreview
   friendship?: Friend
 }) => {
-  const [showConfirmRemoveFriend, setShowConfirmRemoveFriend] = useState(
-    Boolean(friendship),
-  )
+  const [showConfirmRemoveFriend, setShowConfirmRemoveFriend] = useState(false)
   const onRemoveFriendClick = useCallback(() => {
     setShowConfirmRemoveFriend(true)
   }, [])
@@ -154,9 +217,151 @@ const ProfileFooter = ({
           </Button>
         )}
       </div>
-      <Button className='p-0 flex gap-x-6 items-center text-accent-danger text-base shadow-none'>
-        <BlockedIcon /> <span>Block {user.nickName}</span>
-      </Button>
+    </>
+  )
+}
+
+const ProfileFooterBlockButton = ({
+  user,
+  blocking,
+}: {
+  user: UserInPreview
+  blocking?: Blocking
+}) => {
+  const [showConfirmBlockUser, setShowConfirmBlockUser] = useState(false)
+  const blockUser = useBlockUser()
+  const onBlockUserClick = useCallback(() => {
+    setShowConfirmBlockUser(true)
+    blockUser(user._id)
+  }, [blockUser, user._id])
+
+  const cancelBlockUser = useCallback(() => {
+    setShowConfirmBlockUser(false)
+  }, [])
+
+  return (
+    <>
+      <div className='relative'>
+        {!blocking && showConfirmBlockUser && (
+          <div className='absolute bottom-[0%] z-10 bg-primary-dark w-5/6 px-4 py-6 rounded-lg flex flex-col justify-center items-center text-center'>
+            <span>
+              Are you sure you want to <b>block</b>
+              <span className='text-accent-dark'> {user.nickName} </span>?
+              <br />
+              <b className='text-xs text-contrast-secondary'>
+                You will no longer be able to send to or recieve messages from
+                them.
+              </b>
+            </span>
+            <div className='flex gap-x-2 items-center justify-center shadow-none'>
+              <BlockUserButton
+                onClick={() => onBlockUserClick()}
+                show
+                user={user}
+              />
+              <Button className='shadow-none' onClick={() => cancelBlockUser()}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+        {!blocking && (
+          <Button
+            onClick={() => setShowConfirmBlockUser(true)}
+            className='p-0 flex gap-x-6 items-center text-accent-danger text-base shadow-none'
+          >
+            <BlockedIcon /> <span>Block {user.nickName}</span>
+          </Button>
+        )}
+      </div>
+    </>
+  )
+}
+
+const ProfileFooterUnBlockUserButton = ({
+  user,
+  blocking,
+}: {
+  user: UserInPreview
+  blocking?: Blocking
+}) => {
+  const [showConfirmUnBlockUser, setShowConfirmUnBlockUser] = useState(false)
+  const unblockUser = useUnblockUser()
+  const onUnBlockUserClick = useCallback(() => {
+    setShowConfirmUnBlockUser(true)
+    if (blocking?._id)
+      unblockUser({ blockee: user._id, blockingId: blocking._id })
+  }, [unblockUser, user._id, blocking?._id])
+
+  const cancelUnBlockUser = useCallback(() => {
+    setShowConfirmUnBlockUser(false)
+  }, [])
+
+  return (
+    <>
+      <div className='relative'>
+        {blocking && showConfirmUnBlockUser && (
+          <div className='absolute bottom-[0%] z-10 bg-primary-dark w-5/6 px-4 py-6 rounded-lg flex flex-col justify-center items-center text-center'>
+            <span>
+              <b>unblock</b>
+              <span className='text-accent-dark'> {user.nickName} </span>?
+              <br />
+              <b className='text-xs text-contrast-secondary'>
+                You will be able to send and recieve messages from them.
+              </b>
+            </span>
+            <div className='flex gap-x-2 items-center justify-center shadow-none'>
+              <UnBlockUserButton
+                onClick={() => onUnBlockUserClick()}
+                show
+                blockee={user._id}
+                blockingId={blocking._id}
+              />
+              <Button
+                className='shadow-none'
+                onClick={() => cancelUnBlockUser()}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+        {blocking && (
+          <Button
+            onClick={() => setShowConfirmUnBlockUser(true)}
+            className='p-0 flex gap-x-6 items-center text-accent-primary text-base shadow-none'
+          >
+            <span>Unblock {user.nickName}</span>
+          </Button>
+        )}
+      </div>
+    </>
+  )
+}
+const ProfileFooter = ({
+  user,
+  friendship,
+}: {
+  user: UserInPreview
+  friendship?: Friend
+}) => {
+  const { blockings } = useSelector<Store, Blockings>(
+    (store) => store.blockings,
+  )
+  const blocking = useMemo(
+    () =>
+      blockings.find(
+        (blocking) =>
+          blocking.blocker === user._id || blocking.blockee === user._id,
+      ),
+    [blockings, user._id],
+  )
+  console.log(blockings, blocking)
+  return (
+    <>
+      <ProfileFooterUnFriendButton friendship={friendship} user={user} />
+      <ProfileFooterBlockButton blocking={blocking} user={user} />
+      <ProfileFooterUnBlockUserButton blocking={blocking} user={user} />
     </>
   )
 }

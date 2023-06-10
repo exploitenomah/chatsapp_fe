@@ -1,23 +1,43 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import initialState, { Blocking } from './initialState'
+import { makeUniqueArrOfObjectsWith_IdKey } from '@utils/index'
 
 export const blockingsSlice = createSlice({
-  name: 'user',
+  name: 'blockings',
   initialState,
   reducers: {
-    getOne: (state, action: PayloadAction<Blocking>) => {
-      console.log(action.payload, 'line: 9')
+    getOne: (state, action: PayloadAction<Blocking | null>) => {
+      if (action.payload?._id) {
+        state.blockings = makeUniqueArrOfObjectsWith_IdKey([
+          ...state.blockings,
+          action.payload,
+        ])
+      }
     },
-    unblock: (state, action: PayloadAction<Blocking>) => {
-      console.log(action.payload, 'line: 12')
+    unblock: (
+      state,
+      action: PayloadAction<{
+        unblocked: Boolean
+        blockingId: string
+      }>,
+    ) => {
+      state.blockings = state.blockings.filter(
+        (blocking) => blocking._id !== action.payload.blockingId,
+      )
     },
     block: (state, action: PayloadAction<Blocking>) => {
-      console.log(action.payload, 'line: 15')
+      if (action.payload?._id) {
+        state.blockings = makeUniqueArrOfObjectsWith_IdKey([
+          ...state.blockings,
+          action.payload,
+        ])
+      }
+      console.log(action.payload, 'line: 12')
     },
   },
 })
 
-export const { getOne, unblock } = blockingsSlice.actions
+export const { getOne, unblock, block } = blockingsSlice.actions
 
 export const blockingsActions = blockingsSlice.actions
 export default blockingsSlice.reducer

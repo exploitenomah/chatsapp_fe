@@ -37,6 +37,7 @@ module.exports = {
           light: '#71eb85',
           bright: '#09d261',
           danger: '#f15c6d',
+          primary: '#007bff',
         },
         contrast: {
           primary: '#d1d7db',

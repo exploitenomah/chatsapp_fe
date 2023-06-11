@@ -24,7 +24,6 @@ export const blockingsSlice = createSlice({
       state.blockings = state.blockings.filter(
         (blocking) => blocking._id !== action.payload.blockingId,
       )
-      console.log(action.payload,  'line 27')
     },
     block: (state, action: PayloadAction<Blocking>) => {
       if (action.payload?._id) {

@@ -78,7 +78,6 @@ const useCheckIfValIsTaken = ({
   const checkIfValIsTaken = useDebounce(handleIsTakenCheck, 500)
   useEffect(() => {
     rootSocket.on('isTaken', (data) => {
-      console.log(data)
       if (data.path === key) setIsTaken(data.isTaken)
     })
     return () => {

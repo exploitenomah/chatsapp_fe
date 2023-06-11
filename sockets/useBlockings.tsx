@@ -9,6 +9,7 @@ import useHandlers from '@hooks/useHandlers'
 import { blockingsEvents } from '@store/blockings/initialState'
 import { blockingsActions } from '@store/blockings/slice'
 import useHandleConnection from '@hooks/useHandleConnection'
+import useHandleConversationsOnBlockingsEvents from '@hooks/conversations/useHandleConvosOnBlockingsEvents'
 
 export default function useBlockings() {
   const { handleConnect, handleDisconnect } = useHandleConnection()
@@ -27,6 +28,8 @@ export default function useBlockings() {
   const dispatch = useDispatch()
 
   useHandlers(blockingsSocket, blockingsEvents, blockingsActions as {})
+  
+  useHandleConversationsOnBlockingsEvents(blockingsSocket)
 
   useEffect(() => {
     blockingsSocket.on('connect', () => handleConnect())

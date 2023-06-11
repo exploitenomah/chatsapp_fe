@@ -4,26 +4,17 @@ import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { useSelector } from 'react-redux'
 import useGetOne from './useGetOne'
+import useGetBlockingInStore from './useGetBlockingInStore'
 
 export default function useFetchBlocking() {
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
-  const { blockings } = useSelector<Store, Blockings>(
-    (store) => store.blockings,
-  )
-  const blockingInState = useMemo(
-    () =>
-      blockings.find(
-        (blocking) =>
-          blocking.blocker === userInPreview?._id ||
-          blocking.blockee === userInPreview?._id,
-      ),
-    [blockings, userInPreview?._id],
-  )
+
+  const blockingInStore = useGetBlockingInStore(userInPreview?._id || '')
 
   const getOne = useGetOne()
   useEffect(() => {
-    if (userInPreview?._id && !blockingInState) {
+    if (userInPreview?._id && !blockingInStore) {
       getOne(userInPreview?._id)
     }
-  }, [blockingInState, getOne, userInPreview?._id])
+  }, [blockingInStore, getOne, userInPreview?._id])
 }

@@ -14,6 +14,7 @@ import {
   MouseEventHandler,
   ReactNode,
   useCallback,
+  useMemo,
   useState,
 } from 'react'
 import { Store } from '@store/index'
@@ -329,11 +330,12 @@ const ProfileFooterUnBlockUserButton = ({
 const ProfileFooter = ({
   user,
   friendship,
+  blocking,
 }: {
   user: UserInPreview
   friendship?: Friend
+  blocking?: Blocking
 }) => {
-  const blocking = useGetBlockingInStore(user._id)
   return (
     <>
       <ProfileFooterUnFriendButton friendship={friendship} user={user} />
@@ -368,7 +370,10 @@ export default function Profile({
   friendship?: Friend
 }) {
   const userInState = useSelector<Store, User>((store) => store.user)
-
+  const blocking = useGetBlockingInStore(user._id)
+  const authenticatedUserIsBlocker = useMemo(() => {
+    if (blocking) return blocking.blocker === userInState._id
+  }, [blocking, userInState._id])
   const handleMessageButtonClick = useHandleMessageButtonClick([
     user._id,
     userInState._id,
@@ -381,6 +386,8 @@ export default function Profile({
     dispatch(toggleShowFriendsDrawer(false))
   }, [dispatch, handleMessageButtonClick])
 
+  if (blocking && !authenticatedUserIsBlocker)
+    return <p className='px-4 py-8 m-4'>User not found</p>
   return (
     <>
       <div className='flex flex-col gap-y-2.5'>
@@ -444,7 +451,11 @@ export default function Profile({
           <p className='text-base'>{`About user`}</p>
         </div>
         <div className='bg-primary-default py-8 px-5 flex flex-col gap-y-4'>
-          <ProfileFooter user={user} friendship={friendship} />
+          <ProfileFooter
+            user={user}
+            friendship={friendship}
+            blocking={blocking}
+          />
         </div>
       </div>
     </>

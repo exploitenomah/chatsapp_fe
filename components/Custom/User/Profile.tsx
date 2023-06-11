@@ -14,7 +14,6 @@ import {
   MouseEventHandler,
   ReactNode,
   useCallback,
-  useMemo,
   useState,
 } from 'react'
 import { Store } from '@store/index'
@@ -23,9 +22,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import { removeUserInPreview, toggleShowFriendsDrawer } from '@store/ui/slice'
 import useBlockUser from '@hooks/blockings/useBlockUser'
-import { Blocking, Blockings } from '@store/blockings/initialState'
+import { Blocking } from '@store/blockings/initialState'
 import useUnBlockUser from '@hooks/blockings/useUnblockUser'
 import useUnblockUser from '@hooks/blockings/useUnblockUser'
+import useGetBlockingInStore from '@hooks/blockings/useGetBlockingInStore'
 
 export const AddFriendButton = ({
   show,
@@ -165,9 +165,6 @@ const ProfileFooterUnFriendButton = ({
   friendship?: Friend
 }) => {
   const [showConfirmRemoveFriend, setShowConfirmRemoveFriend] = useState(false)
-  const onRemoveFriendClick = useCallback(() => {
-    setShowConfirmRemoveFriend(true)
-  }, [])
 
   const cancelRemoveFriend = useCallback(() => {
     setShowConfirmRemoveFriend(false)
@@ -190,16 +187,13 @@ const ProfileFooterUnFriendButton = ({
             </span>
             <div className='flex gap-x-2 items-center justify-center shadow-none'>
               <RemoveFriendButton
-                onClick={() => setShowConfirmRemoveFriend(false)}
+                onClick={cancelRemoveFriend}
                 show
                 friendshipId={friendship?._id}
               >
                 Remove Friend
               </RemoveFriendButton>
-              <Button
-                className='shadow-none'
-                onClick={() => cancelRemoveFriend()}
-              >
+              <Button className='shadow-none' onClick={cancelRemoveFriend}>
                 Cancel
               </Button>
             </div>
@@ -207,7 +201,7 @@ const ProfileFooterUnFriendButton = ({
         )}
         {friendship?.isValid && (
           <Button
-            onClick={onRemoveFriendClick}
+            onClick={() => setShowConfirmRemoveFriend(true)}
             className='p-0 flex gap-x-6 items-center text-accent-danger text-base shadow-none'
           >
             <span className='p-0 flex gap-x-[22px] items-center text-base'>
@@ -229,15 +223,6 @@ const ProfileFooterBlockButton = ({
   blocking?: Blocking
 }) => {
   const [showConfirmBlockUser, setShowConfirmBlockUser] = useState(false)
-  const blockUser = useBlockUser()
-  const onBlockUserClick = useCallback(() => {
-    setShowConfirmBlockUser(true)
-    blockUser(user._id)
-  }, [blockUser, user._id])
-
-  const cancelBlockUser = useCallback(() => {
-    setShowConfirmBlockUser(false)
-  }, [])
 
   return (
     <>
@@ -255,11 +240,14 @@ const ProfileFooterBlockButton = ({
             </span>
             <div className='flex gap-x-2 items-center justify-center shadow-none'>
               <BlockUserButton
-                onClick={() => onBlockUserClick()}
+                onClick={() => setShowConfirmBlockUser(false)}
                 show
                 user={user}
               />
-              <Button className='shadow-none' onClick={() => cancelBlockUser()}>
+              <Button
+                className='shadow-none'
+                onClick={() => setShowConfirmBlockUser(false)}
+              >
                 Cancel
               </Button>
             </div>
@@ -345,18 +333,7 @@ const ProfileFooter = ({
   user: UserInPreview
   friendship?: Friend
 }) => {
-  const { blockings } = useSelector<Store, Blockings>(
-    (store) => store.blockings,
-  )
-  const blocking = useMemo(
-    () =>
-      blockings.find(
-        (blocking) =>
-          blocking.blocker === user._id || blocking.blockee === user._id,
-      ),
-    [blockings, user._id],
-  )
-  console.log(blockings, blocking)
+  const blocking = useGetBlockingInStore(user._id)
   return (
     <>
       <ProfileFooterUnFriendButton friendship={friendship} user={user} />

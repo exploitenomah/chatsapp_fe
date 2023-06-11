@@ -22,7 +22,9 @@ export default function useSendMessage() {
         sender: message.sender,
         conversationId: conversation._id,
         text: message.text,
-        recipients: conversation.participants,
+        recipients: conversation.participants.map(
+          (participant) => participant._id,
+        ),
         quotedMessage: message.quotedMessage,
       })
     },

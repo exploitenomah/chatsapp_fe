@@ -50,7 +50,10 @@ const conversationsSlice = createSlice({
     },
     updateSingleConversation: (
       state,
-      action: PayloadAction<{ conversationId: string; update: Conversation }>,
+      action: PayloadAction<{
+        conversationId: string
+        update: Conversation | Partial<Conversation>
+      }>,
     ) => {
       const { conversationId, update } = action.payload
       state.conversations = state.conversations.map((conversation) => {

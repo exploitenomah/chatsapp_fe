@@ -21,8 +21,8 @@ export default function useOnUpdateMessagesSeen() {
             ...activeConversation,
             messages: (activeConversation?.messages || []).map((msg) => ({
               ...msg,
-              seen: true,
-              delivered: true,
+              seen: msg.recipients.length > 1,
+              delivered: msg.recipients.length > 1,
             })),
           }),
         )
@@ -38,14 +38,16 @@ export default function useOnUpdateMessagesSeen() {
               ...conversationInState,
               messages: (conversationInState.messages || []).map((msg) => ({
                 ...msg,
-                seen: true,
-                delivered: true,
+                seen: msg.recipients.length > 1,
+                delivered: msg.recipients.length > 1,
               })),
               latestMessage: conversationInState.latestMessage
                 ? {
                     ...conversationInState.latestMessage,
-                    seen: true,
-                    delivered: true,
+                    seen:
+                      conversationInState.latestMessage.recipients.length > 1,
+                    delivered:
+                      conversationInState.latestMessage.recipients.length > 1,
                   }
                 : undefined,
             },

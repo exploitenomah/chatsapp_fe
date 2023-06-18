@@ -21,7 +21,7 @@ export default function useOnUpdateMessagesDelivered() {
             ...activeConversation,
             messages: (activeConversation?.messages || []).map((msg) => ({
               ...msg,
-              delivered: true,
+              delivered: msg.recipients.length > 1,
             })),
           }),
         )
@@ -40,12 +40,13 @@ export default function useOnUpdateMessagesDelivered() {
               ...conversationInState,
               messages: (conversationInState.messages || []).map((msg) => ({
                 ...msg,
-                delivered: true,
+                delivered: msg.recipients.length > 1 && true,
               })),
               latestMessage: conversationInState.latestMessage
                 ? {
                     ...conversationInState.latestMessage,
-                    delivered: true,
+                    delivered:
+                      conversationInState.latestMessage.recipients.length > 1,
                   }
                 : undefined,
             },

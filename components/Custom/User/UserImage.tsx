@@ -9,6 +9,7 @@ import useUser from '@sockets/useUser'
 import Loader from '@assets/Loader'
 import { useDispatch } from 'react-redux'
 import { addAppAlert } from '@store/notifications/slice'
+import Image from 'next/image'
 
 //https://res.cloudinary.com/<cloud_name>/<asset_type>/<delivery_type>/<transformations>/<version>/<public_id_full_path>.<extension>
 
@@ -205,7 +206,13 @@ export default function UserImage({
     <>
       <div className='relative'>
         <div onClick={() => setShowOptions((prev) => !prev)} className=''>
-          <Avatar width={200} height={200} src={profileImage.path} alt={alt} />
+          <Image
+            className='rounded-full object-cover h-[200px]'
+            width={200}
+            height={200}
+            src={profileImage.path}
+            alt={alt}
+          />
         </div>
         <ImageOptions
           show={showOptions}

@@ -43,7 +43,7 @@ export default function Avatar({
         handleError && handleError()
         loadErr === false && setLoadErr(true)
       }}
-      className='text-center rounded-full '
+      className='rounded-full object-cover'
       {...{ src: imgSrc, width, height, loading, alt }}
     />
   )

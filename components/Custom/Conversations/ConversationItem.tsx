@@ -70,6 +70,14 @@ export default function ConversationItem({
       ),
     [authenticatedUser, conversation.participants],
   )
+  const undeliveredMessage = useMemo(
+    () =>
+      conversation.messages?.find(
+        (msg) =>
+          msg.sender !== authenticatedUser._id && msg.delivered === false,
+      ),
+    [authenticatedUser._id, conversation.messages],
+  )
 
   const unseenMessages = useMemo(() => {
     return conversation.messages
@@ -79,22 +87,14 @@ export default function ConversationItem({
       : []
   }, [authenticatedUser._id, conversation.messages])
   const unSeenMsgsCount = useMemo(() => {
-    return (conversation.unSeenMsgsCount || 0) + unseenMessages.length
+    if (conversation.unSeenMsgsCount && conversation.unSeenMsgsCount > 0)
+      return conversation.unSeenMsgsCount
+    else return unseenMessages.length
   }, [conversation.unSeenMsgsCount, unseenMessages.length])
 
   const showUnseenMsgsBadge = useMemo(
-    () =>
-      !conversation.hasFetchedInitialMessages && conversation.unSeenMsgsCount
-        ? true
-        : unseenMessages.length > 0 &&
-          activeConversation?._id !== conversation._id,
-    [
-      activeConversation?._id,
-      conversation._id,
-      conversation.hasFetchedInitialMessages,
-      conversation.unSeenMsgsCount,
-      unseenMessages.length,
-    ],
+    () => unSeenMsgsCount > 0 && activeConversation?._id !== conversation._id,
+    [activeConversation?._id, conversation._id, unSeenMsgsCount],
   )
 
   const timeOfLastSentMsg = useMemo(() => {
@@ -157,22 +157,17 @@ export default function ConversationItem({
   const handleEmitMessagesDelivered = useEmitMessagesDelivered()
 
   useEffect(() => {
-    const undeliveredMessage = conversation.messages?.find(
-      (msg) => msg.sender !== authenticatedUser._id && msg.delivered === false,
-    )
-    if (undeliveredMessage || conversation.unSeenMsgsCount) {
+    if (undeliveredMessage) {
       handleEmitMessagesDelivered(
         conversation._id,
         conversation.participants.map((el) => el._id),
       )
     }
   }, [
-    authenticatedUser._id,
     conversation._id,
-    conversation.messages,
     conversation.participants,
-    conversation.unSeenMsgsCount,
     handleEmitMessagesDelivered,
+    undeliveredMessage,
   ])
 
   return (

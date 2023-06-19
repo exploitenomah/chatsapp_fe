@@ -19,6 +19,7 @@ export default function useOnUpdateMessagesSeen() {
         dispatch(
           updateActiveConversation({
             ...activeConversation,
+            unSeenMsgsCount: 0,
             messages: (activeConversation?.messages || []).map((msg) => ({
               ...msg,
               seen: msg.recipients.length > 1,
@@ -41,6 +42,7 @@ export default function useOnUpdateMessagesSeen() {
                 seen: msg.recipients.length > 1,
                 delivered: msg.recipients.length > 1,
               })),
+              unSeenMsgsCount: 0,
               latestMessage: conversationInState.latestMessage
                 ? {
                     ...conversationInState.latestMessage,

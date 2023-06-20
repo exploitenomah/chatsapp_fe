@@ -13,6 +13,6 @@ const searchSlice = createSlice({
 
 export const { updateSearchText } = searchSlice.actions
 
-export const friendsActions = searchSlice.actions
+export const searchActions = searchSlice.actions
 
 export default searchSlice.reducer

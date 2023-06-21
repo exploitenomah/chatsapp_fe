@@ -23,9 +23,15 @@ import { FriendRequestsCountBadge } from './FriendsNotificationBadges'
 import SeeSuggestionsButton from '../FriendsSuggestions/SeeSuggestionsBtn'
 import { ConversationsState } from '@store/conversations/initialState'
 import { updateSearchText } from '@store/conversations/slice'
-import { updateSearchText as updateAppSearch } from '@store/search/slice'
-import { SearchState } from '@store/search/initialState'
-import AppSearch from '../Search/SearchResults'
+import {
+  toggleLoading,
+  updateSearchText as updateAppSearch,
+} from '@store/search/slice'
+import { SearchState, searchLimit } from '@store/search/initialState'
+import AppSearch, { useSearchFriends } from '../Search/SearchResults'
+import useDebounce from '@hooks/useDebounce'
+import useSearch from '@sockets/useSearch'
+import AuthLoader from '../Auth/AuthComponents'
 
 const DefaultButton = ({
   onClick,
@@ -128,14 +134,29 @@ const Header = () => {
 }
 
 const FriendsSearchBar = () => {
+  const searchedItemsInState = useSearchFriends()
+  const searchSocket = useSearch()
   const searchBarRef = useRef<null | HTMLInputElement>(null)
   const dispatch = useDispatch()
-  const { searchText: appSearchText } = useSelector<Store, SearchState>(
-    (store) => store.search,
-  )
+  const { searchText: appSearchText, searchedUsersPage } = useSelector<
+    Store,
+    SearchState
+  >((store) => store.search)
   useEffect(() => {
     searchBarRef.current?.focus()
   }, [])
+
+  const search = useDebounce((searchText) => {
+    if (searchedItemsInState.length === 0) {
+      searchSocket.emit('searchUsers', {
+        search: searchText,
+        limit: searchLimit,
+        page: searchedUsersPage,
+      })
+    } else {
+      dispatch(toggleLoading(false))
+    }
+  }, 3500)
 
   return (
     <>
@@ -144,7 +165,13 @@ const FriendsSearchBar = () => {
           inputProps={{
             placeholder: 'Search Chatsapp',
             value: appSearchText,
-            onChange: (e) => dispatch(updateAppSearch(e.target.value)),
+            onChange: (e) => {
+              dispatch(updateAppSearch(e.target.value))
+              if (e.target.value.length > 1) {
+                search(e.target.value)
+                dispatch(toggleLoading(true))
+              }
+            },
           }}
           ref={searchBarRef}
         />
@@ -194,9 +221,11 @@ const NoFriendsYetBody = () => {
 }
 
 export default function FriendsDrawer() {
-  const { searchText } = useSelector<Store, SearchState>(
+  const { searchText, loading } = useSelector<Store, SearchState>(
     (store) => store.search,
   )
+  const searchedItemsInState = useSearchFriends()
+
   return (
     <>
       <FriendsDrawerContainer>
@@ -212,7 +241,23 @@ export default function FriendsDrawer() {
                   <NoFriendsYetBody />
                 </>
               ) : (
-                <AppSearch />
+                <>
+                  <AppSearch />
+                  {searchedItemsInState.length === 0 &&
+                    searchText.length > 1 &&
+                    !loading && (
+                      <p className='text-accent-primary text-md text-center'>
+                        Not found
+                      </p>
+                    )}
+                  {searchText.length === 1 &&
+                    searchedItemsInState.length === 0 && (
+                      <p className='text-accent-default text-center'>
+                        Keep typing to search
+                      </p>
+                    )}
+                  {loading && <AuthLoader />}
+                </>
               )}
             </div>
           </div>

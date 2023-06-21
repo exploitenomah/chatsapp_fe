@@ -1,14 +1,28 @@
-import { useEffect, useMemo } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 
-import { debounce } from '@utils/debounce'
+type Timer = ReturnType<typeof setTimeout>
+type SomeFunction = (...args: any[]) => void
 
-export default function useDebounce(
-  fn: (...params: any[]) => void,
-  ms: number,
-): (...params: any[]) => void {
-  const debouncedFunc = useMemo(
-    () => debounce<(...params: any[]) => void>(fn, ms),
-    [fn, ms],
-  )
-  return debouncedFunc
+export default function useDebounce<Func extends SomeFunction>(
+  func: Func,
+  delay = 1000,
+) {
+  const timer = useRef<Timer>()
+
+  useEffect(() => {
+    return () => {
+      if (!timer.current) return
+      clearTimeout(timer.current)
+    }
+  }, [])
+
+  const debouncedFunction = ((...args) => {
+    const newTimer = setTimeout(() => {
+      func(...args)
+    }, delay)
+    clearTimeout(timer.current)
+    timer.current = newTimer
+  }) as Func
+
+  return debouncedFunction
 }

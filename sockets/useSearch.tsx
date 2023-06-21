@@ -27,7 +27,6 @@ export default function useSearch() {
 
   useEffect(() => {
     searchSocket.on('searchMessages', (data) => {
-      console.log(data)
       dispatch(updateSearchedMessages(data))
       dispatch(toggleLoading(false))
     })

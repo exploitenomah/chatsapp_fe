@@ -21,7 +21,7 @@ const ConversationsSearch = () => {
   const dispatch = useDispatch()
   const searchSocket = useSearch()
   const searchedConversations = useSearchConversations()
-  const search = useDebounce((searchText) => {
+  const search = useDebounce((searchText: string) => {
     if (
       searchedConversations.length === 0 &&
       searchedMessages.length === 0 &&
@@ -35,7 +35,7 @@ const ConversationsSearch = () => {
     } else {
       dispatch(toggleLoading(false))
     }
-  }, 5000)
+  }, 800)
 
   return (
     <SearchBar

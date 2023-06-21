@@ -27,6 +27,7 @@ import { Blocking } from '@store/blockings/initialState'
 import useUnBlockUser from '@hooks/blockings/useUnblockUser'
 import useUnblockUser from '@hooks/blockings/useUnblockUser'
 import useGetBlockingInStore from '@hooks/blockings/useGetBlockingInStore'
+import Image from 'next/image'
 
 export const AddFriendButton = ({
   show,
@@ -393,7 +394,8 @@ export default function Profile({
       <div className='flex flex-col gap-y-2.5'>
         <div className='bg-primary-default text-center px-4 py-7'>
           <div className='flex justify-center items-center mb-4'>
-            <Avatar
+            <Image
+              className='rounded-full object-cover h-[200px] w-min-content'
               width={200}
               height={200}
               src={user.profileImage?.path}

@@ -3,18 +3,13 @@ import {
   ConversationsState,
 } from '@store/conversations/initialState'
 import { Store } from '@store/index'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import ConversationItem from './ConversationItem'
-import Button from '@components/HTML/Button'
-import { toggleShowFriendsDrawer } from '@store/ui/slice'
 import {
   useSearchConversations,
   useGetSortedConversations,
   useGetSearchedMessagesToDisplay,
 } from '@hooks/conversations'
-import { User } from '@store/user/initialState'
-import { updateSearchText as updateAppSearch } from '@store/search/slice'
-import useSearch from '@sockets/useSearch'
 import { SearchState } from '@store/search/initialState'
 import AuthLoader from '../Auth/AuthComponents'
 
@@ -23,7 +18,6 @@ const SearchedMessagesResults = () => {
     (store) => store.conversations,
   )
   const { loading } = useSelector<Store, SearchState>((store) => store.search)
-  const dispatch = useDispatch()
 
   const searchedConversations = useSearchConversations()
   const sortedConversations = useGetSortedConversations(searchedConversations)

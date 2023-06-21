@@ -156,7 +156,7 @@ const FriendsSearchBar = () => {
     } else {
       dispatch(toggleLoading(false))
     }
-  }, 3500)
+  }, 800)
 
   return (
     <>

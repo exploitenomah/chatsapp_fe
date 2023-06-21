@@ -1,15 +1,19 @@
-// import { User } from '@store/user/initialState'
-
 import { User } from '@store/user/initialState'
 
 const initialState: SearchState = {
   searchText: '',
-  searchResults: [],
+  searchedUsersResults: [],
+  loading: false,
+  searchedUsersPage: 0,
 }
 
 export type SearchState = {
   searchText: string
-  searchResults: User[]
+  searchedUsersResults: User[]
+  searchedUsersPage: number
+  loading: boolean
 }
+
+export const searchLimit = 100
 
 export default initialState

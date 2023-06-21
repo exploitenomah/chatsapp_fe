@@ -31,9 +31,7 @@ const HeaderOptions = () => {
   )
 }
 
-const TempGuide = ({ showInitially }: {
-  showInitially: Boolean
-}) => {
+const TemporaryGuide = ({ showInitially }: { showInitially: Boolean }) => {
   const [showGuide, setShowGuide] = useState(showInitially)
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -74,7 +72,7 @@ export default function ConversationHeader({
           <p className='text-ellipsis text-base text-contrast-strong font-medium grow overflow-x-hidden inline-block'>
             {otherUser?.nickName}
           </p>
-          <TempGuide showInitially={Boolean(otherUser)} />
+          <TemporaryGuide showInitially={Boolean(otherUser)} />
         </div>
       </div>
       <ul className='flex items-center'>

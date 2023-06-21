@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { makeUniqueArrOfObjectsWith_IdKey } from '@utils/index'
 import initialState, { Conversation } from './initialState'
+import { Message } from '@store/messages/initialState'
+import { searchLimit } from '@store/search/initialState'
 
 const conversationsSlice = createSlice({
   name: 'conversations',
@@ -8,6 +10,15 @@ const conversationsSlice = createSlice({
   reducers: {
     updateSearchText: (state, action: PayloadAction<string>) => {
       state.searchText = action.payload
+      state.searchedMessagesPage = 1
+    },
+    updateSearchedMessages: (state, action: PayloadAction<Message[]>) => {
+      if (action.payload.length >= searchLimit)
+        state.searchedMessagesPage = state.searchedMessagesPage + 1
+      state.searchedMessages = makeUniqueArrOfObjectsWith_IdKey([
+        ...action.payload,
+        ...state.searchedMessages,
+      ])
     },
     unSeenMsgsCount: (
       state,
@@ -112,6 +123,7 @@ export const {
   removeFromIdsOfConversationsNotFetched,
   resetConversations,
   updateSearchText,
+  updateSearchedMessages,
 } = conversationsSlice.actions
 export const conversationsActions = conversationsSlice.actions
 export default conversationsSlice.reducer

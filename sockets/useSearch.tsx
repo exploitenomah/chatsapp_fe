@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { io } from 'socket.io-client'
 import useHandleConnection from '@hooks/useHandleConnection'
 import { toggleLoading, updateSearchedUsersResults } from '@store/search/slice'
+import { updateSearchedMessages } from '@store/conversations/slice'
 
 export default function useSearch() {
   const { handleConnect, handleDisconnect } = useHandleConnection()
@@ -25,11 +26,12 @@ export default function useSearch() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    searchSocket.on('searchConversations', (data) => {
+    searchSocket.on('searchMessages', (data) => {
       console.log(data)
+      dispatch(updateSearchedMessages(data))
+      dispatch(toggleLoading(false))
     })
     searchSocket.on('searchUsers', (data) => {
-      console.log('updateSearchedUsersResults', data)
       dispatch(updateSearchedUsersResults(data))
       dispatch(toggleLoading(false))
     })
@@ -71,7 +73,7 @@ export default function useSearch() {
 
     return () => {
       searchSocket.off('searchUsers', () => {})
-      searchSocket.off('searchConversations', () => {})
+      searchSocket.off('searchMessages', () => {})
       searchSocket.off('block', () => {})
       searchSocket.off('unblock', () => {})
       searchSocket.off('getOne', () => {})

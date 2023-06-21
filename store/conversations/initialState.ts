@@ -31,6 +31,11 @@ export type Conversation = {
   isBlocker: boolean
 }
 
+type SearchedMessage = Omit<Message, 'sender' | 'conversationId'> & {
+  sender: User
+  conversationId: Conversation
+}
+
 export type ConversationsState = {
   conversations: Conversation[]
   hasFetchedInitialConversations: boolean
@@ -40,6 +45,8 @@ export type ConversationsState = {
   conversationsPage: number
   hasFetchedAllConversation: boolean
   searchText?: string
+  searchedMessages: SearchedMessage[]
+  searchedMessagesPage: number
 }
 
 const initialState: ConversationsState = {
@@ -47,10 +54,12 @@ const initialState: ConversationsState = {
   idsOfConversationsNotFetched: [],
   hasFetchedInitialConversations: false,
   conversationsWithUnseenMessagesCount: 0,
-  totalUnseenMessages: 0,
-  conversationsPage: 0,
+  totalUnseenMessages: 1,
+  conversationsPage: 1,
   hasFetchedAllConversation: false,
   searchText: '',
+  searchedMessagesPage: 1,
+  searchedMessages: [],
 }
 
 export default initialState

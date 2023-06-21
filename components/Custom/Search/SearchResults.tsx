@@ -8,10 +8,10 @@ import { isSubString } from '@utils/index'
 import { SuggestionItem } from '../FriendsSuggestions/SuggestionsList'
 import { FriendItem } from '../Friends/FriendsList'
 
-const useSearchFriends = () => {
+export const useSearchFriends = () => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { friends } = useSelector<Store, FriendsState>((store) => store.friends)
-  const { searchText, searchResults } = useSelector<Store, SearchState>(
+  const { searchText, searchedUsersResults } = useSelector<Store, SearchState>(
     (store) => store.search,
   )
   const filteredFriends = useMemo(() => {
@@ -25,10 +25,26 @@ const useSearchFriends = () => {
       return (
         isSubString(otherUser.firstName, searchText) ||
         isSubString(otherUser.lastName, searchText) ||
+        isSubString(
+          `${otherUser.firstName} ${otherUser.lastName}`,
+          searchText,
+        ) ||
         isSubString(otherUser.nickName, searchText)
       )
     })
   }, [authenticatedUser._id, friends, searchText])
+
+  const searchResultsToDisplay = useMemo(() => {
+    return searchedUsersResults.filter((user) => {
+      return (
+        isSubString(user.firstName, searchText) ||
+        isSubString(user.lastName, searchText) ||
+        isSubString(`${user.firstName} ${user.lastName}`, searchText) ||
+        isSubString(user.nickName, searchText)
+      )
+    })
+  }, [searchText, searchedUsersResults])
+
   return useMemo(() => {
     let friendsAsUsers = filteredFriends.map((friend) => {
       const otherUser =
@@ -37,8 +53,8 @@ const useSearchFriends = () => {
           : friend.requester
       return otherUser
     })
-    return [...friendsAsUsers, ...searchResults]
-  }, [authenticatedUser._id, filteredFriends, searchResults])
+    return [...friendsAsUsers, ...searchResultsToDisplay]
+  }, [authenticatedUser._id, filteredFriends, searchResultsToDisplay])
 }
 
 export default function AppSearch() {

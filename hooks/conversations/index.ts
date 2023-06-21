@@ -1,17 +1,22 @@
-import { Conversation } from '@store/conversations/initialState'
+import {
+  Conversation,
+  ConversationsState,
+} from '@store/conversations/initialState'
+import { Store } from '@store/index'
+import { Message } from '@store/messages/initialState'
 import { User } from '@store/user/initialState'
 import { isSubString } from '@utils/index'
 import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
 
-export const useSearchConversations = ({
-  conversations,
-  searchText,
-  authenticatedUser,
-}: {
-  conversations: Conversation[]
-  searchText: string
-  authenticatedUser: User
-}) => {
+export const useSearchConversations = () => {
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+  const { searchText } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
+  const { conversations } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
   return useMemo(() => {
     if (!searchText || searchText.length === 0) return conversations
     else
@@ -36,6 +41,29 @@ export const useSearchConversations = ({
   }, [authenticatedUser._id, conversations, searchText])
 }
 
+export const useGetSearchedMessagesToDisplay = () => {
+  const { searchedMessages, searchText } = useSelector<
+    Store,
+    ConversationsState
+  >((store) => store.conversations)
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+
+  return useMemo(() => {
+    return searchedMessages.filter(
+      (msg) =>
+        msg.text?.toLowerCase().includes(searchText?.toLowerCase() || '') ||
+        (msg.sender._id !== authenticatedUser._id &&
+          (isSubString(msg.sender.firstName, searchText || '') ||
+            isSubString(msg.sender.lastName, searchText || '') ||
+            isSubString(
+              `${msg.sender.firstName} ${msg.sender.lastName}`,
+              searchText || '',
+            ) ||
+            isSubString(msg.sender.nickName, searchText || ''))),
+    )
+  }, [authenticatedUser, searchText, searchedMessages])
+}
+
 export const useGetSortedConversations = (
   conversations: Conversation[],
   newestFirst = true,
@@ -46,9 +74,10 @@ export const useGetSortedConversations = (
         ...convo,
         latestMessage: {
           ...(convo.latestMessage || {}),
-          createdAt: convo.latestMessage?.createdAt!== undefined
-            ? new Date(convo.latestMessage.createdAt)
-            : undefined,
+          createdAt:
+            convo.latestMessage?.createdAt !== undefined
+              ? new Date(convo.latestMessage.createdAt)
+              : undefined,
         },
       }))
       .sort((a, b) => {

@@ -14,11 +14,14 @@ export default function SearchableContent({
           <span
             dangerouslySetInnerHTML={{
               __html: text
-                .split(search)
+                .toLocaleLowerCase()
+                .split(search.toLocaleLowerCase().trim())
                 .join('-')
                 .replaceAll(
                   '-',
-                  `<span style='color: #00a884;'>${search}</span>`,
+                  `<span style='color: #00a884;'>${search
+                    .toLocaleLowerCase()
+                    .trim()}</span>`,
                 ),
             }}
           />

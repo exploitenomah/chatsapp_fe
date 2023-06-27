@@ -26,3 +26,7 @@ export const isSubString = (str: string, match: string) => {
     str.toLocaleLowerCase().includes(match.toLocaleLowerCase().trim())
   )
 }
+
+export const isExactSubString = (str: string, match: string) => {
+  return str.startsWith(match.trim()) || str.includes(match.trim())
+}

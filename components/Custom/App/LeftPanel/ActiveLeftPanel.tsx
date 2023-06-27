@@ -14,23 +14,23 @@ import {
 } from '@hooks/conversations'
 
 const ConversationsSearch = () => {
-  const { searchText } = useSelector<Store, ConversationsState>(
-    (store) => store.conversations,
-  )
+  const { searchText, searchedMessagesPage } = useSelector<
+    Store,
+    ConversationsState
+  >((store) => store.conversations)
   const searchedMessages = useGetSearchedMessagesToDisplay()
   const dispatch = useDispatch()
   const searchSocket = useSearch()
   const searchedConversations = useSearchConversations()
   const search = useDebounce((searchText: string) => {
     if (
-      searchedConversations.length === 0 &&
       searchedMessages.length === 0 &&
       searchText.length > 1
     ) {
       searchSocket.emit('searchMessages', {
         search: searchText,
         limit: searchLimit,
-        page: 1,
+        page: searchedMessagesPage,
       })
     } else {
       dispatch(toggleLoading(false))

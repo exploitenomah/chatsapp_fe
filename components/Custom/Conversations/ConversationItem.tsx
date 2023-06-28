@@ -26,10 +26,19 @@ export const LatestMessage = ({
   latestMessage?: Message
   otherUser?: User
 }) => {
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { searchText } = useSelector<Store, ConversationsState>(
     (store) => store.conversations,
   )
-  if (!latestMessage || !otherUser) return null
+  const isRecipient = useMemo(() => {
+    return latestMessage?.recipients?.find((user: string | User) => {
+      return typeof user === 'string'
+        ? user === authenticatedUser._id
+        : user._id === authenticatedUser._id
+    })
+  }, [latestMessage, authenticatedUser])
+
+  if (!latestMessage || !otherUser || !isRecipient) return null
   return (
     <>
       <span
@@ -60,10 +69,12 @@ export default function ConversationItem({
   conversation,
   showAvatar = true,
   isActive,
+  onClick,
 }: {
   conversation: Conversation
   showAvatar?: boolean
   isActive: boolean
+  onClick?: () => void
 }) {
   const { searchText } = useSelector<Store, ConversationsState>(
     (store) => store.conversations,
@@ -146,6 +157,7 @@ export default function ConversationItem({
   )
 
   const handleOnClick = useCallback(() => {
+    onClick && onClick()
     if (activeConversation?._id === conversation._id) return
     handleMessageButtonClick()
     dispatch(
@@ -162,6 +174,7 @@ export default function ConversationItem({
     conversation,
     dispatch,
     handleMessageButtonClick,
+    onClick,
   ])
 
   const handleEmitMessagesDelivered = useEmitMessagesDelivered()

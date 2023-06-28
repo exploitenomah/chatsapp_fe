@@ -21,12 +21,8 @@ const ConversationsSearch = () => {
   const searchedMessages = useGetSearchedMessagesToDisplay()
   const dispatch = useDispatch()
   const searchSocket = useSearch()
-  const searchedConversations = useSearchConversations()
   const search = useDebounce((searchText: string) => {
-    if (
-      searchedMessages.length === 0 &&
-      searchText.length > 1
-    ) {
+    if (searchText.length > 1) {
       searchSocket.emit('searchMessages', {
         search: searchText,
         limit: searchLimit,

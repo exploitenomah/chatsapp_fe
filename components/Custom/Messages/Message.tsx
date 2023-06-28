@@ -1,5 +1,5 @@
 import { Store } from '@store/index'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   HTMLAttributes,
   ReactNode,
@@ -15,6 +15,7 @@ import SingleCheckIcon from '@assets/SingleCheckIcon'
 import DoubleCheckIcon from '@assets/DoubleCheckIcon'
 import MessageTailIn from '@assets/MessageTailIn'
 import MessageTailOut from '@assets/MessageTailOut'
+import { updateIdOfMsgClickedFromSearch } from '@store/ui/slice'
 
 const UnreadMessagesCountBanner = ({ show }: { show: boolean }) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
@@ -147,14 +148,44 @@ const StyledMessageComponent = ({
   )
 }
 
+const MessageHighlighter = ({
+  shouldHighlight,
+  children,
+}: {
+  shouldHighlight: boolean
+  children: ReactNode | ReactNode[]
+}) => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const highlightTimeout = setTimeout(() => {
+      dispatch(updateIdOfMsgClickedFromSearch('null'))
+    }, 4000)
+
+    return () => {
+      clearTimeout(highlightTimeout)
+    }
+  }, [dispatch])
+  return (
+    <div
+      className={`${
+        shouldHighlight ? 'bg-primary-dark/40  py-2 my-1' : 'bg-primary-dark/0'
+      }`}
+    >
+      {children}
+    </div>
+  )
+}
+
 export default function MessageComponent({
   message,
   scrollMessageIntoView,
   shouldShowUnreadBannerAbove,
+  shouldHighlight,
 }: {
   message: Message
   scrollMessageIntoView: boolean
   shouldShowUnreadBannerAbove: boolean
+  shouldHighlight: boolean
 }) {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const isNotSender = useMemo(
@@ -163,6 +194,22 @@ export default function MessageComponent({
   )
   if (message.sender === authenticatedUser._id)
     return (
+      <MessageHighlighter shouldHighlight={shouldHighlight}>
+        <MessageWrapperWithScrollIntoViewRef
+          isNotSender={isNotSender}
+          shouldScrollIntoView={scrollMessageIntoView}
+          shouldShowUnreadBannerAbove={shouldShowUnreadBannerAbove}
+        >
+          <StyledMessageComponent
+            message={message}
+            MessageTail={MessageTailOut}
+            isOtherUser={false}
+          />
+        </MessageWrapperWithScrollIntoViewRef>
+      </MessageHighlighter>
+    )
+  return (
+    <MessageHighlighter shouldHighlight={shouldHighlight}>
       <MessageWrapperWithScrollIntoViewRef
         isNotSender={isNotSender}
         shouldScrollIntoView={scrollMessageIntoView}
@@ -170,22 +217,10 @@ export default function MessageComponent({
       >
         <StyledMessageComponent
           message={message}
-          MessageTail={MessageTailOut}
-          isOtherUser={false}
+          MessageTail={MessageTailIn}
+          isOtherUser={true}
         />
       </MessageWrapperWithScrollIntoViewRef>
-    )
-  return (
-    <MessageWrapperWithScrollIntoViewRef
-      isNotSender={isNotSender}
-      shouldScrollIntoView={scrollMessageIntoView}
-      shouldShowUnreadBannerAbove={shouldShowUnreadBannerAbove}
-    >
-      <StyledMessageComponent
-        message={message}
-        MessageTail={MessageTailIn}
-        isOtherUser={true}
-      />
-    </MessageWrapperWithScrollIntoViewRef>
+    </MessageHighlighter>
   )
 }

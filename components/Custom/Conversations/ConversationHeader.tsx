@@ -3,7 +3,11 @@ import { headerClasses, NavItem, OptionsComponent } from '../App/AppHeader'
 import Avatar from '../Avatar'
 import { useState, useEffect } from 'react'
 import Button from '@components/HTML/Button'
-import { removeActiveConversation, updateUserInPreview } from '@store/ui/slice'
+import {
+  removeActiveConversation,
+  updateIdOfMsgClickedFromSearch,
+  updateUserInPreview,
+} from '@store/ui/slice'
 import { useDispatch } from 'react-redux'
 import { User } from '@store/user/initialState'
 
@@ -23,6 +27,7 @@ const HeaderOptions = () => {
         onClick={() => {
           dispatch(removeActiveConversation())
           setShowConversationOptions((prev) => !prev)
+          dispatch(updateIdOfMsgClickedFromSearch(''))
         }}
       >
         Close Chat

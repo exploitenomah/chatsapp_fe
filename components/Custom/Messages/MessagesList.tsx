@@ -48,7 +48,10 @@ const MessageGroupHeader = ({ date }: { date: string }) => {
 }
 
 export default function MessagesList() {
-  const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
+  const { activeConversation, idOfMsgClickedFromSearch } = useSelector<
+    Store,
+    UI
+  >((store) => store.ui)
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
 
   const messages = useMemo(() => {
@@ -128,11 +131,12 @@ export default function MessagesList() {
             >
               <MessageComponent
                 message={message}
-                scrollMessageIntoView={getIfShouldScrollMessageIntoView(
-                  message,
-                  idx,
-                  arr,
-                )}
+                scrollMessageIntoView={
+                  idOfMsgClickedFromSearch.length> 0 
+                  ? idOfMsgClickedFromSearch === message._id
+                  : getIfShouldScrollMessageIntoView(message, idx, arr)
+                }
+              shouldHighlight={idOfMsgClickedFromSearch === message._id}
                 shouldShowUnreadBannerAbove={getShouldShowUnreadBannerAbove(
                   message,
                   idx,

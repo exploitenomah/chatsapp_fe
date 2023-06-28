@@ -3,7 +3,10 @@ import SingleCheckIcon from '@assets/SingleCheckIcon'
 import useHandleMessageButtonClick from '@hooks/conversations/useHandleMessageButtonClick'
 import useManageConversation from '@hooks/conversations/useManageConversations'
 import useEmitMessagesDelivered from '@hooks/messages/useEmitMessagesDelivered'
-import { Conversation } from '@store/conversations/initialState'
+import {
+  Conversation,
+  ConversationsState,
+} from '@store/conversations/initialState'
 import { Store } from '@store/index'
 import { Message } from '@store/messages/initialState'
 import { UI } from '@store/ui/initialState'
@@ -14,15 +17,28 @@ import Avatar from '../Avatar'
 import Badge from '../Badge'
 import useEmitUnSeenMsgsCount from '@hooks/conversations/useEmitUnseenMsgsCount'
 import { updateSingleConversation } from '@store/conversations/slice'
+import SearchableContent from '../Search/SearchableContent'
 
-const LatestMessage = ({
+export const LatestMessage = ({
   latestMessage,
   otherUser,
 }: {
   latestMessage?: Message
   otherUser?: User
 }) => {
-  if (!latestMessage || !otherUser) return null
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+  const { searchText } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
+  const isRecipient = useMemo(() => {
+    return latestMessage?.recipients?.find((user: string | User) => {
+      return typeof user === 'string'
+        ? user === authenticatedUser._id
+        : user._id === authenticatedUser._id
+    })
+  }, [latestMessage, authenticatedUser])
+
+  if (!latestMessage || !otherUser || !isRecipient) return null
   return (
     <>
       <span
@@ -43,7 +59,7 @@ const LatestMessage = ({
             </span>
           </>
         )}
-        {latestMessage.text}
+        <SearchableContent text={latestMessage.text} search={searchText} />
       </span>
     </>
   )
@@ -51,18 +67,23 @@ const LatestMessage = ({
 
 export default function ConversationItem({
   conversation,
+  showAvatar = true,
+  isActive,
+  onClick,
 }: {
   conversation: Conversation
+  showAvatar?: boolean
+  isActive: boolean
+  onClick?: () => void
 }) {
+  const { searchText } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
   useManageConversation(conversation)
   useEmitUnSeenMsgsCount(conversation._id)
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
   const dispatch = useDispatch()
-  const isActive = useMemo(
-    () => activeConversation?._id === conversation._id,
-    [activeConversation?._id, conversation._id],
-  )
   const otherUser = useMemo(
     () =>
       conversation.participants.find(
@@ -136,6 +157,7 @@ export default function ConversationItem({
   )
 
   const handleOnClick = useCallback(() => {
+    onClick && onClick()
     if (activeConversation?._id === conversation._id) return
     handleMessageButtonClick()
     dispatch(
@@ -152,6 +174,7 @@ export default function ConversationItem({
     conversation,
     dispatch,
     handleMessageButtonClick,
+    onClick,
   ])
 
   const handleEmitMessagesDelivered = useEmitMessagesDelivered()
@@ -181,18 +204,24 @@ export default function ConversationItem({
     >
       <div className='cursor-pointer flex items-center pr-[6px] w-full'>
         <div className='px-[15px] flex justify-center items-center shrink-0'>
-          <Avatar
-            width={49}
-            height={49}
-            src={otherUser?.profileImage?.path || ''}
-            alt={otherUser?.nickName || ''}
-          />
+          {showAvatar && (
+            <Avatar
+              width={49}
+              height={49}
+              src={otherUser?.profileImage?.path || ''}
+              alt={otherUser?.nickName || ''}
+            />
+          )}
         </div>
+
         <div className='h-[72px] grow  flex items-center border-b border-b-contrast-secondary/20 pr-3'>
           <div className='basis-auto flex items-center grow'>
             <div className='grow'>
               <div className='text-contrast-strong text-base '>
-                {otherUser?.nickName}
+                <SearchableContent
+                  text={otherUser?.nickName || ''}
+                  search={searchText}
+                />
               </div>
               <div
                 className={`${

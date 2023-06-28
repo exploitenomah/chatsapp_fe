@@ -27,7 +27,9 @@ export const useSearchConversations = () => {
         const latestMessageText = conversation.latestMessage?.text
 
         return (
-          latestMessageText?.toLowerCase().includes(searchText.toLowerCase()) ||
+          latestMessageText
+            ?.toLowerCase()
+            .includes(searchText.toLowerCase().trim()) ||
           (otherUser &&
             (isSubString(otherUser.firstName, searchText) ||
               isSubString(otherUser.lastName, searchText) ||
@@ -49,19 +51,10 @@ export const useGetSearchedMessagesToDisplay = () => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
 
   return useMemo(() => {
-    return searchedMessages.filter(
-      (msg) =>
-        msg.text?.toLowerCase().includes(searchText?.toLowerCase() || '') ||
-        (msg.sender._id !== authenticatedUser._id &&
-          (isSubString(msg.sender.firstName, searchText || '') ||
-            isSubString(msg.sender.lastName, searchText || '') ||
-            isSubString(
-              `${msg.sender.firstName} ${msg.sender.lastName}`,
-              searchText || '',
-            ) ||
-            isSubString(msg.sender.nickName, searchText || ''))),
+    return searchedMessages.filter((msg) =>
+      msg.text?.toLowerCase().includes(searchText?.toLowerCase().trim() || ''),
     )
-  }, [authenticatedUser, searchText, searchedMessages])
+  }, [searchText, searchedMessages])
 }
 
 export const useGetSortedConversations = (

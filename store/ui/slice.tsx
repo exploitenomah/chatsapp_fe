@@ -6,6 +6,9 @@ export const uiSlice = createSlice({
   name: 'ui',
   initialState: initialState as UI,
   reducers: {
+    updateIdOfMsgClickedFromSearch: (state, action: PayloadAction<string>) => {
+      state.idOfMsgClickedFromSearch = action.payload
+    },
     toggleDeviceIsMobile: (state, action: PayloadAction<boolean>) => {
       state.deviceIsMobile = action.payload
     },
@@ -150,7 +153,7 @@ export const {
   removeActiveConversation,
   updateActiveConversation,
   toggleShowAuthenticatedUserProfile,
-  resetUI,
+  resetUI,updateIdOfMsgClickedFromSearch
 } = uiSlice.actions
 
 export default uiSlice.reducer

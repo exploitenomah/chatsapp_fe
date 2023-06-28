@@ -5,14 +5,13 @@ import { useSelector } from 'react-redux'
 import ConversationRoom from '../../Conversations/Conversation'
 import InactiveRightPanel from './InactiveRightPanel'
 
-export const useRightPanelOutOfFocusClasses = () => {
-  const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
+export const useRightPanelOutOfFocusClasses = (blur: boolean) => {
   const outOfFocusClasses = useMemo(
     () =>
-      userInPreview
+      blur
         ? 'blur-[2px] brightness-[50%] pointer-events-none opacity-60'
         : 'blur-0 brightness-[100%] pointer-events-auto opacity-100',
-    [userInPreview],
+    [blur],
   )
   return outOfFocusClasses
 }

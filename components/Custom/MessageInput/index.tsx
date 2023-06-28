@@ -5,10 +5,12 @@ import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import { User } from '@store/user/initialState'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import TextInput from './TextInput'
+import { updateIdOfMsgClickedFromSearch } from '@store/ui/slice'
 
 export default function MessageInput({ focus }: { focus?: boolean }) {
+  const dispatch = useDispatch()
   const textInputRef = useRef<HTMLTextAreaElement>(null)
   const [message, setMessage] = useState({
     text: '',
@@ -28,14 +30,15 @@ export default function MessageInput({ focus }: { focus?: boolean }) {
 
     if (activeConversation) {
       handleSendMessage(activeConversation, { ...message, sender: user._id })
+      dispatch(updateIdOfMsgClickedFromSearch(''))
       setMessage((prev) => ({ ...prev, text: '' }))
       return
     }
-  }, [activeConversation, handleSendMessage, message, user._id])
+  }, [activeConversation, dispatch, handleSendMessage, message, user._id])
 
   useEffect(() => {
     focus && textInputRef.current?.focus()
-  })
+  }, [focus])
 
   return (
     <div className='py-1 pr-[17px] pl-[10px] flex items-end border-l border-l-contrast-secondary/20 bg-secondary-default'>

@@ -13,6 +13,7 @@ import { removeUserInPreview } from '@store/ui/slice'
 import { UI } from '@store/ui/initialState'
 import AuthenticatedUserPreview from '../User/AuthenticatedUserPreview'
 import SecondaryPanel from './RightPanel/SecondaryPanel'
+import { ConversationsState } from '@store/conversations/initialState'
 
 const LeftSection = () => {
   return (
@@ -30,8 +31,13 @@ const LeftSection = () => {
 }
 
 const RightSection = () => {
-  const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses()
   const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
+  const { searchText } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
+  const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses(
+    Boolean(userInPreview) || Boolean(searchText)
+  )
   const dispatch = useDispatch()
   return (
     <div className='grow flex border-l border-l-contrast-secondary/20'>

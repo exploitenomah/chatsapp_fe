@@ -12,7 +12,7 @@ export type Message = {
   _id: string
   conversationId: string
   sender: string
-  recipients: User[]
+  recipients: (User | string)[]
   isDeleted: boolean
   deletedFor: string
   // attachments: {

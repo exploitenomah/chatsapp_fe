@@ -20,6 +20,7 @@ import Badge from '../Badge'
 import MessageInput from '../MessageInput'
 import MessagesList from '../Messages/MessagesList'
 import AuthLoader from '../Auth/AuthComponents'
+import { ConversationsState } from '@store/conversations/initialState'
 
 const MessagesListContainer = () => {
   const handleEmitMessagesSeen = useEmitMessagesSeen()
@@ -166,6 +167,9 @@ const MessagesListContainer = () => {
 }
 
 const ConversationRoomFooter = ({ otherUser }: { otherUser?: User }) => {
+  const { searchText } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
   const isBlocker = useMemo(() => {
     if (activeConversation)
@@ -179,7 +183,9 @@ const ConversationRoomFooter = ({ otherUser }: { otherUser?: User }) => {
           <>
             {!activeConversation?.hasFetchedInitialMessages && <AuthLoader />}
             <MessageInput
-              focus={activeConversation?.hasFetchedInitialMessages}
+              focus={
+                activeConversation?.hasFetchedInitialMessages && !searchText
+              }
             />
           </>
         ) : (

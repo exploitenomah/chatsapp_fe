@@ -3,7 +3,7 @@ import {
   ConversationsState,
 } from '@store/conversations/initialState'
 import { Store } from '@store/index'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import ConversationItem from './ConversationItem'
 import {
   useSearchConversations,
@@ -14,13 +14,15 @@ import { SearchState } from '@store/search/initialState'
 import AuthLoader from '../Auth/AuthComponents'
 import { Message } from '@store/messages/initialState'
 import { UI } from '@store/ui/initialState'
+import { updateSearchText } from '@store/conversations/slice'
+import { updateIdOfMsgClickedFromSearch } from '@store/ui/slice'
 
 const SearchedMessagesResults = () => {
   const { searchText } = useSelector<Store, ConversationsState>(
     (store) => store.conversations,
   )
   const { loading } = useSelector<Store, SearchState>((store) => store.search)
-
+  const dispatch = useDispatch()
   const searchedConversations = useSearchConversations()
   const sortedConversations = useGetSortedConversations(searchedConversations)
   const searchedMessages = useGetSearchedMessagesToDisplay()
@@ -54,6 +56,12 @@ const SearchedMessagesResults = () => {
               latestMessage: msg as unknown as Message,
             }}
             showAvatar={false}
+            onClick={() => {
+              if (searchText.length > 0) {
+                dispatch(updateSearchText(''))
+                dispatch(updateIdOfMsgClickedFromSearch(msg._id))
+              }
+            }}
           />
         ))}
       </div>

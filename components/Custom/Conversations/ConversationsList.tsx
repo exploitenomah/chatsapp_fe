@@ -78,7 +78,7 @@ export default function ConversationsList() {
   )
   return (
     <>
-      {searchText && (
+      {searchText && sortedConversations.length > 0 && (
         <h4 className='text-xl pl-8 font-weight-100 text-accent-dark mt-5 mb-2'>
           Conversations
         </h4>

@@ -14,6 +14,7 @@ import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import useLogout from '@hooks/user/useLogout'
 import { User } from '@store/user/initialState'
+import { createPortal } from 'react-dom'
 
 export const NavItem = ({
   children,
@@ -44,12 +45,14 @@ export const OptionsComponent = ({
 }) => {
   return (
     <>
-      {showOptions && (
-        <div
-          onClick={() => toggleShowOptions()}
-          className='fixed w-screen h-screen inset-0 bg-transparent z-[98]'
-        ></div>
-      )}
+      {showOptions &&
+        createPortal(
+          <div
+            onClick={() => toggleShowOptions()}
+            className='fixed w-screen h-screen inset-0 bg-transparent z-[98]'
+          ></div>,
+          document.getElementsByTagName('body')[0] || <></>,
+        )}
       <div className='relative'>
         <NavItem onClick={() => toggleShowOptions()}>
           <OptionsIcon />

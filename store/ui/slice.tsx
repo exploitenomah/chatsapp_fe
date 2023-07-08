@@ -6,6 +6,13 @@ export const uiSlice = createSlice({
   name: 'ui',
   initialState: initialState as UI,
   reducers: {
+    toggleShowConversationSearchDrawer: (state, action) => {
+      if (typeof action.payload === 'boolean') {
+        state.showConversationSearchDrawer = action.payload
+      } else {
+        state.showConversationSearchDrawer = !state.showConversationSearchDrawer
+      }
+    },
     updateIdOfMsgClickedFromSearch: (state, action: PayloadAction<string>) => {
       state.idOfMsgClickedFromSearch = action.payload
     },
@@ -153,7 +160,9 @@ export const {
   removeActiveConversation,
   updateActiveConversation,
   toggleShowAuthenticatedUserProfile,
-  resetUI,updateIdOfMsgClickedFromSearch
+  resetUI,
+  updateIdOfMsgClickedFromSearch,
+  toggleShowConversationSearchDrawer,
 } = uiSlice.actions
 
 export default uiSlice.reducer

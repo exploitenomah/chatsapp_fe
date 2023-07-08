@@ -10,9 +10,10 @@ import { UI } from '@store/ui/initialState'
 import AuthenticatedUserPreview from '../User/AuthenticatedUserPreview'
 import LeftDrawer from '../LeftDrawer'
 import ConversationRoom from '../Conversations/Conversation'
+import ConversationSearchDrawer from "../ConversationSearch/ConversationSearchDrawer"
 
 export default function AppMobile() {
-  const { userInPreview, activeConversation } = useSelector<Store, UI>(
+  const { userInPreview, activeConversation, showConversationSearchDrawer } = useSelector<Store, UI>(
     (store) => store.ui,
   )
 
@@ -30,6 +31,11 @@ export default function AppMobile() {
         <LeftDrawer show={Boolean(userInPreview)} zIndex='z-[400]'>
           <div className='relative h-full'>
             <UserPreview />
+          </div>
+        </LeftDrawer>
+        <LeftDrawer show={Boolean(showConversationSearchDrawer)} zIndex='z-[400]'>
+          <div className='relative h-full'>
+            <ConversationSearchDrawer />
           </div>
         </LeftDrawer>
         <LeftDrawer show={Boolean(activeConversation)} zIndex='z-[100]'>

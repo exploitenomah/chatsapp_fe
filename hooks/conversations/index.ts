@@ -3,12 +3,71 @@ import {
   ConversationsState,
 } from '@store/conversations/initialState'
 import { Store } from '@store/index'
-import { Message } from '@store/messages/initialState'
 import { User } from '@store/user/initialState'
 import { isSubString } from '@utils/index'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
+export const formatDateTime = (date: Date | string) => {
+  const todaysDate = new Date(Date.now())
+  const thisYear = todaysDate.getFullYear()
+  const thisMonth = todaysDate.getMonth()
+  const thisDay = todaysDate.getDate()
+  let dateSent = new Date(date)
+  let msgMonth = dateSent.getMonth()
+  let msgYear = dateSent.getFullYear()
+  let msgDay = dateSent.getDate()
+  let formattedDate = dateSent.toLocaleDateString('en-GB')
+  if (msgYear === thisYear && msgMonth === thisMonth) {
+    let diffInDays = thisDay - msgDay
+    if (msgDay === thisDay) formattedDate = 'Today'
+    else if (Math.sign(diffInDays) === 1)
+      if (diffInDays === 1) formattedDate = 'Yesterday'
+      else if (diffInDays <= 7)
+        formattedDate = dateSent.toLocaleString('en-GB', {
+          weekday: 'long',
+        })
+  }
+return formattedDate
+}
+export const useGetTimeOfMessageFormat = ({
+  date,
+}: {
+  date: Date | string
+}) => {
+  return useMemo(() => {
+    let timeStringToBeReturned
+    let formattedResult = date
+    if (!formattedResult) return null
+    else {
+      formattedResult = new Date(formattedResult)
+      const today = new Date(Date.now())
+      const thisYear = today.getFullYear()
+      const thisMonth = today.getMonth()
+      const thisDate = today.getDate()
+      const yearOfLatestMsg = formattedResult.getFullYear()
+      const monthOfLatestMsg = formattedResult.getMonth()
+      const dateOfLatestMsg = formattedResult.getDate()
+
+      if (yearOfLatestMsg === thisYear || monthOfLatestMsg === thisMonth) {
+        let dateDifference = thisDate - dateOfLatestMsg
+        if (dateDifference < 1)
+          timeStringToBeReturned = formattedResult
+            .toLocaleTimeString()
+            .slice(0, 5)
+        else if (dateDifference < 2) timeStringToBeReturned = 'Yesterday'
+        else if (dateDifference < 7)
+          timeStringToBeReturned = new Intl.DateTimeFormat('en-GB', {
+            weekday: 'long',
+          }).format(formattedResult)
+        else
+          timeStringToBeReturned = formattedResult.toLocaleDateString('en-GB')
+      } else
+        timeStringToBeReturned = formattedResult.toLocaleDateString('en-GB')
+      return timeStringToBeReturned
+    }
+  }, [date])
+}
 export const useSearchConversations = () => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   const { searchText } = useSelector<Store, ConversationsState>(
@@ -43,18 +102,34 @@ export const useSearchConversations = () => {
   }, [authenticatedUser._id, conversations, searchText])
 }
 
-export const useGetSearchedMessagesToDisplay = () => {
-  const { searchedMessages, searchText } = useSelector<
-    Store,
-    ConversationsState
-  >((store) => store.conversations)
-  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+export const useGetSearchedMessagesToDisplay = ({
+  conversationId,
+  searchText,
+}: {
+  conversationId?: string
+  searchText: string
+}) => {
+  const { searchedMessages } = useSelector<Store, ConversationsState>(
+    (store) => store.conversations,
+  )
 
   return useMemo(() => {
-    return searchedMessages.filter((msg) =>
-      msg.text?.toLowerCase().includes(searchText?.toLowerCase().trim() || ''),
-    )
-  }, [searchText, searchedMessages])
+    return searchedMessages.filter((msg) => {
+      console.log(conversationId, msg.conversationId._id)
+      if (conversationId) {
+        return (
+          msg.text
+            ?.toLowerCase()
+            .includes(searchText.toLowerCase().trim() || '') &&
+          conversationId === msg.conversationId._id
+        )
+      } else {
+        return msg.text
+          ?.toLowerCase()
+          .includes(searchText?.toLowerCase().trim() || '')
+      }
+    })
+  }, [conversationId, searchText, searchedMessages])
 }
 
 export const useGetSortedConversations = (

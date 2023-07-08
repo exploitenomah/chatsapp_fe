@@ -1,3 +1,4 @@
+import { Conversation } from "@store/conversations/initialState"
 import { User } from '@store/user/initialState'
 export const messagesEvents = [
   'new',
@@ -31,6 +32,11 @@ export type Message = {
   //   type: mongoose.Schema.ObjectId,
   // }
 }
+export type SearchedMessage = Omit<Message, 'sender' | 'conversationId'> & {
+  sender: User
+  conversationId: Conversation
+}
+
 export type MessagesState = {
   messagesWithoutConversationInState: Message[]
 }

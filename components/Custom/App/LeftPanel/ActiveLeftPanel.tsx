@@ -8,17 +8,12 @@ import useDebounce from '@hooks/useDebounce'
 import { searchLimit } from '@store/search/initialState'
 import { toggleLoading } from '@store/search/slice'
 import useSearch from '@sockets/useSearch'
-import {
-  useGetSearchedMessagesToDisplay,
-  useSearchConversations,
-} from '@hooks/conversations'
 
 const ConversationsSearch = () => {
   const { searchText, searchedMessagesPage } = useSelector<
     Store,
     ConversationsState
   >((store) => store.conversations)
-  const searchedMessages = useGetSearchedMessagesToDisplay()
   const dispatch = useDispatch()
   const searchSocket = useSearch()
   const search = useDebounce((searchText: string) => {

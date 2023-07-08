@@ -7,28 +7,11 @@ import { User } from '@store/user/initialState'
 import { Message } from '@store/messages/initialState'
 import Loader from '@assets/Loader'
 import AuthLoader from '../Auth/AuthComponents'
+import { formatDateTime } from "@hooks/conversations"
 
 const groupMessagesByDate = (messages: Message[]) => {
-  const todaysDate = new Date(Date.now())
-  const thisYear = todaysDate.getFullYear()
-  const thisMonth = todaysDate.getMonth()
-  const thisDay = todaysDate.getDate()
   return messages.reduce((acc: { [x: string]: Message[] }, msg) => {
-    let dateSent = new Date(msg.createdAt)
-    let msgMonth = dateSent.getMonth()
-    let msgYear = dateSent.getFullYear()
-    let msgDay = dateSent.getDate()
-    let formattedDateKey = dateSent.toLocaleDateString('en-GB')
-    if (msgYear === thisYear && msgMonth === thisMonth) {
-      let diffInDays = thisDay - msgDay
-      if (msgDay === thisDay) formattedDateKey = 'Today'
-      else if (Math.sign(diffInDays) === 1)
-        if (diffInDays === 1) formattedDateKey = 'Yesterday'
-        else if (diffInDays <= 7)
-          formattedDateKey = dateSent.toLocaleString('en-GB', {
-            weekday: 'long',
-          })
-    }
+    let formattedDateKey = formatDateTime(msg.createdAt)
     if (acc[formattedDateKey])
       return { ...acc, [formattedDateKey]: [...acc[formattedDateKey], msg] }
     return { ...acc, [formattedDateKey]: [msg] }
@@ -132,11 +115,11 @@ export default function MessagesList() {
               <MessageComponent
                 message={message}
                 scrollMessageIntoView={
-                  idOfMsgClickedFromSearch.length> 0 
-                  ? idOfMsgClickedFromSearch === message._id
-                  : getIfShouldScrollMessageIntoView(message, idx, arr)
+                  idOfMsgClickedFromSearch.length > 0
+                    ? idOfMsgClickedFromSearch === message._id
+                    : getIfShouldScrollMessageIntoView(message, idx, arr)
                 }
-              shouldHighlight={idOfMsgClickedFromSearch === message._id}
+                shouldHighlight={idOfMsgClickedFromSearch === message._id}
                 shouldShowUnreadBannerAbove={getShouldShowUnreadBannerAbove(
                   message,
                   idx,

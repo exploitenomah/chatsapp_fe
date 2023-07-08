@@ -14,7 +14,6 @@ import { Store } from '@store/index'
 import { UI } from '@store/ui/initialState'
 import useLogout from '@hooks/user/useLogout'
 import { User } from '@store/user/initialState'
-import { createPortal } from 'react-dom'
 
 export const NavItem = ({
   children,
@@ -32,7 +31,7 @@ export const NavItem = ({
   )
 }
 
-export const headerClasses = 'bg-secondary-default py-2.5 px-4 '
+export const headerClasses = 'bg-secondary-default py-2.5 px-4'
 
 export const OptionsComponent = ({
   toggleShowOptions,
@@ -45,24 +44,16 @@ export const OptionsComponent = ({
 }) => {
   return (
     <>
-      {showOptions &&
-        createPortal(
-          <div
-            onClick={() => toggleShowOptions()}
-            className='fixed w-screen h-screen inset-0 bg-transparent z-[98]'
-          ></div>,
-          document.getElementsByTagName('body')[0] || <></>,
-        )}
+      <div
+        onClick={() => toggleShowOptions()}
+        className={`${
+          showOptions ? 'visible opacity-100' : 'invisible opacity-0'
+        } block fixed right-0 bottom-0 top-0 left-0 w-screen h-screen z-[97]`}
+      />
       <div className='relative'>
         <NavItem onClick={() => toggleShowOptions()}>
           <OptionsIcon />
         </NavItem>
-        <div
-          onClick={() => toggleShowOptions()}
-          className={`${
-            showOptions ? 'block' : 'hidden'
-          } fixed right-0 bottom-0 top-0 left-0`}
-        />
         <div
           className={`${
             showOptions ? 'scale-100' : 'scale-0'

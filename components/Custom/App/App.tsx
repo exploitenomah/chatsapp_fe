@@ -7,6 +7,7 @@ import AppDesktop from './AppDesktop'
 import AppLoadingScreen from './LoadingScreen'
 import { toggleShowConversationSearchDrawer } from '@store/ui/slice'
 import { useEffect } from 'react'
+import useHandleBackButtonMobile from '@hooks/useHandleBackButtonMobile'
 
 export default function App() {
   const { deviceIsMobile } = useSelector<Store, UI>((store) => store.ui)
@@ -15,6 +16,7 @@ export default function App() {
   const dispatch = useDispatch()
 
   useAppManager()
+  useHandleBackButtonMobile()
 
   useEffect(() => {
     if (activeConversation === null && showConversationSearchDrawer === true) {

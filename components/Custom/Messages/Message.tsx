@@ -74,10 +74,13 @@ const MessageWrapperWithScrollIntoViewRef = ({
   useEffect(() => {
     if (shouldScrollIntoView && !hasScrolledIntoView) {
       if (msgRef.current) {
-        msgRef.current.scrollIntoView({
-          block: 'start',
-          inline: 'nearest',
-        })
+        msgRef.current.scrollIntoView(
+          false,
+          //   {
+          //   block: 'start',
+          //   inline: 'nearest',
+          // }
+        )
         setHasScrolledIntoView(true)
       }
     }

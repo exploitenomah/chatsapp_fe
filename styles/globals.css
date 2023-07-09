@@ -39,6 +39,9 @@
   .app-left-body {
     height: calc(100% - 60px);
   }
+  .app-right-body {
+    max-height: calc(100vh - 60px);
+  }
   .primary {
     background-color: theme('colors.primary.light');
     color: theme('colors.contrast.strong');

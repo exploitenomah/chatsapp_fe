@@ -21,6 +21,7 @@ import MessageInput from '../MessageInput'
 import MessagesList from '../Messages/MessagesList'
 import AuthLoader from '../Auth/AuthComponents'
 import { ConversationsState } from '@store/conversations/initialState'
+import ConversationHeader from '@components/Custom/Conversations/ConversationHeader'
 
 const MessagesListContainer = () => {
   const handleEmitMessagesSeen = useEmitMessagesSeen()
@@ -42,10 +43,9 @@ const MessagesListContainer = () => {
   const handleScrollToBottomClick = useCallback(() => {
     const lastElementChild = msgsContainerRef.current?.lastElementChild
     if (lastElementChild) {
-      lastElementChild.scrollIntoView({
-        block: 'start',
-        inline: 'nearest',
-      })
+      lastElementChild.scrollIntoView(
+        false
+      )
     }
   }, [msgsContainerRef])
 
@@ -136,11 +136,11 @@ const MessagesListContainer = () => {
   }, [showScrollToBottomButton, updateSeenMessages])
 
   return (
-    <div className='absolute z-[2] w-full h-[88%] '>
+    <div className=' '>
       <div
         ref={msgsContainerRef}
         onScroll={handleMsgContainerScroll}
-        className='absolute z-[2] bg-transparent h-full overflow-auto flex flex-col w-full text-sm md:pt-6 pb-8'
+        className='absolute z-[2] bg-transparent h-full overflow-auto flex flex-col w-full text-sm md:pt-24 pb-24'
       >
         <MessagesList />
       </div>
@@ -148,7 +148,7 @@ const MessagesListContainer = () => {
       <div
         className={`${
           showScrollToBottomButton ? 'scale-100' : 'scale-0'
-        } absolute z-[3] right-[11px] bottom-[17px] w-fit duration-150 transition-all origin-top`}
+        } absolute z-[3] right-[11px] bottom-[68px] w-fit duration-150 transition-all origin-top`}
       >
         <Button
           className={`bg-primary-light rounded-full w-[42px] h-[42px] p-0 flex justify-center items-center`}
@@ -166,7 +166,7 @@ const MessagesListContainer = () => {
   )
 }
 
-const ConversationRoomFooter = ({ otherUser }: { otherUser?: User }) => {
+export const ConversationRoomFooter = ({ otherUser }: { otherUser?: User }) => {
   const { searchText } = useSelector<Store, ConversationsState>(
     (store) => store.conversations,
   )
@@ -200,14 +200,14 @@ const ConversationRoomFooter = ({ otherUser }: { otherUser?: User }) => {
 
 export default function ConversationRoom() {
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
-  const authenticatedUser = useSelector<Store, User>((store) => store.user)
-  const otherUser = useMemo(
-    () =>
-      activeConversation?.participants.find(
-        (user) => user._id !== authenticatedUser._id,
-      ),
-    [activeConversation?.participants, authenticatedUser._id],
-  )
+  // const authenticatedUser = useSelector<Store, User>((store) => store.user)
+  // const otherUser = useMemo(
+  //   () =>
+  //     activeConversation?.participants.find(
+  //       (user) => user._id !== authenticatedUser._id,
+  //     ),
+  //   [activeConversation?.participants, authenticatedUser._id],
+  // )
 
   const handleEmitGetManyMessages = useEmitGetManyMessages()
 
@@ -219,16 +219,26 @@ export default function ConversationRoom() {
       handleEmitGetManyMessages(activeConversation._id)
     }
   }, [activeConversation, handleEmitGetManyMessages])
-
+  const authenticatedUser = useSelector<Store, User>((store) => store.user)
+  const otherUser = useMemo(
+    () =>
+      activeConversation?.participants.find(
+        (user) => user._id !== authenticatedUser._id,
+      ),
+    [activeConversation?.participants, authenticatedUser._id],
+  )
   return (
     <div className='relative h-full'>
       <div className='bg-doodle absolute z-[1] top-0 left-0 w-full h-full' />
       <div className='bg-primary-darkest absolute z-[0] top-0 left-0 w-full h-full' />
-      <div className='relative z-[3] bg-transparent'>
-        <ConversationRoomHeader otherUser={otherUser} />
+      <div className='relative h-screen app-right-body md:max-h-full overflow-auto z-[3] bg-transparent'>
+        <div className='absolute w-full top-0 z-[4] bg-transparent'>
+          <ConversationHeader otherUser={otherUser} />
+        </div>
+        <MessagesListContainer />
+        <ConversationRoomFooter otherUser={otherUser} />
       </div>
-      <MessagesListContainer />
-      <ConversationRoomFooter otherUser={otherUser} />
+      <></>
     </div>
   )
 }

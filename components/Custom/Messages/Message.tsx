@@ -171,7 +171,9 @@ const MessageHighlighter = ({
   return (
     <div
       className={`${
-        shouldHighlight ? 'bg-primary-dark/40  py-2 my-1' : 'bg-primary-dark/0'
+        shouldHighlight
+          ? 'bg-contrast-secondary/20  py-2 my-1'
+          : 'bg-primary-dark/0'
       }`}
     >
       {children}
@@ -200,7 +202,7 @@ export default function MessageComponent({
       <MessageHighlighter shouldHighlight={shouldHighlight}>
         <MessageWrapperWithScrollIntoViewRef
           isNotSender={isNotSender}
-          shouldScrollIntoView={scrollMessageIntoView}
+          shouldScrollIntoView={scrollMessageIntoView || shouldHighlight}
           shouldShowUnreadBannerAbove={shouldShowUnreadBannerAbove}
         >
           <StyledMessageComponent

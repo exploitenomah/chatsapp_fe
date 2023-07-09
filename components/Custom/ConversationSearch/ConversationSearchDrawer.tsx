@@ -6,14 +6,18 @@ import {
   toggleShowConversationSearchDrawer,
   updateIdOfMsgClickedFromSearch,
 } from '@store/ui/slice'
-import { useRef, useState, Dispatch, SetStateAction, useMemo } from 'react'
+import {
+  useRef,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useEffect,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import LeftDrawer from '../LeftDrawer'
 import SearchBar from '../SearchBar'
-import {
-  toggleLoading,
-  updateSearchText as updateAppSearch,
-} from '@store/search/slice'
+import { toggleLoading } from '@store/search/slice'
 import { SearchState, searchLimit } from '@store/search/initialState'
 import useDebounce from '@hooks/useDebounce'
 import useSearch from '@sockets/useSearch'
@@ -152,7 +156,7 @@ const SearchedMessagesResults = ({ searchText }: { searchText: string }) => {
     return <p className='text-accent-dark mt-5 mb-2 text-center'>Not found</p>
   if (searchText.length > 0 && searchedMessages.length > 0)
     return (
-      <div className='flex flex-col my-4 mx-auto'>
+      <div className='h-4/5 overflow-auto flex flex-col my-4 mx-auto'>
         <h4 className='text-xl pl-8 font-weight-100 text-accent-dark mt-5 mb-2'>
           Messages
         </h4>
@@ -164,6 +168,9 @@ const SearchedMessagesResults = ({ searchText }: { searchText: string }) => {
             onClick={() => {
               if (searchText.length > 0) {
                 dispatch(updateIdOfMsgClickedFromSearch(msg._id))
+              }
+              if (window.innerWidth <= 900) {
+                dispatch(toggleShowConversationSearchDrawer(false))
               }
             }}
           >
@@ -183,6 +190,16 @@ export default function ConversationSearchDrawer() {
     (store) => store.ui,
   )
   const [searchText, setSearchText] = useState('')
+
+  useEffect(() => {
+    const resetTimeout = setTimeout(() => {
+      setSearchText('')
+    }, 8000)
+    return () => {
+      clearTimeout(resetTimeout)
+    }
+  }, [])
+
   return (
     <>
       <LeftDrawer zIndex={'z-[100]'} show={showConversationSearchDrawer}>

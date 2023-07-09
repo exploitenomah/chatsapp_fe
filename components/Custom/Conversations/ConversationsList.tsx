@@ -25,13 +25,13 @@ const SearchedMessagesResults = () => {
   const dispatch = useDispatch()
   const searchedConversations = useSearchConversations()
   const sortedConversations = useGetSortedConversations(searchedConversations)
-  const searchedMessages = useGetSearchedMessagesToDisplay()
+  const searchedMessages = useGetSearchedMessagesToDisplay({ searchText: searchText || ''})
 
   if (searchText && searchText.length === 1 && searchedMessages.length === 0)
     return (
       <p className='text-accent-default text-center'>Keep typing to search</p>
     )
-  if (loading) return <AuthLoader />
+  if (searchText && searchText.length > 0 && loading) return <AuthLoader />
   if (
     searchText &&
     searchText.length > 0 &&
@@ -78,7 +78,7 @@ export default function ConversationsList() {
   )
   return (
     <>
-      {searchText && (
+      {searchText && sortedConversations.length > 0 && (
         <h4 className='text-xl pl-8 font-weight-100 text-accent-dark mt-5 mb-2'>
           Conversations
         </h4>

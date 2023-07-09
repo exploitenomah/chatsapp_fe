@@ -1,4 +1,4 @@
-import { Message } from '@store/messages/initialState'
+import { Message, SearchedMessage } from '@store/messages/initialState'
 import { User } from '@store/user/initialState'
 
 export const conversationsEvents = [
@@ -29,11 +29,6 @@ export type Conversation = {
   }
   hasBlocking: boolean
   isBlocker: boolean
-}
-
-type SearchedMessage = Omit<Message, 'sender' | 'conversationId'> & {
-  sender: User
-  conversationId: Conversation
 }
 
 export type ConversationsState = {

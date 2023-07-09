@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import Button from '@components/HTML/Button'
 import {
   removeActiveConversation,
+  toggleShowConversationSearchDrawer,
   updateIdOfMsgClickedFromSearch,
   updateUserInPreview,
 } from '@store/ui/slice'
@@ -82,7 +83,9 @@ export default function ConversationHeader({
       </div>
       <ul className='flex items-center'>
         <li>
-          <NavItem>
+          <NavItem
+            onClick={() => dispatch(toggleShowConversationSearchDrawer(true))}
+          >
             <SearchIcon />
           </NavItem>
         </li>

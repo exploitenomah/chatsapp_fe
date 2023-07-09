@@ -14,6 +14,7 @@ import { UI } from '@store/ui/initialState'
 import AuthenticatedUserPreview from '../User/AuthenticatedUserPreview'
 import SecondaryPanel from './RightPanel/SecondaryPanel'
 import { ConversationsState } from '@store/conversations/initialState'
+import ConversationSearchDrawer from '../ConversationSearch/ConversationSearchDrawer'
 
 const LeftSection = () => {
   return (
@@ -31,12 +32,12 @@ const LeftSection = () => {
 }
 
 const RightSection = () => {
-  const { userInPreview } = useSelector<Store, UI>((store) => store.ui)
+  const { userInPreview, showConversationSearchDrawer } = useSelector<Store, UI>((store) => store.ui)
   const { searchText } = useSelector<Store, ConversationsState>(
     (store) => store.conversations,
   )
   const rightPanelOutOfFocusClasses = useRightPanelOutOfFocusClasses(
-    Boolean(userInPreview) || Boolean(searchText)
+    Boolean(userInPreview) || Boolean(searchText),
   )
   const dispatch = useDispatch()
   return (
@@ -56,6 +57,11 @@ const RightSection = () => {
       <SecondaryPanel show={Boolean(userInPreview)}>
         <div className='border-l-contrast-secondary/20 border-l'>
           <UserPreview />
+        </div>
+      </SecondaryPanel>
+      <SecondaryPanel show={Boolean(showConversationSearchDrawer)}>
+        <div className='border-l-contrast-secondary/20 border-l'>
+          <ConversationSearchDrawer />
         </div>
       </SecondaryPanel>
     </div>

@@ -20,10 +20,12 @@ const initialState: UI = {
   activeConversation: null,
   showAuthenticatedUserProfile: false,
   deviceIsMobile: true,
-  idOfMsgClickedFromSearch: ''
+  idOfMsgClickedFromSearch: '',
+  showConversationSearchDrawer: false,
 }
 
 export type UI = {
+  showConversationSearchDrawer: boolean
   idOfMsgClickedFromSearch: string
   showAppOptions: boolean
   showFriendsDrawer: boolean

@@ -18,6 +18,7 @@ import Badge from '../Badge'
 import useEmitUnSeenMsgsCount from '@hooks/conversations/useEmitUnseenMsgsCount'
 import { updateSingleConversation } from '@store/conversations/slice'
 import SearchableContent from '../Search/SearchableContent'
+import { useGetTimeOfMessageFormat } from '@hooks/conversations'
 
 export const LatestMessage = ({
   latestMessage,
@@ -118,39 +119,9 @@ export default function ConversationItem({
     [activeConversation?._id, conversation._id, unSeenMsgsCount],
   )
 
-  const timeOfLastSentMsg = useMemo(() => {
-    let timeStringToBeReturned
-    let latestMsgCreatedAt = conversation.latestMessage?.createdAt
-    if (!latestMsgCreatedAt) return null
-    else {
-      latestMsgCreatedAt = new Date(latestMsgCreatedAt)
-      const today = new Date(Date.now())
-      const thisYear = today.getFullYear()
-      const thisMonth = today.getMonth()
-      const thisDate = today.getDate()
-      const yearOfLatestMsg = latestMsgCreatedAt.getFullYear()
-      const monthOfLatestMsg = latestMsgCreatedAt.getMonth()
-      const dateOfLatestMsg = latestMsgCreatedAt.getDate()
-
-      if (yearOfLatestMsg === thisYear || monthOfLatestMsg === thisMonth) {
-        let dateDifference = thisDate - dateOfLatestMsg
-        if (dateDifference < 1)
-          timeStringToBeReturned = latestMsgCreatedAt
-            .toLocaleTimeString()
-            .slice(0, 5)
-        else if (dateDifference < 2) timeStringToBeReturned = 'Yesterday'
-        else if (dateDifference < 7)
-          timeStringToBeReturned = new Intl.DateTimeFormat('en-GB', {
-            weekday: 'long',
-          }).format(latestMsgCreatedAt)
-        else
-          timeStringToBeReturned =
-            latestMsgCreatedAt.toLocaleDateString('en-GB')
-      } else
-        timeStringToBeReturned = latestMsgCreatedAt.toLocaleDateString('en-GB')
-      return timeStringToBeReturned
-    }
-  }, [conversation])
+  const timeOfLastSentMsg = useGetTimeOfMessageFormat({
+    date: conversation.latestMessage?.createdAt || '',
+  })
 
   const handleMessageButtonClick = useHandleMessageButtonClick(
     conversation.participants.map((el) => el._id),

@@ -95,11 +95,12 @@ const useSignupFormHandlers = (rootSocket: Socket) => {
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = changeEvent.target
+      const newValue = name === 'nickName' ? value.toLowerCase() : value
       setSignupDetails((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: newValue,
       }))
-      localStorage.setItem(name, value)
+      localStorage.setItem(name, newValue)
     },
     [],
   )

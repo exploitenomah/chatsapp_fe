@@ -2,14 +2,21 @@ import { SendIcon, EmojiIcon, FileInputIcon } from '@assets/index'
 import Button from '@components/HTML/Button'
 import useSendMessage from '@hooks/messages/useSendMessage'
 import { Store } from '@store/index'
-import { UI } from '@store/ui/initialState'
 import { User } from '@store/user/initialState'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import TextInput from './TextInput'
 import { updateIdOfMsgClickedFromSearch } from '@store/ui/slice'
+import { Conversation } from '@store/conversations/initialState'
+import { UI } from '@store/ui/initialState'
 
-export default function MessageInput({ focus }: { focus?: boolean }) {
+export default function MessageInput({
+  focus,
+  conversation,
+}: {
+  focus?: boolean
+  conversation?: Conversation | UI['activeConversation']
+}) {
   const dispatch = useDispatch()
   const textInputRef = useRef<HTMLTextAreaElement>(null)
   const [message, setMessage] = useState({
@@ -18,7 +25,6 @@ export default function MessageInput({ focus }: { focus?: boolean }) {
   })
 
   const user = useSelector<Store, User>((store) => store.user)
-  const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
 
   const handleSendMessage = useSendMessage()
 
@@ -28,13 +34,13 @@ export default function MessageInput({ focus }: { focus?: boolean }) {
       return
     }
 
-    if (activeConversation) {
-      handleSendMessage(activeConversation, { ...message, sender: user._id })
+    if (conversation) {
+      handleSendMessage(conversation, { ...message, sender: user._id })
       dispatch(updateIdOfMsgClickedFromSearch(''))
       setMessage((prev) => ({ ...prev, text: '' }))
       return
     }
-  }, [activeConversation, dispatch, handleSendMessage, message, user._id])
+  }, [conversation, dispatch, handleSendMessage, message, user._id])
 
   useEffect(() => {
     focus && textInputRef.current?.focus()

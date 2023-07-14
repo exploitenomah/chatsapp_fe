@@ -43,9 +43,7 @@ const MessagesListContainer = () => {
   const handleScrollToBottomClick = useCallback(() => {
     const lastElementChild = msgsContainerRef.current?.lastElementChild
     if (lastElementChild) {
-      lastElementChild.scrollIntoView(
-        false
-      )
+      lastElementChild.scrollIntoView(false)
     }
   }, [msgsContainerRef])
 
@@ -183,6 +181,7 @@ export const ConversationRoomFooter = ({ otherUser }: { otherUser?: User }) => {
           <>
             {!activeConversation?.hasFetchedInitialMessages && <AuthLoader />}
             <MessageInput
+              conversation={activeConversation}
               focus={
                 activeConversation?.hasFetchedInitialMessages && !searchText
               }
@@ -200,14 +199,6 @@ export const ConversationRoomFooter = ({ otherUser }: { otherUser?: User }) => {
 
 export default function ConversationRoom() {
   const { activeConversation } = useSelector<Store, UI>((store) => store.ui)
-  // const authenticatedUser = useSelector<Store, User>((store) => store.user)
-  // const otherUser = useMemo(
-  //   () =>
-  //     activeConversation?.participants.find(
-  //       (user) => user._id !== authenticatedUser._id,
-  //     ),
-  //   [activeConversation?.participants, authenticatedUser._id],
-  // )
 
   const handleEmitGetManyMessages = useEmitGetManyMessages()
 

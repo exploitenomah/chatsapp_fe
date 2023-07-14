@@ -48,14 +48,14 @@ export default function MessageInput({
 
   return (
     <div className='py-1 pr-[17px] pl-[10px] flex items-end border-l border-l-contrast-secondary/20 bg-secondary-default'>
-      <div className='flex items-center px-2.5 py-1 text-contrast-secondary/90'>
+      {/* <div className='flex items-center px-2.5 py-1 text-contrast-secondary/90'>
         <Button className='p-0 mr-2'>
           <EmojiIcon />
         </Button>
         <Button className='p-2 shadow-none'>
           <FileInputIcon />
         </Button>
-      </div>
+      </div> */}
       <div className={`flex w-full`}>
         <div className='px-3 py-[9px] my-1 mx-2 rounded-lg w-full bg-secondary-darkest'>
           <TextInput

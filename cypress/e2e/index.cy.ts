@@ -30,22 +30,18 @@ describe('Signup And Login Modals', () => {
     cy.dataTestIdCy('signup-submit-button').should('be.disabled')
   })
   it('Signup modal allows input and submits', () => {
-    cy.dataTestIdCy('primary-cta').click()
-    cy.dataTestIdCy('signup-first-name-input').type('cypress')
-    cy.dataTestIdCy('signup-last-name-input').type('tests')
-    cy.dataTestIdCy('signup-nick-name-input').type('tests')
-    cy.dataTestIdCy('signup-email-input').type('cypresstests@gmail.com')
-    cy.dataTestIdCy('signup-password-input').type('dev1234')
-    cy.dataTestIdCy('signup-confirm-password-input').type('dev1234')
-    cy.dataTestIdCy('signup-submit-button').should('not.be.disabled').click()
+    cy.signup({
+      email: 'cypresstests@gmail.com',
+      firstName: 'cypress',
+      lastName: 'tests',
+      nickName: 'tests',
+      password: 'dev1234',
+      confirmPassword: 'dev1234',
+    })
     cy.dataTestIdCy('primary-cta').should('not.exist')
   })
-  it('Login modal allows input and submits', () => {
-    cy.dataTestIdCy('secondary-cta').click()
-    cy.dataTestIdCy('login-submit-button').should('be.disabled')
-    cy.dataTestIdCy('login-email-input').type('cypresstests@gmail.com')
-    cy.dataTestIdCy('login-password-input').type('dev1234')
-    cy.dataTestIdCy('login-submit-button').should('not.be.disabled').click()
+  it('Should Login', () => {
+    cy.login('cypresstests@gmail.com', 'dev1234')
     cy.dataTestIdCy('secondary-cta').should('not.exist')
   })
 })

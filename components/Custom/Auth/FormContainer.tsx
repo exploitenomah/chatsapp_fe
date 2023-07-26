@@ -18,11 +18,13 @@ export default function FormContainer({
   children,
   mode,
   title,
+  testId,
 }: {
   show: boolean
   children: ReactNode | ReactNode[]
   mode: 'sign up' | 'login'
   title: string
+  testId: string
 }) {
   const dispatch = useDispatch()
 
@@ -43,7 +45,7 @@ export default function FormContainer({
   return (
     <>
       <Modal show={show} keepMounted={false} hide={hide} animate={true}>
-        <div className='bg-primary-default brightness-105 pt-8 pb-12 px-4 flex flex-col w-[90vw] max-w-md rounded-lg animate-fade-in relative'>
+        <div data-test-id={testId} className='bg-primary-default brightness-105 pt-8 pb-12 px-4 flex flex-col w-[90vw] max-w-md rounded-lg animate-fade-in relative'>
           <div className='w-[60px] overflow-hidden text-contrast-secondary mx-auto mb-5 animate-pulse'>
             <LoadingLogo />
           </div>

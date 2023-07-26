@@ -270,6 +270,7 @@ export default function Signup({ rootSocket }: { rootSocket: Socket }) {
 
   return (
     <FormContainer
+      testId='signup-modal'
       show={showSignup}
       mode='sign up'
       title='Get Started With ChatsApp'

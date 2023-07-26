@@ -106,7 +106,12 @@ export default function Login({ rootSocket }: { rootSocket: Socket }) {
   const { showLogin, loading } = useSelector<Store, UI>((store) => store.ui)
 
   return (
-    <FormContainer show={showLogin} mode='login' title='Welcome Back!'>
+    <FormContainer
+      testId='login-modal'
+      show={showLogin}
+      mode='login'
+      title='Welcome Back!'
+    >
       {loading && <AuthLoader />}
       <Form rootSocket={rootSocket} />
     </FormContainer>

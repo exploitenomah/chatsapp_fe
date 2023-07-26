@@ -163,6 +163,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       <div className='flex gap-6 justify-between'>
         <Input
           placeholder='First name*'
+          data-test-id='first-name-input'
           required
           type='text'
           name='firstName'
@@ -171,6 +172,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         />
         <Input
           placeholder='Last name'
+          data-test-id='last-name-input'
           type='text'
           name='lastName'
           onChange={handleFormChange}
@@ -187,6 +189,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           displayText={`${signupDetails.nickName} is not a valid nickname`}
         />
         <Input
+          data-test-id='nick-name-input'
           className={`border border-solid ${inputValidationClasses(
             signupDetails.nickName.trim().length > 0 &&
               (!isNickNameTaken || !isNickNameInvalid),
@@ -209,6 +212,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           displayText={`${signupDetails.email} is already in use`}
         />
         <Input
+          data-test-id='email-input'
           className={`border border-solid ${inputValidationClasses(
             signupDetails.email.trim().length > 0 && !isEmailInUse,
             isEmailInUse,
@@ -231,6 +235,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         />
         <AuthInputWithShowPasswordToggle
           placeholder='Password*'
+          data-test-id='password-input'
           required
           type='password'
           name='password'
@@ -240,6 +245,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         <span className='block h-6'></span>
         <AuthInputWithShowPasswordToggle
           placeholder='Confirm password*'
+          data-test-id='confirm-password-input'
           required
           type='password'
           name='confirmPassword'
@@ -254,6 +260,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           passwordsNotMatched ||
           isSubmitDisabled
         }
+        data-test-id='submit-button'
         type='submit'
         name='login'
         className='bg-accent-dark/60 mt-2 capitalize text-lg transition-all duration-400 \n

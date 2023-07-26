@@ -74,6 +74,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   return (
     <form className='flex flex-col gap-5' onSubmit={onSubmit}>
       <Input
+        data-test-id='login-email-input'
         placeholder='Nick Name / Email*'
         required
         type='text'
@@ -82,6 +83,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         onChange={handleFormChange}
       />
       <AuthInputWithShowPasswordToggle
+        data-test-id='login-password-input'
         placeholder='Password*'
         required
         type='password'
@@ -90,6 +92,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         onChange={handleFormChange}
       />
       <Button
+        data-test-id='login-submit-button'
         disabled={isSubmitDisabled}
         type='submit'
         name='login'

@@ -21,7 +21,7 @@ describe('Signup And Login Modals', () => {
     cy.visit('http://localhost:3001')
     cy.clearAllLocalStorage()
   })
-  after(() => {
+  afterEach(() => {
     cy.request('http://localhost:3000/api/v1/db/reset')
     cy.clearAllLocalStorage()
   })
@@ -29,18 +29,29 @@ describe('Signup And Login Modals', () => {
     cy.dataTestIdCy('primary-cta').click()
     cy.dataTestIdCy('signup-submit-button').should('be.disabled')
   })
+  it('Login form submit button is disabled if inputs are empty', () => {
+    cy.dataTestIdCy('secondary-cta').click()
+    cy.dataTestIdCy('login-submit-button').should('be.disabled')
+  })
+  it('Allows form type toggle', () => {
+    cy.dataTestIdCy('secondary-cta').click()
+    cy.dataTestIdCy('login-submit-button').should('exist')
+    cy.dataTestIdCy('form-type-toggle').click()
+    cy.dataTestIdCy('login-submit-button').should('not.exist')
+    cy.dataTestIdCy('signup-submit-button').should('exist')
+  })
   it('Signup modal allows input and submits', () => {
-    cy.signup({
-      email: 'cypresstests@gmail.com',
-      firstName: 'cypress',
-      lastName: 'tests',
-      nickName: 'tests',
-      password: 'dev1234',
-      confirmPassword: 'dev1234',
+    cy.fixture('users').then((usersFixture) => {
+      cy.signup(usersFixture.users[0])
     })
     cy.dataTestIdCy('primary-cta').should('not.exist')
   })
   it('Should Login', () => {
+    cy.fixture('users').then((usersFixture) => {
+      cy.signup(usersFixture.users[0])
+      cy.clearAllLocalStorage()
+      cy.reload()
+    })
     cy.login('cypresstests@gmail.com', 'dev1234')
     cy.dataTestIdCy('secondary-cta').should('not.exist')
   })

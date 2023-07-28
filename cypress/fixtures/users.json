@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "email": "cypresstests@gmail.com",
+      "firstName": "cypress",
+      "lastName": "tests",
+      "nickName": "tests",
+      "password": "dev1234",
+      "confirmPassword": "dev1234"
+    }
+  ]
+}

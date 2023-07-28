@@ -1,4 +1,4 @@
-describe('Non Authenticated App Screen', () => {
+describe('Home page without authentication', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3001')
     cy.clearAllLocalStorage()

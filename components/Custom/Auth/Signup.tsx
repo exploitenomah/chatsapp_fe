@@ -10,6 +10,7 @@ import {
   FormEvent,
   useEffect,
   useMemo,
+  HTMLAttributes,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
@@ -32,14 +33,15 @@ type SignupDetails = typeof initialSignupDetails
 const InputNotification = ({
   show,
   displayText,
+  ...rest
 }: {
   show: boolean
   displayText: string
-}) => {
+} & HTMLAttributes<HTMLSpanElement>) => {
   return (
     <>
       {show ? (
-        <span className='block mb-1 ml-1 text-red-400 text-xs'>
+        <span className='block mb-1 ml-1 text-red-400 text-xs' {...rest}>
           {displayText}
         </span>
       ) : null}
@@ -181,10 +183,12 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       </div>
       <div>
         <InputNotification
+          data-test-id='signup-nick-name-error'
           show={isNickNameTaken && signupDetails.nickName.length >= 3}
           displayText={`${signupDetails.nickName} is already taken`}
         />
         <InputNotification
+          data-test-id='signup-nick-name-error'
           show={isNickNameInvalid}
           displayText={`${signupDetails.nickName} is not a valid nickname`}
         />
@@ -208,6 +212,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       </div>
       <div>
         <InputNotification
+          data-test-id='signup-email-error'
           show={isEmailInUse}
           displayText={`${signupDetails.email} is already in use`}
         />
@@ -230,6 +235,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       </div>
       <div>
         <InputNotification
+          data-test-id='signup-password-error'
           show={passwordsNotMatched}
           displayText='Passwords not matched'
         />

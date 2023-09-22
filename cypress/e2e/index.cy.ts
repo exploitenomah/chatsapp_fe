@@ -1,6 +1,6 @@
 describe('Home page without authentication', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3001')
+    cy.home()
     cy.clearAllLocalStorage()
   })
   it('Shows login and signup call to action when logged out', () => {
@@ -17,9 +17,10 @@ describe('Home page without authentication', () => {
   })
 })
 
-describe.only('Form Errors', () => {
+describe('Form Errors', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3001')
+    cy.request('http://localhost:3000/api/v1/db/reset')
+    cy.home()
     cy.clearAllLocalStorage()
   })
   after(() => {
@@ -32,7 +33,7 @@ describe.only('Form Errors', () => {
     cy.dataTestIdCy('signup-confirm-password-input').type('confirmPassword')
     cy.dataTestIdCy('signup-password-error').should('exist')
   })
-  it.only('User is notified of taken nickName and email', () => {
+  it('User is notified of taken nickName and email', () => {
     cy.fixture('users').then((usersFixture) => {
       cy.signup(usersFixture.users[0])
       cy.clearAllLocalStorage()
@@ -50,7 +51,6 @@ describe.only('Form Errors', () => {
   })
   it('User is notified of invalid nick name', () => {
     cy.dataTestIdCy('primary-cta').click()
-
     cy.dataTestIdCy('signup-nick-name-input').clear()
     cy.dataTestIdCy('signup-nick-name-error').should('not.exist')
     cy.dataTestIdCy('signup-nick-name-input').type('.invalid.,/nickname')
@@ -60,7 +60,7 @@ describe.only('Form Errors', () => {
 
 describe('Signup And Login Modals', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3001')
+    cy.home()
     cy.clearAllLocalStorage()
   })
   afterEach(() => {
@@ -85,8 +85,8 @@ describe('Signup And Login Modals', () => {
   it('Signup modal allows input and submits', () => {
     cy.fixture('users').then((usersFixture) => {
       cy.signup(usersFixture.users[0])
+      cy.dataTestIdCy('primary-cta').should('not.exist')
     })
-    cy.dataTestIdCy('primary-cta').should('not.exist')
   })
   it('Should Login', () => {
     cy.fixture('users').then((usersFixture) => {
@@ -94,7 +94,10 @@ describe('Signup And Login Modals', () => {
       cy.clearAllLocalStorage()
       cy.reload()
     })
-    cy.login('cypresstests@gmail.com', 'dev1234')
-    cy.dataTestIdCy('secondary-cta').should('not.exist')
+    cy.fixture('users').then((usersFixture) => {
+      cy.login(usersFixture.users[0].email, usersFixture.users[0].password)
+      cy.dataTestIdCy('secondary-cta').should('not.exist')
+      cy.clearLocalStorage()
+    })
   })
 })

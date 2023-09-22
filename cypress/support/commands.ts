@@ -19,6 +19,17 @@ Cypress.Commands.add('login', (email, password) => {
   cy.dataTestIdCy('login-password-input').type(password)
   cy.dataTestIdCy('login-submit-button').should('not.be.disabled').click()
 })
+Cypress.Commands.add('home', () => {
+  cy.visit('http://localhost:3001')
+})
+Cypress.Commands.add('login', (email, password) => {
+  cy.clearAllLocalStorage()
+  cy.dataTestIdCy('secondary-cta').click()
+  cy.dataTestIdCy('login-submit-button').should('be.disabled')
+  cy.dataTestIdCy('login-email-input').type(email)
+  cy.dataTestIdCy('login-password-input').type(password)
+  cy.dataTestIdCy('login-submit-button').should('not.be.disabled').click()
+})
 Cypress.Commands.add('signup', (data) => {
   const { firstName, lastName, nickName, email, password, confirmPassword } =
     data
@@ -76,6 +87,7 @@ declare global {
         url: string,
         options: Partial<VisitOptions>,
       ): Chainable<Element>
+      home(): Chainable<void>
       /**
        * Custom command to select DOM element by data-cy attribute.
        * @example cy.dataCy('greeting')

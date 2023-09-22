@@ -33,10 +33,16 @@ const Header = () => {
   )
 }
 
-const NickNameFormTextDisplay = ({ nickName }: { nickName: string }) => {
+const NickNameFormTextDisplay = ({
+  nickName,
+  dataTestId,
+}: {
+  nickName: string
+  dataTestId?: string
+}) => {
   return (
     <>
-      <div className='w-full'>
+      <div className='w-full' data-test-id={dataTestId}>
         <h3 className='text-sm text-accent-darkest'>Nick name </h3>
         <ToggleableFormInput
           max={50}
@@ -49,10 +55,16 @@ const NickNameFormTextDisplay = ({ nickName }: { nickName: string }) => {
   )
 }
 
-const FirstNameFormTextDisplay = ({ firstName }: { firstName: string }) => {
+const FirstNameFormTextDisplay = ({
+  firstName,
+  dataTestId,
+}: {
+  firstName: string
+  dataTestId?: string
+}) => {
   return (
     <>
-      <div className='w-full'>
+      <div className='w-full' data-test-id={dataTestId}>
         <h3 className='text-sm text-accent-darkest'>First name</h3>
         <ToggleableFormInput
           max={250}
@@ -65,10 +77,16 @@ const FirstNameFormTextDisplay = ({ firstName }: { firstName: string }) => {
   )
 }
 
-const LastNameFormTextDisplay = ({ lastName }: { lastName: string }) => {
+const LastNameFormTextDisplay = ({
+  lastName,
+  dataTestId,
+}: {
+  lastName: string
+  dataTestId?: string
+}) => {
   return (
     <>
-      <div className='w-full'>
+      <div className='w-full' data-test-id={dataTestId}>
         <h3 className='text-sm text-accent-darkest'>Last name </h3>
         <ToggleableFormInput
           max={250}
@@ -81,10 +99,16 @@ const LastNameFormTextDisplay = ({ lastName }: { lastName: string }) => {
   )
 }
 
-const AboutFormTextDisplay = ({ about }: { about: string }) => {
+const AboutFormTextDisplay = ({
+  about,
+  dataTestId,
+}: {
+  about: string
+  dataTestId?: string
+}) => {
   return (
     <>
-      <div className='w-full'>
+      <div className='w-full' data-test-id={dataTestId}>
         <h3 className='text-sm text-accent-darkest'>About </h3>
         <ToggleableFormInput max={250} min={10} name={'about'} value={about} />
       </div>
@@ -99,13 +123,20 @@ export default function AuthenticatedUserPreview() {
   )
 
   return (
-    <LeftDrawer zIndex='z-[400]' show={showAuthenticatedUserProfile}>
+    <LeftDrawer
+      data-test-id='authenticated-user-drawer'
+      zIndex='z-[400]'
+      show={showAuthenticatedUserProfile}
+    >
       <div>
         <div className='h-full w-full'>
           <Header />
           {showAuthenticatedUserProfile && (
             <div className='bg-primary-default py-7'>
-              <div className='flex justify-center items-center mb-4'>
+              <div
+                className='flex justify-center items-center mb-4'
+                data-test-id='authenticated-user-image'
+              >
                 <UserImage
                   alt={authenticatedUser.nickName}
                   profileImage={authenticatedUser.profileImage}
@@ -113,15 +144,21 @@ export default function AuthenticatedUserPreview() {
               </div>
               <div className='flex flex-col justify-start items-start gap-y-3 w-[90%] mx-auto my-12'>
                 <NickNameFormTextDisplay
+                  dataTestId='authenticated-user-nickName'
                   nickName={authenticatedUser.nickName}
                 />
                 <FirstNameFormTextDisplay
+                  dataTestId='authenticated-user-firstName'
                   firstName={authenticatedUser.firstName}
                 />
                 <LastNameFormTextDisplay
+                  dataTestId='authenticated-user-lastName'
                   lastName={authenticatedUser.lastName}
                 />
-                <AboutFormTextDisplay about={authenticatedUser.about} />
+                <AboutFormTextDisplay
+                  dataTestId='authenticated-user-about'
+                  about={authenticatedUser.about}
+                />
               </div>
             </div>
           )}

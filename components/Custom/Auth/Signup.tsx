@@ -10,6 +10,7 @@ import {
   FormEvent,
   useEffect,
   useMemo,
+  HTMLAttributes,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
@@ -32,14 +33,15 @@ type SignupDetails = typeof initialSignupDetails
 const InputNotification = ({
   show,
   displayText,
+  ...rest
 }: {
   show: boolean
   displayText: string
-}) => {
+} & HTMLAttributes<HTMLSpanElement>) => {
   return (
     <>
       {show ? (
-        <span className='block mb-1 ml-1 text-red-400 text-xs'>
+        <span className='block mb-1 ml-1 text-red-400 text-xs' {...rest}>
           {displayText}
         </span>
       ) : null}
@@ -95,11 +97,12 @@ const useSignupFormHandlers = (rootSocket: Socket) => {
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = changeEvent.target
+      const newValue = name === 'nickName' ? value.toLowerCase() : value
       setSignupDetails((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: newValue,
       }))
-      localStorage.setItem(name, value)
+      localStorage.setItem(name, newValue)
     },
     [],
   )
@@ -162,6 +165,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       <div className='flex gap-6 justify-between'>
         <Input
           placeholder='First name*'
+          data-test-id='signup-first-name-input'
           required
           type='text'
           name='firstName'
@@ -170,6 +174,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         />
         <Input
           placeholder='Last name'
+          data-test-id='signup-last-name-input'
           type='text'
           name='lastName'
           onChange={handleFormChange}
@@ -178,14 +183,17 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       </div>
       <div>
         <InputNotification
+          data-test-id='signup-nick-name-error'
           show={isNickNameTaken && signupDetails.nickName.length >= 3}
           displayText={`${signupDetails.nickName} is already taken`}
         />
         <InputNotification
+          data-test-id='signup-nick-name-error'
           show={isNickNameInvalid}
           displayText={`${signupDetails.nickName} is not a valid nickname`}
         />
         <Input
+          data-test-id='signup-nick-name-input'
           className={`border border-solid ${inputValidationClasses(
             signupDetails.nickName.trim().length > 0 &&
               (!isNickNameTaken || !isNickNameInvalid),
@@ -204,10 +212,12 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       </div>
       <div>
         <InputNotification
+          data-test-id='signup-email-error'
           show={isEmailInUse}
           displayText={`${signupDetails.email} is already in use`}
         />
         <Input
+          data-test-id='signup-email-input'
           className={`border border-solid ${inputValidationClasses(
             signupDetails.email.trim().length > 0 && !isEmailInUse,
             isEmailInUse,
@@ -225,11 +235,13 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
       </div>
       <div>
         <InputNotification
+          data-test-id='signup-password-error'
           show={passwordsNotMatched}
           displayText='Passwords not matched'
         />
         <AuthInputWithShowPasswordToggle
           placeholder='Password*'
+          data-test-id='signup-password-input'
           required
           type='password'
           name='password'
@@ -239,6 +251,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         <span className='block h-6'></span>
         <AuthInputWithShowPasswordToggle
           placeholder='Confirm password*'
+          data-test-id='signup-confirm-password-input'
           required
           type='password'
           name='confirmPassword'
@@ -253,6 +266,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
           passwordsNotMatched ||
           isSubmitDisabled
         }
+        data-test-id='signup-submit-button'
         type='submit'
         name='login'
         className='bg-accent-dark/60 mt-2 capitalize text-lg transition-all duration-400 \n
@@ -269,6 +283,7 @@ export default function Signup({ rootSocket }: { rootSocket: Socket }) {
 
   return (
     <FormContainer
+      testId='signup-modal'
       show={showSignup}
       mode='sign up'
       title='Get Started With ChatsApp'

@@ -37,11 +37,12 @@ export const OptionsComponent = ({
   toggleShowOptions,
   children,
   showOptions,
+  ...rest
 }: {
   toggleShowOptions: () => void
   children: ReactNode | ReactNode[]
   showOptions: boolean
-}) => {
+} & HTMLAttributes<HTMLDivElement>) => {
   return (
     <>
       <div
@@ -49,6 +50,7 @@ export const OptionsComponent = ({
         className={`${
           showOptions ? 'visible opacity-100' : 'invisible opacity-0'
         } block fixed right-0 bottom-0 top-0 left-0 w-screen h-screen z-[97]`}
+        {...rest}
       />
       <div className='relative'>
         <NavItem onClick={() => toggleShowOptions()}>
@@ -72,8 +74,12 @@ export default function AppHeader() {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
   return (
     <div className={`${headerClasses}`}>
-      <header className='flex justify-between items-center'>
+      <header
+        data-test-id='app-header'
+        className='flex justify-between items-center'
+      >
         <Button
+          data-test-id='header-user-avatar'
           className='p-0'
           onClick={() => dispatch(toggleShowAuthenticatedUserProfile(true))}
         >
@@ -88,6 +94,7 @@ export default function AppHeader() {
           <ul className='flex items-center'>
             <li>
               <NavItem
+                data-test-id='header-friends-btn'
                 className='relative'
                 onClick={() => dispatch(toggleShowFriendsDrawer())}
               >
@@ -99,10 +106,12 @@ export default function AppHeader() {
             </li>
             <li>
               <OptionsComponent
+                data-test-id='header-options'
                 showOptions={showAppOptions}
                 toggleShowOptions={() => dispatch(toggleShowAppOptions())}
               >
                 <Button
+                  data-test-id='header-logout-btn'
                   className='text-red-300 shadow-none'
                   onClick={() => {
                     dispatch(toggleShowAppOptions())

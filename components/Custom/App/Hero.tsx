@@ -24,6 +24,7 @@ export default function Hero() {
           ChatsApp Web
         </h1>
         <Button
+          data-test-id='secondary-cta'
           className='shadow-none hover:underline hover:text-accent-dark py-0 px-0 duration-300'
           onClick={() => dispatch(toggleShowLogin())}
         >
@@ -34,6 +35,7 @@ export default function Hero() {
         <div className='px-4'>
           <AppIntro />
           <Button
+            data-test-id='primary-cta'
             className='bg-accent-darkest text-white mt-4'
             onClick={() => dispatch(toggleShowSignup())}
           >

@@ -16,6 +16,7 @@ import DoubleCheckIcon from '@assets/DoubleCheckIcon'
 import MessageTailIn from '@assets/MessageTailIn'
 import MessageTailOut from '@assets/MessageTailOut'
 import { updateIdOfMsgClickedFromSearch } from '@store/ui/slice'
+import { linkify } from '@utils/index'
 
 const UnreadMessagesCountBanner = ({ show }: { show: boolean }) => {
   const authenticatedUser = useSelector<Store, User>((store) => store.user)
@@ -128,7 +129,7 @@ const StyledMessageComponent = ({
             <MessageTail />
           </div>
           <div className='whitespace-pre-wrap break-all'>
-            <span>{message.text}</span>
+            <span dangerouslySetInnerHTML={{ __html: linkify(message.text) }} />
           </div>
           <div className='self-end ml-1 flex items-center gap-x-[2px] text-[11px] h-[15px]'>
             <div className='ml-1 -mb-1.5 whitespace-nowrap text-contrast-primary/80'>

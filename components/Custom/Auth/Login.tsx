@@ -30,11 +30,12 @@ const useLoginFormHandlers = (rootSocket: Socket) => {
   const handleFormChange = useCallback(
     (changeEvent: ChangeEvent<HTMLInputElement>) => {
       const { name, value } = changeEvent.target
+      const newValue = name === 'nickName' ? value.toLowerCase() : value
       setLoginDetails((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: newValue,
       }))
-      localStorage.setItem(name, value)
+      localStorage.setItem(name, newValue)
     },
     [],
   )
@@ -73,6 +74,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
   return (
     <form className='flex flex-col gap-5' onSubmit={onSubmit}>
       <Input
+        data-test-id='login-email-input'
         placeholder='Nick Name / Email*'
         required
         type='text'
@@ -81,6 +83,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         onChange={handleFormChange}
       />
       <AuthInputWithShowPasswordToggle
+        data-test-id='login-password-input'
         placeholder='Password*'
         required
         type='password'
@@ -89,6 +92,7 @@ const Form = ({ rootSocket }: { rootSocket: Socket }) => {
         onChange={handleFormChange}
       />
       <Button
+        data-test-id='login-submit-button'
         disabled={isSubmitDisabled}
         type='submit'
         name='login'
@@ -105,7 +109,12 @@ export default function Login({ rootSocket }: { rootSocket: Socket }) {
   const { showLogin, loading } = useSelector<Store, UI>((store) => store.ui)
 
   return (
-    <FormContainer show={showLogin} mode='login' title='Welcome Back!'>
+    <FormContainer
+      testId='login-modal'
+      show={showLogin}
+      mode='login'
+      title='Welcome Back!'
+    >
       {loading && <AuthLoader />}
       <Form rootSocket={rootSocket} />
     </FormContainer>

@@ -19,7 +19,10 @@ import ConversationSearchDrawer from '../ConversationSearch/ConversationSearchDr
 const LeftSection = () => {
   return (
     <>
-      <div className='basis-[30%] max-w-[30%] relative overflow-hidden'>
+      <div
+        data-test-id='left-panel-desktop'
+        className='basis-[30%] max-w-[30%] relative overflow-hidden'
+      >
         <AuthenticatedUserPreview />
         <FriendsDrawer />
         <FriendsSuggestionDrawer />
@@ -32,7 +35,10 @@ const LeftSection = () => {
 }
 
 const RightSection = () => {
-  const { userInPreview, showConversationSearchDrawer } = useSelector<Store, UI>((store) => store.ui)
+  const { userInPreview, showConversationSearchDrawer } = useSelector<
+    Store,
+    UI
+  >((store) => store.ui)
   const { searchText } = useSelector<Store, ConversationsState>(
     (store) => store.conversations,
   )
